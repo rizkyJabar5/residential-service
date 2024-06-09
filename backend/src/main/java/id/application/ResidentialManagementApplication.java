@@ -1,7 +1,5 @@
 package id.application;
 
-import com.vaadin.flow.component.page.AppShellConfigurator;
-import com.vaadin.flow.theme.Theme;
 import id.application.feature.model.entity.AppUser;
 import id.application.feature.model.repositories.AppUserRepository;
 import id.application.util.enums.ERole;
@@ -12,8 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
-@Theme("default")
-public class ResidentialManagementApplication implements AppShellConfigurator {
+public class ResidentialManagementApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ResidentialManagementApplication.class, args);

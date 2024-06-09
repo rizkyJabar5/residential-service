@@ -32,6 +32,9 @@ logging:
   pattern:
     level: "%5p [appName=${spring.application.name:},traceId=%X{traceId},spanId=%X{spanId}]"
 
+jwt:
+  secretKey: WHO8SCGSXPK8VFBO2LH5N5HOMH65L5X6OR74AX0N02E82R0CGHK5KGCIDUU4YQM2K4WP3
+
 cloud:
   name: journal-florist
   key: 718635641258268

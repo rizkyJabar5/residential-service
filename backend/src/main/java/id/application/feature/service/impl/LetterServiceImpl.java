@@ -9,7 +9,6 @@ import id.application.feature.dto.request.UpdateLetterStatusRequest;
 import id.application.feature.model.entity.LetterRequest;
 import id.application.feature.model.repositories.LetterRequestRepository;
 import id.application.feature.service.LetterService;
-import id.application.security.SecurityUtils;
 import id.application.util.FilterableUtil;
 import id.application.util.enums.StatusLetter;
 import id.application.util.enums.TypeLetter;
@@ -24,6 +23,7 @@ import java.nio.file.Files;
 import java.util.Date;
 
 import static id.application.config.pdf.PdfConfig.writePdfFile;
+import static id.application.security.SecurityUtils.getUserLoggedIn;
 import static id.application.util.ConverterDateTime.convertToLocalDateDefaultPattern;
 import static id.application.util.ConverterDateTime.localDateToString;
 import static id.application.util.EntityUtil.persistUtil;
@@ -32,42 +32,41 @@ import static id.application.util.EntityUtil.persistUtil;
 @Service
 public class LetterServiceImpl implements LetterService {
     private final LetterRequestRepository repository;
-    private final SecurityUtils securityUtil;
     private final TemplateConfig templateConfig;
 
     @Override
     public Page<LetterRequest> findAll(RequestPagination pageRequest) {
-        securityUtil.getAppUserLoggedIn();
+        getUserLoggedIn();
         var pageable = FilterableUtil.pageable(pageRequest.page(), pageRequest.limitContent(), null);
         return repository.findAll(pageable);
     }
 
     @Override
     public Page<LetterRequest> findLetterByStatus(StatusLetter status) {
-        securityUtil.getAppUserLoggedIn();
+        getUserLoggedIn();
         var pageable = FilterableUtil.pageable(null, null, null);
         return repository.findByLetterStatus(status, pageable);
     }
 
     @Override
     public LetterRequest findById(String id) {
-        securityUtil.getAppUserLoggedIn();
+        getUserLoggedIn();
         return repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Surat pengajuan tidak ditemukan"));
     }
 
     @Override
     public LetterRequest findByLetterId(String nik) {
-        securityUtil.getAppUserLoggedIn();
+        getUserLoggedIn();
         return repository.findByLetterId(nik)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Surat pengajuan dengan NIK:%s tidak ditemukan", nik)));
     }
 
     @Override
     public LetterRequest persistNew(LetterAddRequest request) {
-        var authenticatedUser = securityUtil.getAppUserLoggedIn();
-        var citizenId = authenticatedUser.userInfo().citizenId();
-        var userLoggedIn = authenticatedUser.name();
+        var authenticatedUser = getUserLoggedIn();
+        var citizenId = authenticatedUser.getUserInfo().getCitizenId();
+        var userLoggedIn = authenticatedUser.getName();
 
         var nik = request.nik();
         this.duplicateLetterRequest(nik, request.type());
@@ -93,13 +92,13 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     public void updateStatusLetter(UpdateLetterStatusRequest request) {
-        var authenticatedUser = securityUtil.getAppUserLoggedIn();
+        var authenticatedUser = getUserLoggedIn();
         var existLetter = repository.findById(request.letterId())
                 .orElseThrow(() -> new ResourceNotFoundException("Surat pengajuan tidak ditemukan"));
 
         var statusLetter = StatusLetter.valueOf(request.status());
         existLetter.setStatus(statusLetter);
-        existLetter.setUpdatedBy(authenticatedUser.name());
+        existLetter.setUpdatedBy(authenticatedUser.getName());
         existLetter.setUpdatedTime(new Date(System.currentTimeMillis()));
 
         repository.save(existLetter);

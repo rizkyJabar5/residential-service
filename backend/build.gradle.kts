@@ -2,8 +2,6 @@ plugins {
     java
     id("org.springframework.boot") version "3.2.2"
     id("io.spring.dependency-management") version "1.1.4"
-    id("dev.hilla") version "2.5.6"
-
 }
 
 group = "application"
@@ -21,12 +19,6 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven {
-        setUrl("https://repo.spring.io/milestone")
-    }
-    maven {
-        setUrl("https://maven.vaadin.com/vaadin-prereleases")
-    }
 }
 
 buildscript {
@@ -34,26 +26,11 @@ buildscript {
     extra["hypersistenceVersion"] = property("hypersistenceVersion")
     extra["nimbusVersion"] = property("nimbusVersion")
     extra["springDocVersion"] = property("springDocVersion")
-    extra["hillaVersion"] = property("hillaVersion")
-    repositories {
-        mavenCentral()
-        maven {
-            setUrl("https://repo.spring.io/milestone")
-        }
-        maven {
-            setUrl("https://maven.vaadin.com/vaadin-prereleases")
-        }
-        maven {
-            setUrl("https://maven.vaadin.com/vaadin-addons")
-        }
-    }
 }
 
 dependencies {
-    implementation("dev.hilla:hilla")
-    implementation("dev.hilla:hilla-react")
-    implementation("dev.hilla:hilla-react-spring-boot-starter")
-    implementation("org.parttio:line-awesome:1.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("io.hypersistence:hypersistence-utils-hibernate-63:${property("hypersistenceVersion")}")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -68,6 +45,9 @@ dependencies {
     implementation("com.itextpdf:kernel:8.0.4")
     implementation("com.itextpdf:layout:8.0.4")
     implementation("com.itextpdf:html2pdf:5.0.4")
+    implementation("io.springfox:springfox-swagger2:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
 
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -81,7 +61,6 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${ext["springCloudVersion"]}")
-        mavenBom("dev.hilla:hilla-bom:${ext["hillaVersion"]}")
     }
 }
 

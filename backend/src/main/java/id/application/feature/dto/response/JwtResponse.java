@@ -6,9 +6,13 @@ import java.io.Serializable;
 
 @Builder
 public record JwtResponse(
-        String userId,
-        String username,
         String accessToken,
         Long expirationAccessToken,
-        String type) implements Serializable {
+        String type,
+        String refreshToken,
+        Long expirationRefreshToken,
+        String userId,
+        String name,
+        String username,
+        String role) implements Serializable {
 }

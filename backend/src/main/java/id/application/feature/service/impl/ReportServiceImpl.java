@@ -7,7 +7,6 @@ import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.model.entity.Report;
 import id.application.feature.model.repositories.ReportRepository;
 import id.application.feature.service.ReportService;
-import id.application.security.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 
+import static id.application.security.SecurityUtils.getUserLoggedIn;
 import static id.application.util.ConverterDateTime.convertToDateDefaultPattern;
 import static id.application.util.ConverterDateTime.today;
 import static id.application.util.EntityUtil.persistUtil;
@@ -24,7 +24,6 @@ import static id.application.util.FilterableUtil.pageable;
 @Service
 public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
-    private final SecurityUtils securityUtil;
     private final CloudinaryConfig cloudinaryConfig;
 
     @Override
@@ -42,7 +41,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Report persistNew(RequestAddReport request) {
-        var authenticatedUser = securityUtil.getAppUserLoggedIn();
+        var authenticatedUser = getUserLoggedIn();
 
         var entity = new Report();
         entity.setName(request.title());
@@ -50,9 +49,10 @@ public class ReportServiceImpl implements ReportService {
         var urlImage = getUrlAndUploadImage(request.image());
         entity.setImageUrl(urlImage);
         entity.setTypeFacility(request.typeFacility());
-        entity.setCitizenId(authenticatedUser.userInfo().citizenId());
+        assert authenticatedUser != null;
+        entity.setCitizenId(authenticatedUser.getUserInfo().getCitizenId());
 
-        persistUtil(entity, authenticatedUser.name());
+        persistUtil(entity, authenticatedUser.getName());
 
         return reportRepository.saveAndFlush(entity);
     }

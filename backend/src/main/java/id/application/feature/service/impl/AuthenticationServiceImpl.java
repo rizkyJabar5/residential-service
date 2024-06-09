@@ -1,12 +1,8 @@
 package id.application.feature.service.impl;
 
-import dev.hilla.Nullable;
-import dev.hilla.crud.ListService;
-import dev.hilla.crud.filter.Filter;
 import id.application.exception.AppRuntimeException;
 import id.application.exception.ResourceNotFoundException;
 import id.application.feature.dto.request.RequestValidateRegistration;
-import id.application.feature.dto.response.AppUserDto;
 import id.application.feature.model.entity.AppUser;
 import id.application.feature.dto.request.PasswordRequest;
 import id.application.feature.dto.request.UserRequest;
@@ -19,7 +15,6 @@ import id.application.util.enums.ERole;
 import id.application.util.enums.StatusRegistered;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

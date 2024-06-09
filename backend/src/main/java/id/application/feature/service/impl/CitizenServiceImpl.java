@@ -1,13 +1,12 @@
 package id.application.feature.service.impl;
 
-import com.vaadin.flow.spring.security.AuthenticationContext;
 import id.application.exception.AppConflictException;
 import id.application.exception.ResourceNotFoundException;
-import id.application.exception.UnauthorizedException;
 import id.application.feature.dto.request.RequestAddFamilyMember;
 import id.application.feature.dto.request.RequestCitizenAdd;
 import id.application.feature.dto.request.RequestCitizenUpdate;
 import id.application.feature.dto.response.BaseResponse;
+import id.application.feature.model.entity.AppUser;
 import id.application.feature.model.entity.Citizen;
 import id.application.feature.model.repositories.CitizenRepository;
 import id.application.feature.model.repositories.UserInfoRepository;
@@ -23,6 +22,7 @@ import java.time.LocalDate;
     import java.util.ArrayList;
 import java.util.List;
 
+import static id.application.security.SecurityUtils.getUserLoggedIn;
 import static id.application.util.ConverterDateTime.convertToDateDefaultPattern;
 import static id.application.util.ConverterDateTime.convertToLocalDateDefaultPattern;
 import static id.application.util.EntityUtil.persistUtil;
@@ -32,7 +32,6 @@ import static id.application.util.EntityUtil.persistUtil;
 public class CitizenServiceImpl implements CitizenService {
     private final CitizenRepository citizenRepository;
     private final UserInfoRepository userInfoRepository;
-    private final AuthenticationContext authContext;
 
     @Override
     public Page<Citizen> findAllCitizen(Integer size, Integer pageOf) {
@@ -62,7 +61,7 @@ public class CitizenServiceImpl implements CitizenService {
         validateCitizenIsAlReadyRegistered(request.fullName(), request.nik());
 
         var entity  = this.buildCitizen(request);
-        persistUtil(entity, userLoggedIn);
+        persistUtil(entity, userLoggedIn.getName());
 
         return citizenRepository.save(entity);
     }
@@ -96,7 +95,7 @@ public class CitizenServiceImpl implements CitizenService {
                     .block(block)
                     .homeId(homeId)
                     .build());
-            persistUtil(family, userLoggedIn);
+            persistUtil(family, userLoggedIn.getName());
             familyMembers.add(family);
         }
         citizenRepository.saveAllAndFlush(familyMembers);
@@ -126,7 +125,7 @@ public class CitizenServiceImpl implements CitizenService {
             existingCitizen.setFamilyNumber(request.familyNumber());
         }
 
-        existingCitizen.setUpdatedBy(userLoggedIn);
+        existingCitizen.setUpdatedBy(userLoggedIn.getName());
         existingCitizen.setUpdatedTime(convertToDateDefaultPattern(LocalDate.now().toString()));
 
         return citizenRepository.save(existingCitizen);
@@ -150,11 +149,6 @@ public class CitizenServiceImpl implements CitizenService {
         entity.setHomeId(request.homeId());
 
         return entity;
-    }
-
-    private String getUserLoggedIn() {
-        return authContext.getPrincipalName()
-                .orElseThrow(() -> new UnauthorizedException("You are not logged in"));
     }
 
     private boolean isCitizenRegistered(String nik) {

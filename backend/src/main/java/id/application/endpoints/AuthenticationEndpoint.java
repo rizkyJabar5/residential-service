@@ -1,46 +1,69 @@
 package id.application.endpoints;
 
-import com.vaadin.flow.server.auth.AnonymousAllowed;
-import dev.hilla.Endpoint;
-import id.application.feature.dto.response.AppUserDto;
+import id.application.feature.dto.request.LoginRequest;
 import id.application.feature.dto.request.PasswordRequest;
 import id.application.feature.dto.request.RequestValidateRegistration;
 import id.application.feature.dto.request.UserRequest;
 import id.application.feature.dto.response.BaseResponse;
+import id.application.feature.dto.response.JwtResponse;
 import id.application.feature.service.AuthenticationService;
 import id.application.security.SecurityUtils;
+import id.application.security.jwt.JwtUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
+import static id.application.security.SecurityUtils.authenticateUserCredentials;
+import static id.application.security.SecurityUtils.authenticateUserWithoutCredentials;
 
-@Endpoint
-@AnonymousAllowed
 @RequiredArgsConstructor
+@RestController
+@RequestMapping("/api/v1/auth")
+@Validated
 public class AuthenticationEndpoint {
-
+    private final AuthenticationManager authenticationManager;
     private final AuthenticationService userService;
-    private final SecurityUtils securityUtils;
+    private final JwtUtils jwtUtils;
 
-    public BaseResponse<Void> register(@Valid UserRequest request) {
+    @PostMapping("/login")
+    public BaseResponse<JwtResponse> login(@Valid @RequestBody LoginRequest request,
+                                           HttpServletRequest servletRequest) {
+        authenticateUserCredentials(authenticationManager, request);
+        var appUser = userService.getAppUserByUsername(request.email());
+        authenticateUserWithoutCredentials(servletRequest, appUser);
+        var loginSuccessResponse = jwtUtils.generateJwtToken(appUser);
+
+        return BaseResponse.<JwtResponse>builder()
+                .data(loginSuccessResponse)
+                .build();
+    }
+
+    @PostMapping("/register")
+    public BaseResponse<Void> register(@Valid @RequestBody UserRequest request) {
         return userService.createNewUser(request);
     }
 
-    public BaseResponse<Void> validateRegistrationCitizen(RequestValidateRegistration request) {
+    @PostMapping("/validate-citizen")
+    public BaseResponse<Void> validateRegistrationCitizen(@RequestBody RequestValidateRegistration request) {
         return userService.validateRegistrationCitizen(request);
     }
 
-    public BaseResponse<Void> resetPassword(String id,
-                                            @Valid PasswordRequest request) {
+    @PostMapping("/reset-password/{id}")
+    public BaseResponse<Void> resetPassword(@PathVariable String id,
+                                            @Valid @RequestBody PasswordRequest request) {
         return userService.resetPassword(id, request);
     }
 
-    public Optional<AppUserDto> getAuthenticatedUser() {
-        return securityUtils.getAuthenticatedUserDetails();
-    }
-
+    @PostMapping("/logout")
     public String logout() {
-        securityUtils.clearAuthentication();
+        SecurityUtils.clearAuthentication();
         return "You logged out successfully.";
     }
 }

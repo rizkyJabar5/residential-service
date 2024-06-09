@@ -1,25 +1,23 @@
 package id.application.endpoints;
 
-import com.vaadin.flow.server.auth.AnonymousAllowed;
-import dev.hilla.Endpoint;
-import dev.hilla.Nullable;
 import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.dto.response.AppUserDto;
 import id.application.feature.dto.response.PageResponse;
 import id.application.feature.service.AppUserService;
-import jakarta.annotation.security.RolesAllowed;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@Endpoint
-//@RolesAllowed(value = {"ADMIN"})
-@AnonymousAllowed
+@RestController
+@RequestMapping("/api/v1/auth")
 public class AppUserEndpoint {
-    private final AppUserService service;
+    private final AppUserService userService;
 
-    @Nullable
+    @GetMapping("/users")
     public PageResponse<AppUserDto> getUsers(RequestPagination request) {
-        var pageUsers = service.findAll(request);
+        var pageUsers = userService.findAll(request);
 
         return PageResponse.<AppUserDto>builder()
                 .size(pageUsers.getSize())

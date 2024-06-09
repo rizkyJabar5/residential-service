@@ -1,68 +1,39 @@
 package id.application.security;
 
-import com.vaadin.flow.spring.security.AuthenticationContext;
-import id.application.exception.UnauthorizedException;
-import id.application.feature.dto.response.AppUserDto;
-import id.application.feature.service.AuthenticationService;
+import id.application.feature.dto.request.LoginRequest;
+import id.application.feature.model.entity.AppUser;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AccountExpiredException;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
-import org.springframework.stereotype.Component;
 
-import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class SecurityUtils {
-    private final AuthenticationContext authContext;
-    private final AuthenticationService authenticationService;
-
-    public Optional<AppUserDto> getAuthenticatedUserDetails() {
-        var context = SecurityContextHolder.getContext();
-        Object principal = context.getAuthentication().getPrincipal();
-        if (principal instanceof Jwt payload) {
-            String username = payload.getSubject();
-            var user = authenticationService.getAppUserByUsername(username);
-            var userInfo = user.getUserInfo();
-            return Optional.of(AppUserDto.builder()
-                    .name(user.getName())
-                    .createdTime(user.getCreatedTime())
-                    .email(user.getUsername())
-                    .role(user.getRole())
-                    .userInfo(userInfo != null ? AppUserDto.UserInfoDto.builder()
-                            .phoneNumber(userInfo.getPhoneNumber())
-                            .statusRegistered(userInfo.getStatusRegistered())
-                            .citizenId(userInfo.getCitizenId())
-                            .build() : null)
-                    .isCredentialsNonExpired(user.isCredentialsNonExpired())
-                    .isEnabled(user.isEnabled())
-                    .isAccountNonExpired(user.isAccountNonExpired())
-                    .build());
+    @NotNull
+    public static AppUser getUserLoggedIn() {
+        if (isAuthenticated()) {
+            return (AppUser) getAuthentication().getPrincipal();
         }
-        return Optional.empty();
-    }
 
-    public AppUserDto getAppUserLoggedIn() {
-        return this.getAuthenticatedUserDetails()
-                .orElseThrow(() -> new UnauthorizedException("Anda belum login"));
-    }
-
-    public String getUserLoggedIn() {
-        return authContext.getPrincipalName()
-                .orElseThrow(() -> new UnauthorizedException("Anda belum login"));
+        throw new BadCredentialsException("User belum login");
     }
 
     /**
@@ -72,26 +43,34 @@ public final class SecurityUtils {
      *
      * @param request     the {@link HttpServletRequest}
      * @param userDetails the from authentication
-     * @param authorities the from authentication
      */
-    public <T extends GrantedAuthority> void authenticateUserWithoutCredentials(HttpServletRequest request,
-                                                                                UserDetails userDetails,
-                                                                                Collection<T> authorities) {
+    public static <T extends GrantedAuthority> void authenticateUserWithoutCredentials(HttpServletRequest request,
+                                                                                       UserDetails userDetails) {
         if (Objects.nonNull(request) && Objects.nonNull(userDetails)) {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                     userDetails,
                     null,
-                    authorities);
+                    userDetails.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
     }
 
+    public static void authenticateUserCredentials(AuthenticationManager authenticationManager,
+                                                   @NonNull LoginRequest request) {
+        var authentication = new UsernamePasswordAuthenticationToken(
+                request.email(),
+                request.password(),
+                null);
+        var authenticate = authenticationManager.authenticate(authentication);
+        SecurityContextHolder.getContext().setAuthentication(authenticate);
+    }
+
     /**
      * Clears the securityContextHolder.
      */
-    public void clearAuthentication() {
-        authContext.logout();
+    public static void clearAuthentication() {
+        SecurityContextHolder.getContext().setAuthentication(null);
     }
 
     /**
@@ -99,7 +78,7 @@ public final class SecurityUtils {
      *
      * @param userDetails the user details
      */
-    public void validateUserDetailsStatus(UserDetails userDetails) {
+    public static void validateUserDetailsStatus(UserDetails userDetails) {
         log.debug("User details {}", userDetails);
 
         if (!userDetails.isEnabled()) {
@@ -117,11 +96,32 @@ public final class SecurityUtils {
     }
 
     /**
+     * Retrieve the authentication object from the current session.
+     *
+     * @return authentication
+     */
+    public static Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    /**
      * Returns true if the user is authenticated.
      *
      * @return if user is authenticated
      */
-    private boolean isAuthenticated() {
-        return authContext.isAuthenticated();
+    private static boolean isAuthenticated() {
+        return isAuthenticated(getAuthentication());
+    }
+
+    /**
+     * Returns true if the user is authenticated.
+     *
+     * @param authentication the authentication object
+     * @return if user is authenticated
+     */
+    private static boolean isAuthenticated(Authentication authentication) {
+        return Objects.nonNull(authentication)
+                && authentication.isAuthenticated()
+                && !(authentication instanceof AnonymousAuthenticationToken);
     }
 }

@@ -15,6 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConverterDateTime {
     public static final String DD_MM_YYYY = "dd-MM-yyyy";
+    public static final String DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss z";
 
     public static LocalDate convertToLocalDateDefaultPattern(String date) {
         if (Objects.isNull(date)) {
@@ -28,6 +29,13 @@ public class ConverterDateTime {
             long m = Long.parseLong(date);
             return LocalDate.ofInstant(Instant.ofEpochMilli(m), ZoneId.systemDefault());
         }
+    }
+
+    public static DateTimeFormatter formatDateTime() {
+
+        return DateTimeFormatter
+                .ofPattern(DATETIME_FORMAT)
+                .withZone(ZoneId.of("Asia/Jakarta"));
     }
 
     public static Date convertToDateDefaultPattern(String date) {
