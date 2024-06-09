@@ -6,7 +6,7 @@ import Views from './views';
 import { Route, Switch } from 'react-router-dom';
 import { Helmet } from 'react-helmet'
 
-const SITE_TITLE = process.env.REACT_APP_SITE_TITLE || "Journal Florist | POS System"
+const SITE_TITLE = process.env.REACT_APP_SITE_TITLE || "Manajement Masyarakat"
 const DESCRIPTION = process.env.DESCRIPTION || "Dashboard untuk dokter spesialis jantung. Membantu dokter melakukan analisa pasien"
 const FAVICON = "favicon.png"
 

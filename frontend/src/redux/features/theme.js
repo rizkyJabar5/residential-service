@@ -10,7 +10,7 @@ const {
 
 const initialState = {
 	...THEME_CONFIG,
-	authBackground: REACT_APP_AUTH_BACKGROUND || '/img/background.png',
+	authBackground: REACT_APP_AUTH_BACKGROUND || '/img/background.jpg',
 	mobileLogo: '/img/logo-colored.png',
 	companyLogo: REACT_APP_COMPANY_LOGO || '/img/logo-colored.png',
 	sidebarLogo: REACT_APP_SIDEBAR_LOGO || '/img/logo.png',

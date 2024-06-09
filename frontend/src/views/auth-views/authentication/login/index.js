@@ -29,7 +29,7 @@ const Login = props => {
 							<Card>
 								<div className="my-4">
 									<div className="text-center">
-										<img style={{ maxHeight: 90, padding: "5px" }} src={companyLogo} alt=""></img>
+										<img width="250" height="600" style={{ maxHeight: 200, padding: "5px" }} src={companyLogo} alt=""></img>
 									</div>
 									<Row justify="center">
 										<Col xs={24} sm={24} md={20} lg={20}>

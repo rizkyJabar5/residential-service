@@ -10,7 +10,7 @@ export const strings = {
     JWT_KEY: "Aj1257Xi202",
   },
   image: {
-    authBackground: 'url(/img/background.png)',
+    authBackground: 'url(/img/background.jpg)',
     logo: "/img/logo.png",
     logo2: "/img/logo-colored.png",
     favicon: "",
