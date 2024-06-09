@@ -1,13 +1,13 @@
 services:
-  residential-services:
-    container_name: application
+  backend:
+    container_name: residential-backend
     build:
       dockerfile: Dockerfile
-      context: .
+      context: ./frontend/.
     ports:
       - "8080:8080"
     networks:
-      - residential-network
+      - residential-be-network
     depends_on:
       - postgresql
     environment:
@@ -20,6 +20,18 @@ services:
       timeout: 5s
       retries: 5
 
+  frontend:
+    container_name: residential-frontend
+    build:
+      dockerfile: Dockerfile
+      context: frontend/.
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - residential-fe-network
+
   postgresql:
     container_name: pgdb
     image: 'postgres:latest'
@@ -30,7 +42,7 @@ services:
     ports:
       - '5432:5432'
     networks:
-      - residential-network
+      - residential-db-network
     volumes:
       - 'postgres-bin:/usr/lib/postgresql/${POSTGRES_VERSION}/bin'
       - 'postgres-data:/var/lib/postgresql/data'
@@ -46,5 +58,9 @@ volumes:
   postgres-data:
 
 networks:
-  residential-network:
+  residential-be-network:
+    external: true
+  residential-fe-network:
+    external: true
+  residential-db-network:
     external: true

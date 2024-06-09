@@ -1,8 +1,8 @@
 FROM gradle:jdk17-alpine AS build-gradle
 ENV APP_HOME=/opt/application
 WORKDIR $APP_HOME
-COPY . .
-RUN gradle -Philla.productionMode=true clean build -x test && rm -rf .gradle
+COPY backend/ .
+RUN gradle bootJar
 
 FROM openjdk:17-jdk-alpine
 RUN apk add --no-cache nodejs npm
