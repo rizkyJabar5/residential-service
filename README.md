@@ -17,10 +17,17 @@ docker network create residential-be-network
 ```
 After creating a docker network, you may proceed to build the container, with command
 ```docker
-docker compose up -d
+docker-compose up -d
 ```
-
+## Access The Application
 After the process is completed, you can run the application.
 ```djangourlpath
 localhost:3000
 ```
+
+### Shutdown The Application
+you can shut down the application by running the command
+```docker
+docker-compose down
+```
+
