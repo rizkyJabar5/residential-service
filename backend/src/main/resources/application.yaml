@@ -1,0 +1,38 @@
+server:
+  shutdown: "graceful"
+  port: 8080
+
+vaadin:
+  launch-browser: true
+  whitelisted-packages: com.vaadin,org.vaadin,dev.hilla,com.example.application
+  frontend:
+    hotdeploy: true
+
+spring:
+  thymeleaf:
+    check-template-location: false
+  mustache:
+    check-template-location: false
+  application:
+    name: residential-management
+  profiles:
+    active: prod
+
+logging:
+  level:
+    root: INFO
+    asia.lunchbox: DEBUG
+    org.hibernate.SQL: DEBUG
+    com.zaxxer.hikari.HikariConfig: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: TRACE
+    reactor.netty.http.client: DEBUG
+    org.atmosphere: WARN
+  pattern:
+    level: "%5p [appName=${spring.application.name:},traceId=%X{traceId},spanId=%X{spanId}]"
+
+cloud:
+  name: journal-florist
+  key: 718635641258268
+  secret: KYip6UFwF92tp_QUU4BO3Nr8TOU

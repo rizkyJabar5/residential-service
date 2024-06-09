@@ -1,0 +1,29 @@
+server:
+  port: 8080
+
+vaadin:
+  productionMode: true
+
+spring:
+  datasource:
+    url: ${POSTGRES_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    hikari:
+      connection-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      minimumIdle: 10
+      maximum-pool-size: 1000
+  jpa:
+    properties:
+      hibernate:
+        connection:
+          driver_class: org.postgresql.Driver
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    open-in-view: false
+  sql:
+    init:
+      mode: always

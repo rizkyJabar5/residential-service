@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/rrk
+    username: rrk
+    password: password123
+    hikari:
+      connection-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      minimumIdle: 10
+      maximum-pool-size: 1000
+  jpa:
+    properties:
+      hibernate:
+        connection:
+          driver_class: org.postgresql.Driver
+    hibernate:
+      ddl-auto: update
+    generate-ddl: false
+    open-in-view: false
+  sql:
+    init:
+      mode: always

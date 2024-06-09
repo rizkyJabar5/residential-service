@@ -1,0 +1,90 @@
+plugins {
+    java
+    id("org.springframework.boot") version "3.2.2"
+    id("io.spring.dependency-management") version "1.1.4"
+    id("dev.hilla") version "2.5.6"
+
+}
+
+group = "application"
+version = "0.0.1-SNAPSHOT"
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+}
+
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        setUrl("https://repo.spring.io/milestone")
+    }
+    maven {
+        setUrl("https://maven.vaadin.com/vaadin-prereleases")
+    }
+}
+
+buildscript {
+    extra["springCloudVersion"] = property("springCloudVersion")
+    extra["hypersistenceVersion"] = property("hypersistenceVersion")
+    extra["nimbusVersion"] = property("nimbusVersion")
+    extra["springDocVersion"] = property("springDocVersion")
+    extra["hillaVersion"] = property("hillaVersion")
+    repositories {
+        mavenCentral()
+        maven {
+            setUrl("https://repo.spring.io/milestone")
+        }
+        maven {
+            setUrl("https://maven.vaadin.com/vaadin-prereleases")
+        }
+        maven {
+            setUrl("https://maven.vaadin.com/vaadin-addons")
+        }
+    }
+}
+
+dependencies {
+    implementation("dev.hilla:hilla")
+    implementation("dev.hilla:hilla-react")
+    implementation("dev.hilla:hilla-react-spring-boot-starter")
+    implementation("org.parttio:line-awesome:1.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("io.hypersistence:hypersistence-utils-hibernate-63:${property("hypersistenceVersion")}")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+    implementation("com.nimbusds:nimbus-jose-jwt:${property("nimbusVersion")}")
+    implementation("org.springframework.security:spring-security-oauth2-jose")
+    implementation("org.springframework.security:spring-security-oauth2-resource-server")
+    implementation("org.apache.commons:commons-lang3")
+    implementation("com.cloudinary:cloudinary-http45:${property("cloudinaryVersion")}")
+    implementation("com.itextpdf:itextpdf:5.5.13.3")
+    implementation("com.itextpdf:kernel:8.0.4")
+    implementation("com.itextpdf:layout:8.0.4")
+    implementation("com.itextpdf:html2pdf:5.0.4")
+
+    compileOnly("org.projectlombok:lombok")
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    runtimeOnly("org.postgresql:postgresql")
+    annotationProcessor("org.projectlombok:lombok")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("com.h2database:h2")
+    testImplementation("org.springframework.security:spring-security-test")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${ext["springCloudVersion"]}")
+        mavenBom("dev.hilla:hilla-bom:${ext["hillaVersion"]}")
+    }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+}

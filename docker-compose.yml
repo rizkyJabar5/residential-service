@@ -1,0 +1,50 @@
+services:
+  residential-services:
+    container_name: application
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "8080:8080"
+    networks:
+      - residential-network
+    depends_on:
+      - postgresql
+    environment:
+      - 'POSTGRES_USER=${POSTGRES_USER}'
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
+      - 'POSTGRES_URL=jdbc:postgresql://pgdb/${POSTGRES_DB}'
+    healthcheck:
+      test: [ "CMD", "curl localhost:8080" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  postgresql:
+    container_name: pgdb
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_USER=${POSTGRES_USER}'
+      - 'POSTGRES_PASSWORD=${POSTGRES_PASSWORD}'
+      - "POSTGRES_DB=${POSTGRES_DB}"
+    ports:
+      - '5432:5432'
+    networks:
+      - residential-network
+    volumes:
+      - 'postgres-bin:/usr/lib/postgresql/${POSTGRES_VERSION}/bin'
+      - 'postgres-data:/var/lib/postgresql/data'
+    healthcheck:
+      test: [ "CMD", "sh -c 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}'" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: always
+
+volumes:
+  postgres-bin:
+  postgres-data:
+
+networks:
+  residential-network:
+    external: true

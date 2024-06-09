@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:myDb;DB_CLOSE_DELAY=-1;NON_KEYWORDS=KEY,VALUE
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+
+cloud:
+  name: journal-florist
+  key: 718635641258268
+  secret: KYip6UFwF92tp_QUU4BO3Nr8TOU
