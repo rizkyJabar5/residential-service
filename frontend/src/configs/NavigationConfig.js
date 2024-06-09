@@ -8,9 +8,9 @@ const dashBoardNavTree = [{
   breadcrumb: false,
   submenu: [
     {
-      key: "Dashboard",
+      key: "dashboard",
       path: strings.navigation.path.dashboard,
-      title: "Dashboard",
+      title: "Beranda",
       icon: DashboardIcon,
       breadcrumb: false,
       submenu: []
@@ -19,98 +19,99 @@ const dashBoardNavTree = [{
 }]
 
 
-const storageTree = [{
-  key: "Storage",
+const societyTree = [{
+  key: "Society",
   path: strings.navigation.path.tickets,
-  title: "Storage",
+  title: "Masyarakat",
   breadcrumb: false,
   submenu: [
     {
-      key: "Products",
-      path: strings.navigation.path.products,
-      title: "Products",
-      icon: ProductIcon,
-      breadcrumb: false,
-      submenu: []
-    },
-    {
-      key: "Orders",
-      path: strings.navigation.path.orders,
-      title: "Orders",
-      icon: OrderIcon,
-      breadcrumb: false,
-      submenu: []
-    },
-    {
-      key: "Customers",
-      path: strings.navigation.path.customers,
-      title: "Customers",
+      key: "Citizens",
+      path: strings.navigation.path.citizen,
+      title: "Warga",
       icon: CustomerIcon,
       breadcrumb: false,
       submenu: []
     },
     {
-      key: "Suppliers",
-      path: strings.navigation.path.suppliers,
-      title: "Suppliers",
-      icon: DeliveryIcon,
-      breadcrumb: false,
-      submenu: []
-    }, {
-      key: "Categories",
-      path: strings.navigation.path.categories,
-      title: "Categories",
-      icon: OutletIcon,
-      breadcrumb: false,
-      submenu: []
-    }
-  ]
-}]
-
-const UserManagementTree = [{
-  key: "Management",
-  path: strings.navigation.path.users,
-  title: "Management",
-  breadcrumb: false,
-  submenu: [
-    {
-      key: "Users",
-      path: strings.navigation.path.users,
-      title: "Users",
-      icon: CommandCenterIcon,
+      key: "Letter",
+      path: strings.navigation.path.letter,
+      title: "Surat Pengajuan",
+      icon: OrderIcon,
       breadcrumb: false,
       submenu: []
     },
     // {
-    //   key: "Settings",
-    //   path: strings.navigation.path.settings,
-    //   title: "Settings",
-    //   icon: SettingIcon,
+    //   key: "Report",
+    //   path: strings.navigation.path.customers,
+    //   title: "Laporan Kerusakan",
+    //   icon: CustomerIcon,
+    //   breadcrumb: false,
+    //   submenu: []
+    // },
+    // {
+    //   key: "Information",
+    //   path: strings.navigation.path.suppliers,
+    //   title: "Penyebaran Informasi",
+    //   icon: DeliveryIcon,
+    //   breadcrumb: false,
+    //   submenu: []
+    // }, 
+    // {
+    //   key: "Categories",
+    //   path: strings.navigation.path.categories,
+    //   title: "Categories",
+    //   icon: OutletIcon,
     //   breadcrumb: false,
     //   submenu: []
     // }
   ]
 }]
 
-
-const ledgerTree = [{
-  key: "Ledger",
-  path: strings.navigation.path.expenses,
-  title: "Ledger",
+const userManagementTree = [{
+  key: "Users",
+  path: strings.navigation.path.users,
+  title: "User",
   breadcrumb: false,
   submenu: [
     {
-      key: "Pengeluaran",
-      path: strings.navigation.path.expenses,
-      title: "Expenses",
+      key: "User",
+      path: strings.navigation.path.users,
+      title: "User",
+      icon: CustomerIcon,
+      breadcrumb: false,
+      submenu: []
+    },
+    // {
+    //   key: "Information",
+    //   path: strings.navigation.path.suppliers,
+    //   title: "Penyebaran Informasi",
+    //   icon: DeliveryIcon,
+    //   breadcrumb: false,
+    //   submenu: []
+    // }, 
+  ]
+}]
+
+
+const newsTree = [{
+  key: "Information",
+  path: strings.navigation.path.news,
+  title: "Information",
+  breadcrumb: false,
+  submenu: [
+    {
+      key: "News",
+      path: strings.navigation.path.news,
+      title: "Berita",
       icon: SLAIcon,
       breadcrumb: false,
       submenu: []
     },
     {
-      key: "Purchase",
-      path: strings.navigation.path.purchase,
-      title: "Purchases",
+      key: "Finance",
+      path: strings.navigation.path.finance,
+      title: "Keuangan",
       icon: CashHandoverIcon,
       breadcrumb: false,
       submenu: []
@@ -118,7 +119,7 @@ const ledgerTree = [{
     {
       key: "Reports",
       path: strings.navigation.path.reports,
-      title: "Summary",
+      title: "Laporan Kerusakan",
       icon: ReportIcon,
       breadcrumb: false,
       submenu: []
@@ -128,9 +129,9 @@ const ledgerTree = [{
 
 const navigationConfig = [
   ...dashBoardNavTree,
-  ...storageTree,
-  ...ledgerTree,
-  ...UserManagementTree
+  ...societyTree,
+  ...newsTree,
+  ...userManagementTree
 ]
 
 export default navigationConfig;
