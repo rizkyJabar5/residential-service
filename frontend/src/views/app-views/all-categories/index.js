@@ -45,18 +45,73 @@ export const CATEGORIES = (props) => {
 	const tableColumns = [
 
 		{
-			title: 'ID Kategori',
+			title: 'KK Id',
 			dataIndex: 'categoryId',
 			key: 'categoryId',
 		},
 		{
-			title: 'Nama',
+			title: 'Nama Lengkap',
 			dataIndex: 'nameCategory',
 			key: 'nameCategory',
 			sorter: (a, b) => a.nameCategory.length - b.nameCategory.length,
 		},
 		{
-			title: 'Deskripsi',
+			title: 'NIK',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Jenis Kelamin',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Tempat Lahir',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Tanggal Lahir',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Agama',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Pendidikan Terakhir',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Status Keluarga',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Jenis Pekerjaan',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Golongan Darah',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Status',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Alamat',
+			dataIndex: 'description',
+			key: 'description',
+		},
+		{
+			title: 'Nomer Keluarga',
 			dataIndex: 'description',
 			key: 'description',
 		},
@@ -94,14 +149,14 @@ export const CATEGORIES = (props) => {
 					<div></div>
 				) : (
 					(<Col xs={24} sm={24} md={24} lg={24}>
-						<h2>Daftar Kategori</h2>
-						<p>Daftar semua data yang tersedia.</p>
+						<h2>Daftar Warga</h2>
+						<p>Daftar semua data warga</p>
 					</Col>)
 				)}
 			</Row>
 			<Row gutter={24}>
 				<Col xs={24} sm={24} md={24} lg={24}>
-					<Card title="Daftar Semua Kategori" >
+					<Card title="Daftar Semua warga" >
 						<Table
 							className="no-border-last"
 							columns={tableColumns}
