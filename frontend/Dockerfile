@@ -1,9 +1,11 @@
-FROM node:13-alpine AS build
+FROM node:14-alpine AS build
 
 WORKDIR /app
 COPY package.json ./
+
 RUN yarn install
 COPY . .
+ENV GENERATE_SOURCEMAP false
 RUN yarn run build
 
 FROM nginx:alpine
