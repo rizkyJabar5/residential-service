@@ -92,7 +92,7 @@ export const ORDERS = () => {
 
 	const tableColumns = [
 		{
-			title: 'Tanggal',
+			title: 'Nama Lengkap',
 			dataIndex: 'deliveryDate',
 			render: (_, record) => (
 				<div className="text-center">
@@ -101,7 +101,7 @@ export const ORDERS = () => {
 			),
 		},
 		{
-			title: 'Pengirim',
+			title: 'Tempat Lahir',
 			dataIndex: 'customerName',
 			sorter: (a, b) => a.customerName.length - b.customerName.length,
 			render: (_, record) => (
@@ -111,7 +111,7 @@ export const ORDERS = () => {
 			),
 		},
 		{
-			title: 'Penerima',
+			title: 'Tanggal Lahir',
 			dataIndex: 'recipientName',
 			key: 'recipientName',
 			render: (_, record) => (
@@ -121,12 +121,47 @@ export const ORDERS = () => {
 			),
 		},
 		{
-			title: 'Kode Pengiriman',
+			title: 'Jenis Kelamin',
 			dataIndex: 'orderId',
 			key: 'orderId',
 		},
 		{
-			title: 'Status',
+			title: 'Kebangsaan',
+			dataIndex: 'orderId',
+			key: 'orderId',
+		},
+		{
+			title: 'Agama',
+			dataIndex: 'orderId',
+			key: 'orderId',
+		},
+		{
+			title: 'NIK',
+			dataIndex: 'orderId',
+			key: 'orderId',
+		},
+		{
+			title: 'Status Pernikahan',
+			dataIndex: 'orderId',
+			key: 'orderId',
+		},
+		{
+			title: 'Jenis Pekerjaan',
+			dataIndex: 'orderId',
+			key: 'orderId',
+		},
+		{
+			title: 'Alamat',
+			dataIndex: 'orderId',
+			key: 'orderId',
+		},
+		{
+			title: 'Jenis Pengajuan',
+			dataIndex: 'orderId',
+			key: 'orderId',
+		},
+		{
+			title: 'Status letter',
 			dataIndex: 'orderStatus',
 			key: 'orderStatus',
 			render: tag => {
@@ -147,59 +182,6 @@ export const ORDERS = () => {
 					)
 				}
 			}
-		},
-		{
-			title: 'Status',
-			dataIndex: 'paymentStatus',
-			key: 'paymentStatus',
-			filters: [
-				{
-					text: 'Not Yet Paid',
-					value: 'NOT_YET_PAID',
-				},
-				{
-					text: 'Down Payment',
-					value: 'DOWN_PAYMENT',
-				},
-				{
-					text: 'Paid Off',
-					value: 'PAID_OFF',
-				},
-				{
-					text: 'Credit',
-					value: 'CREDIT',
-				},
-			],
-			onFilter: (value, record) => record.paymentStatus.startsWith(value),
-			render: tag => {
-				const enums = {
-					"NOT_YET_PAID": "red",
-					"DOWN_PAYMENT": "orange",
-					"PAID_OFF": "green",
-					"CREDIT":"blue"
-				}
-
-				if (enums) {
-					return (
-						<span>
-							<Tag color={enums[tag]} key={tag}>
-								{tag.toUpperCase()}
-							</Tag>
-						</span>
-					)
-				}
-			}
-		},
-		{
-			title: 'Under Payment',
-			dataIndex: 'underPayment',
-			key: 'underPayment',
-			sorter: (a, b) => a.underPayment - b.underPayment,
-			render: (_, record) => (
-				<div className="text-left">
-					{formatter.format(record.underPayment)}
-				</div>
-			),
 		},
 		{
 			title: () => <div className="text-center">Pelunasan</div>,
@@ -244,13 +226,13 @@ export const ORDERS = () => {
 			</Modal>
 			<Row gutter={24}>
 				<Col xs={24} sm={24} md={24} lg={24}>
-					<h2>Daftar Pesanan</h2>
-					<p>Daftar semua data yang tersedia.</p>
+					<h2>Daftar Pengajuan</h2>
+					<p>Daftar semua data pengajuan</p>
 				</Col>
 			</Row>
 			<Row gutter={24}>
 				<Col xs={24} sm={24} md={24} lg={24}>
-					<Card title="Daftar Semua Pesanan" >
+					<Card title="Daftar Semua Pengajuan" >
 						<Table
 							className="no-border-last"
 							columns={tableColumns}

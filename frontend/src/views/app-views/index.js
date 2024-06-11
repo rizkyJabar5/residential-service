@@ -15,7 +15,7 @@ import EXPENSES from "./all-expenses"
 import REPORTS from "./all-reports"
 import CATEGORIES from "./all-categories"
 import SETTINGS from "./settings"
-import USERS from "./all-users"
+import USERS, {PASIEN} from "./all-users"
 
 import DETAILREPORT from "./detail-report"
 import DETAILSUPPLIER from "./detail-supplier"
@@ -34,7 +34,7 @@ export const AppViews = ({ match }) => {
       <Switch>
         {/* <PrivateRoute path={`${match.url}`} component={DASHBOARD} /> */}
         <PrivateRoute path={`${strings.navigation.path.dashboard}`} component={DASHBOARD} />
-        <PrivateRoute path={`${strings.navigation.path.citizen}`} component={ORDERS} />
+        <PrivateRoute path={`${strings.navigation.path.citizen}`} component={CATEGORIES} />
         <PrivateRoute path={`${strings.navigation.path.letter}`} component={ORDERS} />
         {/* <PrivateRoute path={`${strings.navigation.path.categories}`} component={CATEGORIES} /> */}
         {/* <PrivateRoute path={`${strings.navigation.path.expenses}`} component={EXPENSES} /> */}

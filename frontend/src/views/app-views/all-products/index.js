@@ -190,7 +190,7 @@ export const PRODUCTS = (props) => {
 			...getColumnSearchProps('productName'),
 		},
 		{
-			title: 'Harga',
+			title: 'Lokasi',
 			dataIndex: 'price',
 			key: 'price',
 			sorter: (a, b) => a.price - b.price,
@@ -201,7 +201,7 @@ export const PRODUCTS = (props) => {
 			),
 		},
 		{
-			title: 'Category',
+			title: 'Jenis Fasilitas',
 			dataIndex: 'categoryName',
 			key: 'categoryName',
 			filters: [
@@ -264,10 +264,10 @@ export const PRODUCTS = (props) => {
 				) : (
 					(
 					<Col xs={24} sm={24} md={24} lg={24}>
-						<h2>Daftar Produk</h2>
+						<h2>Daftar Laporan</h2>
 						<Row gutter={24}>
 							<Col xs={12} sm={12} md={12} lg={12}>
-								<p>Daftar semua data yang tersedia.</p>
+								<p>Daftar semua data laporan</p>
 							</Col>
 							{/* <Col xs={12} sm={12} md={12} lg={12}>
 								<Search
@@ -284,7 +284,7 @@ export const PRODUCTS = (props) => {
 			</Row>
 			<Row gutter={24}>
 				<Col xs={24} sm={24} md={24} lg={24}>
-					<Card title="Daftar Semua Produk" >
+					<Card title="Daftar Semua Laporan" >
 						<Table
 							className="no-border-last"
 							columns={tableColumns}
