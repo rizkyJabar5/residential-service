@@ -6,6 +6,7 @@ package id.application.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import id.application.feature.dto.response.BaseResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -29,20 +30,16 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint{
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setStatus(response.getStatus());
 
-        final Map<String, Object> body = new HashMap<>();
-        String date = formatDateTime().format(LocalDateTime.now());
-        body.put("timestamp", date);
-        body.put("message", authException.getMessage());
-        body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-        body.put("error", "Unauthorized");
-        body.put("path", request.getServletPath());
+        var body = BaseResponse.<Void>builder()
+                .code(String.valueOf(response.getStatus()))
+                .message(authException.getMessage())
+                .build();
 
         log.error("Unauthorized error: {}", authException.getMessage());
-        final ObjectMapper mapper = new ObjectMapper();
+        final var mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);
     }
 }

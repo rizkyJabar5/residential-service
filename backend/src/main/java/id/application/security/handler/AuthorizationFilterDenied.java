@@ -1,8 +1,10 @@
 package id.application.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import id.application.feature.dto.response.BaseResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -16,23 +18,22 @@ import java.util.Map;
 import static id.application.util.ConverterDateTime.formatDateTime;
 
 @Component
+@Slf4j
 public class AuthorizationFilterDenied implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request,
                        HttpServletResponse response,
                        AccessDeniedException accessDeniedException) throws IOException {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        response.setStatus(response.getStatus());
 
-        final Map<String, Object> body = new HashMap<>();
-        String date = formatDateTime().format(LocalDateTime.now());
-        body.put("timestamp", date);
-        body.put("message", accessDeniedException.getMessage());
-        body.put("status", HttpServletResponse.SC_FORBIDDEN);
-        body.put("error", "Forbidden");
-        body.put("path", request.getServletPath());
+        var body = BaseResponse.<Void>builder()
+                .code(String.valueOf(response.getStatus()))
+                .message(accessDeniedException.getMessage())
+                .build();
 
-        final ObjectMapper mapper = new ObjectMapper();
+        log.error("Access denied by: {}", accessDeniedException.getMessage());
+        final var mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);
     }
 }

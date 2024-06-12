@@ -2,6 +2,7 @@ package id.application.security;
 
 import id.application.security.handler.AuthEntryPointJwt;
 import id.application.security.handler.AuthorizationFilterDenied;
+import id.application.security.handler.HillaLogoutSuccessHandler;
 import id.application.security.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -22,12 +23,12 @@ public class ApiWebSecurityConfig {
     private final AuthEntryPointJwt authEntryPointJwt;
     private final AuthorizationFilterDenied accessDenied;
     private final JwtAuthenticationFilter authenticationFilter;
+    private final HillaLogoutSuccessHandler logoutSuccessHandler;
 
     @Bean
     @Order(1)
     SecurityFilterChain securityFilter(HttpSecurity http) throws Exception {
         http
-                .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(handle -> handle
                         .accessDeniedHandler(accessDenied)
@@ -41,9 +42,9 @@ public class ApiWebSecurityConfig {
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout
-                        .logoutUrl("/api/v1/auth/sign-out"));
+                        .logoutUrl("/api/v1/auth/sign-out")
 //                        .addLogoutHandler(logoutHandler)
-//                        .logoutSuccessHandler(logoutSuccessHandler));
+                        .logoutSuccessHandler(logoutSuccessHandler));
 
         return http.build();
     }
