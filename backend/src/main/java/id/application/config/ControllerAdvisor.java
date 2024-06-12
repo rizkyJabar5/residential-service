@@ -1,5 +1,6 @@
 package id.application.config;
 
+import id.application.exception.AppConflictException;
 import id.application.exception.AppRuntimeException;
 import id.application.exception.InternalServerException;
 import id.application.exception.ResourceNotFoundException;
@@ -16,7 +17,8 @@ import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 
 @RestControllerAdvice
 public class ControllerAdvisor extends ResponseStatusExceptionHandler {
-    @ExceptionHandler({AppRuntimeException.class, ResourceNotFoundException.class, DataIntegrityViolationException.class,
+    @ExceptionHandler({AppRuntimeException.class, AppConflictException.class,
+            ResourceNotFoundException.class, DataIntegrityViolationException.class,
             InternalServerException.class, NumberFormatException.class, AuthenticationException.class})
     public ResponseEntity<Object> illegalActionDataHandler(RuntimeException exception) {
         var response = BaseResponse.<Void>builder()
@@ -35,8 +37,9 @@ public class ControllerAdvisor extends ResponseStatusExceptionHandler {
                 .ifPresent(fieldError -> {
                     String defaultMessage = fieldError.getDefaultMessage();
                     String field = fieldError.getField();
-                    message.append(StringUtils.capitalize(field))
-                            .append(" ")
+                    message.append("Field ")
+                            .append(StringUtils.capitalize(field))
+                            .append(": ")
                             .append(defaultMessage);
                 });
 
