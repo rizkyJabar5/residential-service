@@ -2,6 +2,7 @@ package id.application.feature.service.impl;
 
 import id.application.exception.AppRuntimeException;
 import id.application.exception.ResourceNotFoundException;
+import id.application.feature.dto.request.CitizenRegisterRequest;
 import id.application.feature.dto.request.RequestValidateRegistration;
 import id.application.feature.model.entity.AppUser;
 import id.application.feature.dto.request.PasswordRequest;
@@ -40,30 +41,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public BaseResponse<Void> createNewUser(UserRequest request) {
-        if (request.role() == ERole.CITIZEN) {
-            var existsAccount = this.userInfoRepository.existsByKkId(request.kkId(), request.phoneNumber());
-
-            if (existsAccount) {
-                throw new AppRuntimeException("Warga telah terdaftar");
-            }
-
-            var user = new AppUser();
-            user.setRole(ERole.CITIZEN);
-            user.setAccountNonLocked(true);
-            user.setAccountNonExpired(true);
-            user.setEnabled(true);
-            user.setCredentialsNonExpired(true);
-            persistUtil(user, "ADMIN");
-            AppUser appUser = userRepository.saveAndFlush(user);
-
-            persistedUserInfo(request.phoneNumber(), request.kkId(), appUser);
-
-            return BaseResponse.<Void>builder()
-                    .code(String.valueOf(HttpStatus.OK.value()))
-                    .message("Berhasil mendaftarkan akun warga")
-                    .build();
-        }
-
         var existsUser = this.userRepository.existsUsername(request.email());
 
         if (existsUser) {
@@ -85,6 +62,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return BaseResponse.<Void>builder()
                 .code(String.valueOf(HttpStatus.OK.value()))
                 .message("Berhasil mendaftarkan " + request.role().getName())
+                .build();
+    }
+
+    @Override
+    public BaseResponse<Void> registerCitizen(CitizenRegisterRequest request) {
+        var existsAccount = this.userInfoRepository.existsByKkId(request.kkId(), request.phoneNumber());
+
+        if (existsAccount) {
+            throw new AppRuntimeException("Warga telah terdaftar");
+        }
+
+        var user = new AppUser();
+        user.setRole(ERole.CITIZEN);
+        user.setAccountNonLocked(true);
+        user.setAccountNonExpired(true);
+        user.setEnabled(true);
+        user.setCredentialsNonExpired(true);
+        persistUtil(user, "ADMIN");
+        AppUser appUser = userRepository.saveAndFlush(user);
+
+        persistedUserInfo(request.phoneNumber(), request.kkId(), appUser);
+
+        return BaseResponse.<Void>builder()
+                .code(String.valueOf(HttpStatus.OK.value()))
+                .message("Berhasil mendaftarkan akun warga")
                 .build();
     }
 

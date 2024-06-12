@@ -3,7 +3,7 @@ package id.application.feature.service.impl;
 import com.vaadin.flow.spring.security.AuthenticationContext;
 import id.application.exception.AppConflictException;
 import id.application.feature.dto.request.RequestAddFamilyMember;
-import id.application.feature.dto.request.RequestCitizenAdd;
+import id.application.feature.dto.request.CitizenInfoRequest;
 import id.application.feature.model.entity.Citizen;
 import id.application.feature.model.entity.UserInfo;
 import id.application.feature.model.repositories.CitizenRepository;
@@ -179,8 +179,8 @@ class CitizenServiceImplTest {
                 .build();
     }
 
-    private RequestCitizenAdd buildRequestCitizen() {
-        return RequestCitizenAdd.builder()
+    private CitizenInfoRequest buildRequestCitizen() {
+        return CitizenInfoRequest.builder()
                 .kkId("98376453671038946738")
                 .fullName("Agus Suhadi")
                 .nik("84937903874627164532")
@@ -198,7 +198,7 @@ class CitizenServiceImplTest {
                 .build();
     }
 
-    private Citizen buildCitizen(RequestCitizenAdd request) {
+    private Citizen buildCitizen(CitizenInfoRequest request) {
         var entity = new Citizen();
         var currentTimestamp = new Date(System.currentTimeMillis());
         entity.setId("CTZ-001");

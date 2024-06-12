@@ -3,7 +3,7 @@ package id.application.feature.service.impl;
 import id.application.exception.AppConflictException;
 import id.application.exception.ResourceNotFoundException;
 import id.application.feature.dto.request.RequestAddFamilyMember;
-import id.application.feature.dto.request.RequestCitizenAdd;
+import id.application.feature.dto.request.CitizenInfoRequest;
 import id.application.feature.dto.request.RequestCitizenUpdate;
 import id.application.feature.dto.response.BaseResponse;
 import id.application.feature.model.entity.Citizen;
@@ -13,7 +13,7 @@ import id.application.feature.service.CitizenService;
 import id.application.util.enums.StatusRegistered;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +25,7 @@ import static id.application.security.SecurityUtils.getUserLoggedIn;
 import static id.application.util.ConverterDateTime.convertToDateDefaultPattern;
 import static id.application.util.ConverterDateTime.convertToLocalDateDefaultPattern;
 import static id.application.util.EntityUtil.persistUtil;
+import static id.application.util.FilterableUtil.pageable;
 
 @Service
 @RequiredArgsConstructor
@@ -33,8 +34,8 @@ public class CitizenServiceImpl implements CitizenService {
     private final UserInfoRepository userInfoRepository;
 
     @Override
-    public Page<Citizen> findAllCitizen(Integer size, Integer pageOf) {
-        return citizenRepository.findAll(Pageable.ofSize(size).withPage(pageOf));
+    public Page<Citizen> findAllCitizen(Integer page, Integer limitOfContent) {
+        return citizenRepository.findAll(pageable(page, limitOfContent, Sort.by(Sort.Order.asc("createdTime"))));
     }
 
     @Override
@@ -49,7 +50,7 @@ public class CitizenServiceImpl implements CitizenService {
     }
 
     @Override
-    public Citizen persistNew(RequestCitizenAdd request) {
+    public Citizen persistNew(CitizenInfoRequest request) {
         var userLoggedIn = getUserLoggedIn();
         var alreadyRegistered = this.isCitizenRegistered(request.nik());
 
@@ -78,7 +79,7 @@ public class CitizenServiceImpl implements CitizenService {
 
         var familyMembers = new ArrayList<Citizen>();
         for (var familyMember : request.familyMembers()) {
-            var family = this.buildCitizen(RequestCitizenAdd.builder()
+            var family = this.buildCitizen(CitizenInfoRequest.builder()
                     .kkId(existCitizen.getKkId())
                     .fullName(familyMember.fullName())
                     .nik(familyMember.nik())
@@ -130,7 +131,7 @@ public class CitizenServiceImpl implements CitizenService {
         return citizenRepository.save(existingCitizen);
     }
 
-    private Citizen buildCitizen(RequestCitizenAdd request) {
+    private Citizen buildCitizen(CitizenInfoRequest request) {
         var entity  = new Citizen();
         entity.setKkId(request.kkId());
         entity.setFullName(request.fullName());
@@ -158,7 +159,7 @@ public class CitizenServiceImpl implements CitizenService {
         var optionalUserInfo = userInfoRepository.findUserInfoByNameAndKkId(fullName, kkId)
                 .filter(user -> user.getStatusRegistered() == StatusRegistered.NOT_REGISTERED);
 
-        if (optionalUserInfo.isPresent()) {
+        if (optionalUserInfo.isEmpty()) {
             throw new AppConflictException("Silahkan registrasi terlebih dahulu.");
         }
     }
