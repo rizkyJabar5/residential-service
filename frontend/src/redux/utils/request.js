@@ -1,7 +1,8 @@
 import axios from 'axios'
 import { get } from 'lodash';
+import { strings } from 'res';	
 
-const baseURL = "https://journal-florist-staging.herokuapp.com/api/v1"
+const baseURL = `${strings.api.host}/v1`
 
 export const service = axios.create({
 	baseURL,
@@ -22,8 +23,12 @@ service.interceptors.request.use((config) => {
 })
 
 service.interceptors.response.use((response) => {
-	console.log(response.data)
-	if (response.data.accessToken) { return response.data } else { return response.data.data.content }
+	console.log(response.data.data)
+	if (response.data.data.accessToken) { 
+		return response.data.data
+	} else { 
+		return response.data.data.content 
+	}
 	// return response.data.data.content || response.data
 }, (error) => {
 	return Promise.reject(get(error, 'response.data'))

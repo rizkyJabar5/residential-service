@@ -5,9 +5,7 @@ import { motion } from "framer-motion";
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import {
-	authenticated, getUserProfile, login, showAuthMessage, showLoading, storeGoogleAccountToken
-} from 'redux/features/auth';
+import { login, showAuthMessage, showLoading } from 'redux/features/auth';
 
 export const LoginForm = (props) => {
 	const dispatch = useDispatch();
@@ -30,10 +28,10 @@ export const LoginForm = (props) => {
 
 	// handleValidSubmit
 	const handleValidSubmit = async (values) => {
-		try{
+		try {
 			dispatch(showLoading())
 			const credentials = {
-				username: values.username,
+				email: values.username,
 				password: values.password
 			}
 
@@ -42,12 +40,12 @@ export const LoginForm = (props) => {
 
 			console.log(token)
 
-			if(token){
+			if (token) {
 				getUserData(token)
-			}else{
+			} else {
 				dispatch(showAuthMessage(user.message))
 			}
-		}catch(err){
+		} catch (err) {
 			dispatch(showAuthMessage(err.message))
 		}
 	}
@@ -76,7 +74,13 @@ export const LoginForm = (props) => {
 			>
 				<Form.Item
 					name="username"
-					label="Username"
+					label="E-mail"
+					rules={[
+						{
+							required: true,
+							message: 'Masukkan Email',
+						}
+					]}
 				>
 					<Input prefix={<MailOutlined className="text-primary" />} />
 				</Form.Item>
@@ -99,7 +103,7 @@ export const LoginForm = (props) => {
 					rules={[
 						{
 							required: true,
-							message: 'Please input your password',
+							message: 'Masukkan password',
 						}
 					]}
 				>
