@@ -11,11 +11,9 @@ import ORDERS from "./all-orders"
 import CUSTOMERS from "./all-customers"
 import SUPPLIERS from "./all-suppliers"
 import PURCHASE from "./all-purchase"
-import EXPENSES from "./all-expenses"
-import REPORTS from "./all-reports"
-import CATEGORIES from "./all-categories"
+import CATEGORIES from "./all-citizens"
 import SETTINGS from "./settings"
-import USERS, {PASIEN} from "./all-users"
+import USERS from "./all-users"
 
 import DETAILREPORT from "./detail-report"
 import DETAILSUPPLIER from "./detail-supplier"
@@ -24,7 +22,7 @@ import DETAILPRODUCT from "./detail-product"
 import DETAILCUSTOMER from "./detail-customer"
 import DETAILUSER from "./detail-user"
 import INVOICE from "./invoice"
-import DETAILCATEGORY from "./detail-category";
+import DetailCitizen from "./detail-citizen";
 import DETAILPURCHASE from "./detail-purchase";
 
 export const AppViews = ({ match }) => {
@@ -52,7 +50,7 @@ export const AppViews = ({ match }) => {
         <PrivateRoute path={`${strings.navigation.path.detail_products}`} component={DETAILPRODUCT} />
         <PrivateRoute path={`${strings.navigation.path.detail_customers}`} component={DETAILCUSTOMER} />
         <PrivateRoute path={`${strings.navigation.path.detail_users}`} component={DETAILUSER} />
-        <PrivateRoute path={`${strings.navigation.path.detail_categories}`} component={DETAILCATEGORY} />
+        <PrivateRoute path={`${strings.navigation.path.detail_citizen}`} component={DetailCitizen} />
         <PrivateRoute path={`${strings.navigation.path.detail_purchase}`} component={DETAILPURCHASE} />
 
         {/* INVOICE */}

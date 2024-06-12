@@ -7,7 +7,7 @@ import expenseReducer from 'redux/features/expenses'
 import reportReducer from 'redux/features/reports'
 import customerReducer from 'redux/features/customers'
 import orderReducer from 'redux/features/orders'
-import categoriesReducer from 'redux/features/category'
+import citizensReducer from 'redux/features/citizens'
 import purchaseReducer from 'redux/features/purchase'
 import userReducer from 'redux/features/user'
 
@@ -22,7 +22,7 @@ const store = configureStore({
     reports:reportReducer,
     suppliers:supplierReducer,
     expenses:expenseReducer,
-    categories:categoriesReducer,
+    citizens:citizensReducer,
     user:userReducer,
   }
 });

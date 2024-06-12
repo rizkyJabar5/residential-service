@@ -4,9 +4,9 @@ import { Button, Card, Form, Input } from 'antd';
 import { useEffect, useCallback } from 'react';
 import { useLocation, useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchOneCategory, updateCategory, addCategory } from 'redux/features/category';
+import { fetchOneCitizen, updateCitizen, addCitizen } from 'redux/features/citizens';
 
-export const DETAILCATEGORY = () => {
+export const DetailCitizen = () => {
   const history = useHistory()
   const location = useLocation();
   const [form] = Form.useForm();
@@ -16,7 +16,7 @@ export const DETAILCATEGORY = () => {
 
   const getData = useCallback(async (id) => {
     try {
-      await dispatch(fetchOneCategory(id)).unwrap().then(data => {
+      await dispatch(fetchOneCitizen(id)).unwrap().then(data => {
         form.setFieldsValue(data);
       })
         .catch(err => {
@@ -29,14 +29,14 @@ export const DETAILCATEGORY = () => {
 
   const onFinish = async (values) => {
     if (type === 'update') {
-      dispatch(updateCategory({
-        categoryId: values.id,
-        categoryName: values.nameCategory,
-        description: values.description
+      await dispatch(updateCitizen({
+	      categoryId: values.id,
+	      categoryName: values.nameCategory,
+	      description: values.description
       })).unwrap()
       message.info("Category Updated!")
     } else {
-      dispatch(addCategory({
+      dispatch(addCitizen({
         categoryName: values.nameCategory,
         description: values.description
       }))
@@ -67,7 +67,7 @@ export const DETAILCATEGORY = () => {
       <Row>
         <Col xs={18} sm={18} md={18} lg={18}>
           <Card>
-            <h2>{category?.selected?.nameCategory}</h2>
+            <h2>{category?.selected?.fullName}</h2>
             <Form
               name="basic"
               form={form}
@@ -99,4 +99,4 @@ export const DETAILCATEGORY = () => {
   )
 }
 
-export default DETAILCATEGORY
+export default DetailCitizen

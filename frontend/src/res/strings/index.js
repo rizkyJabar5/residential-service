@@ -62,7 +62,7 @@ export const strings = {
       detail_customers: "/app/detail-customer",
       detail_suppliers: "/app/detail-supplier",
       detail_expenses: "/app/detail-expense",
-      detail_categories: "/app/detail-categories",
+      detail_citizen: "/app/detail-citizen",
       detail_purchase: "/app/detail-purchase",
       detail_users: "/app/detail-user",
       profile: "/app/profile",

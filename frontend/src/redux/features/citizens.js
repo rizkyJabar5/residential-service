@@ -4,24 +4,25 @@ import URLS from 'redux/urls'
 import { apiRequest } from 'redux/utils/api';
 import request from 'redux/utils/request'
 
-export const getCategories = async () =>
+const url_citizens = URLS.CITIZENS
+
+export const getCitizens = async (params) =>
 	apiRequest({
-		path: `/categories`,
+		path: `${url_citizens}`,
 		method: "GET",
+		params,
 	});
 
-export const deleteCategories = async (id) =>
+export const addCitizensFamilies = async (data) =>
 	apiRequest({
-		path: `/categories/delete`,
-		method: "DELETE",
-		params: {
-			id: id
-		}
+		path: `${url_citizens}/families`,
+		method: "POST",
+		data
 	});
 
-export const getOneCategories = async (id) =>
+export const getOneCitizens = async (id) =>
 	apiRequest({
-		path: `/categories/`,
+		path: `${url_citizens}/`,
 		method: "GET",
 		params: {
 			categoryId: id
@@ -30,24 +31,25 @@ export const getOneCategories = async (id) =>
 
 export const updateOneCategories = async (data) =>
 	apiRequest({
-		path: `/categories/update-category`,
+		path: `${url_citizens}`,
 		method: "PUT",
 		data
 	});
 
 export const addOneCategories = async (data) =>
 	apiRequest({
-		path: `/categories/add-category`,
+		path: `${url_citizens}`,
 		method: "POST",
 		data
 	});
 
-export const fetchAllCategory = createAsyncThunk(
-	'Category/fetchAllCategory',
-	async (_, { rejectWithValue }) => {
-		return await getCategories()
+export const fetchAllCitizens = createAsyncThunk(
+	'Citizen/fetchAllCitizen',
+	async (params, { rejectWithValue }) => {
+		return await getCitizens(params)
 			.then((res) => {
-				return res.data.data
+				console.log(res.data.data.content)
+				return res.data.data.content
 			})
 			.catch((err) => {
 				return rejectWithValue(err)
@@ -55,10 +57,10 @@ export const fetchAllCategory = createAsyncThunk(
 	}
 )
 
-export const fetchOneCategory = createAsyncThunk(
-	'Category/fetchOneCategory',
+export const fetchOneCitizen = createAsyncThunk(
+	'Citizen/fetchOneCitizen',
 	async (id, { rejectWithValue }) => {
-		return await getOneCategories(id)
+		return await getOneCitizens(id)
 			.then((res) => {
 				return res.data.data
 			})
@@ -68,8 +70,8 @@ export const fetchOneCategory = createAsyncThunk(
 	}
 )
 
-export const updateCategory = createAsyncThunk(
-	'Category/updateCategory',
+export const updateCitizen = createAsyncThunk(
+	'Citizen/updateCitizen',
 	async (data, { rejectWithValue }) => {
 		return await updateOneCategories(data)
 			.then((res) => {
@@ -81,12 +83,12 @@ export const updateCategory = createAsyncThunk(
 	}
 )
 
-export const deleteCategory = createAsyncThunk(
-	'Category/deleteCategory',
+export const addCitizenFamilies = createAsyncThunk(
+	'Citizen/addCitizenFamilies',
 	async (id, { rejectWithValue }) => {
-		return await deleteCategories(id)
+		return await addCitizensFamilies(id)
 			.then((res) => {
-				const data =  res.data
+				const data = res.data
 				message.success(data.message)
 				return data
 			})
@@ -96,8 +98,8 @@ export const deleteCategory = createAsyncThunk(
 	}
 )
 
-export const addCategory = createAsyncThunk(
-	'Category/updateCategory',
+export const addCitizen = createAsyncThunk(
+	'Citizen/updateCitizen',
 	async (data, { rejectWithValue }) => {
 		return await addOneCategories(data)
 			.then((res) => {
@@ -134,8 +136,8 @@ const stopLoadingQuery = loadingReducer('query', false)
 const startLoadingMutation = loadingReducer('mutation', true)
 const stopLoadingMutation = loadingReducer('mutation', false)
 
-export const CategorySlice = createSlice({
-	name: 'Category',
+export const CitizenSlice = createSlice({
+	name: 'Citizen',
 	initialState,
 	reducers: {
 		setAppliedSearchText: (state, action) => {
@@ -147,37 +149,37 @@ export const CategorySlice = createSlice({
 	},
 	extraReducers: builder => {
 		builder
-			.addCase(fetchAllCategory.pending, startLoadingQuery)
-			.addCase(fetchAllCategory.fulfilled, (state, action) => {
+			.addCase(fetchAllCitizens.pending, startLoadingQuery)
+			.addCase(fetchAllCitizens.fulfilled, (state, action) => {
 				state.list = action.payload
 				state.loading.query = false
 			})
-			.addCase(fetchAllCategory.rejected, stopLoadingQuery)
+			.addCase(fetchAllCitizens.rejected, stopLoadingQuery)
 
 		builder
-			.addCase(fetchOneCategory.pending, startLoadingQuery)
-			.addCase(fetchOneCategory.rejected, stopLoadingQuery)
-			.addCase(fetchOneCategory.fulfilled, (state, action) => {
+			.addCase(fetchOneCitizen.pending, startLoadingQuery)
+			.addCase(fetchOneCitizen.rejected, stopLoadingQuery)
+			.addCase(fetchOneCitizen.fulfilled, (state, action) => {
 				state.loading.query = false
 				state.selected = action.payload
 			})
 		builder
-			.addCase(updateCategory.pending, startLoadingQuery)
-			.addCase(updateCategory.rejected, stopLoadingQuery)
-			.addCase(updateCategory.fulfilled, (state, action) => {
+			.addCase(updateCitizen.pending, startLoadingQuery)
+			.addCase(updateCitizen.rejected, stopLoadingQuery)
+			.addCase(updateCitizen.fulfilled, (state, action) => {
 				state.loading.query = false
 				state.selected = action.payload
 				state.message = "Success"
 			})
 
 		builder
-			.addCase(deleteCategory.pending, startLoadingMutation)
-			.addCase(deleteCategory.fulfilled, stopLoadingMutation)
-			.addCase(deleteCategory.rejected, stopLoadingMutation)
+			.addCase(addCitizenFamilies.pending, startLoadingMutation)
+			.addCase(addCitizenFamilies.fulfilled, stopLoadingMutation)
+			.addCase(addCitizenFamilies.rejected, stopLoadingMutation)
 	}
 });
 
 
-export const { setSelectedRows, setAppliedSearchText } = CategorySlice.actions;
+export const { setSelectedRows, setAppliedSearchText } = CitizenSlice.actions;
 
-export default CategorySlice.reducer;
+export default CitizenSlice.reducer;

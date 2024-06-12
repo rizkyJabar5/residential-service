@@ -1,12 +1,12 @@
 import { Col, Row, message } from 'antd';
 import React, { useState } from "react";
-import { Button, Card, Form, Input, Select, Upload } from 'antd';
+import { Button, Card, Form, Input, Select } from 'antd';
 import { useEffect, useCallback } from 'react';
-import { useHistory, withRouter } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchOneProduct, createProduct } from "redux/features/products"
-import { fetchAllCategory } from "redux/features/category"
+import { fetchOneProduct } from "redux/features/products"
+import { fetchAllCitizens } from "redux/features/citizens"
 import axios from 'axios';
 const { Option } = Select;
 
@@ -42,7 +42,7 @@ export const DETAILPRODUCT = () => {
 
   const getCategories = useCallback(async () => {
     try {
-      await dispatch(fetchAllCategory()).unwrap().then(doc => {
+      await dispatch(fetchAllCitizens()).unwrap().then(doc => {
         setAllCategories(doc)
       })
     } catch (error) {
