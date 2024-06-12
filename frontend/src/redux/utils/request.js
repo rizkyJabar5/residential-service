@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { get } from 'lodash';
-import { strings } from 'res';	
+import {get} from 'lodash';
+import {strings} from 'res';
 
 const baseURL = `${strings.api.host}/v1`
 
@@ -23,13 +23,9 @@ service.interceptors.request.use((config) => {
 })
 
 service.interceptors.response.use((response) => {
-	console.log(response.data.data)
-	if (response.data.data.accessToken) { 
-		return response.data.data
-	} else { 
-		return response.data.data.content 
-	}
-	// return response.data.data.content || response.data
+    return response.data.data.accessToken
+        ? response.data.data
+        : response.data.data.content
 }, (error) => {
 	return Promise.reject(get(error, 'response.data'))
 })

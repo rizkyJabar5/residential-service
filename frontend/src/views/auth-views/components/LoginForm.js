@@ -65,7 +65,7 @@ export const LoginForm = (props) => {
 					opacity: showMessage ? 1 : 0,
 					marginBottom: showMessage ? 20 : 0
 				}}>
-				<Alert showIcon message={message}></Alert>
+				<Alert type='error' showIcon message={message}></Alert>
 			</motion.div>
 			<Form
 				layout="vertical"
@@ -79,6 +79,10 @@ export const LoginForm = (props) => {
 						{
 							required: true,
 							message: 'Masukkan Email',
+						},
+						{
+							type: 'email',
+							message: 'Email anda tidak valid',
 						}
 					]}
 				>
