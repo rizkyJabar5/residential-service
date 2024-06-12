@@ -6,7 +6,6 @@ import id.application.feature.dto.request.RequestAddFamilyMember;
 import id.application.feature.dto.request.RequestCitizenAdd;
 import id.application.feature.dto.request.RequestCitizenUpdate;
 import id.application.feature.dto.response.BaseResponse;
-import id.application.feature.model.entity.AppUser;
 import id.application.feature.model.entity.Citizen;
 import id.application.feature.model.repositories.CitizenRepository;
 import id.application.feature.model.repositories.UserInfoRepository;
@@ -101,8 +100,8 @@ public class CitizenServiceImpl implements CitizenService {
         citizenRepository.saveAllAndFlush(familyMembers);
 
         return BaseResponse.<Void>builder()
-                .responseCode(String.valueOf(HttpStatus.OK.value()))
-                .responseMessage("Berhasil menambahkan anggota keluarga")
+                .code(String.valueOf(HttpStatus.OK.value()))
+                .message("Berhasil menambahkan anggota keluarga")
                 .build();
     }
 

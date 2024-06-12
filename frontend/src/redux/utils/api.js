@@ -1,4 +1,5 @@
 import axios from "axios";
+import { strings } from "res";
 
 export const apiRequest = async ({
     url,
@@ -12,7 +13,7 @@ export const apiRequest = async ({
 }) => {
     const baseUrl = url
         ? `${url}/${apiVersion}`
-        : `https://journal-florist-staging.herokuapp.com/api/${apiVersion}`;
+        : `${strings.api.host}/${apiVersion}`;
     const defaultParams = {};
     const mergedParams = { ...defaultParams, ...params };
     let token = localStorage.getItem('token');
@@ -25,7 +26,7 @@ export const apiRequest = async ({
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Headers":
                 "Origin, X-Requested-With, Content-Type, Accept",
-            "Access-Control-Allow-Methods": "POST, GET, OPTIONS, DELETE",
+            "Access-Control-Allow-Methods": "*",
             Authorization: token ? 'Bearer ' + token : "",
         },
     };
@@ -43,9 +44,12 @@ export const apiRequest = async ({
     }
 
     return axios(config)
-        .then((res) => res)
+        .then(function(res){
+            console.log(`JeMBOOOOOOOOT: ${res.data.data}`)
+            return res
+        })
         .catch((err) => {
-            console.info("[ERROR] Api Request: ", err);
+            console.info("[ERROR] Api Request: ", err.response.data);
             throw err;
         });
 };

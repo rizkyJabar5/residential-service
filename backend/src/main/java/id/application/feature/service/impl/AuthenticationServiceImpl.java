@@ -59,8 +59,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             persistedUserInfo(request.phoneNumber(), request.kkId(), appUser);
 
             return BaseResponse.<Void>builder()
-                    .responseCode(String.valueOf(HttpStatus.OK.value()))
-                    .responseMessage("Berhasil mendaftarkan akun warga")
+                    .code(String.valueOf(HttpStatus.OK.value()))
+                    .message("Berhasil mendaftarkan akun warga")
                     .build();
         }
 
@@ -83,8 +83,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.saveAndFlush(user);
 
         return BaseResponse.<Void>builder()
-                .responseCode(String.valueOf(HttpStatus.OK.value()))
-                .responseMessage("Berhasil mendaftarkan " + request.role().getName())
+                .code(String.valueOf(HttpStatus.OK.value()))
+                .message("Berhasil mendaftarkan " + request.role().getName())
                 .build();
     }
 
@@ -103,8 +103,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userInfoRepository.save(userInfo);
 
         return BaseResponse.<Void>builder()
-                .responseCode(String.valueOf(HttpStatus.OK.value()))
-                .responseMessage("Kamu berhasil mendaftar")
+                .code(String.valueOf(HttpStatus.OK.value()))
+                .message("Kamu berhasil mendaftar")
                 .build();
     }
 
@@ -131,8 +131,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         userRepository.save(appUser);
 
         return BaseResponse.<Void>builder()
-                .responseCode(String.valueOf(HttpStatus.OK.value()))
-                .responseMessage("Success to change your password")
+                .code(String.valueOf(HttpStatus.OK.value()))
+                .message("Success to change your password")
                 .build();
     }
 

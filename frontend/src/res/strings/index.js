@@ -5,7 +5,7 @@ export const strings = {
   tomorrow: moment().add(1, 'days').tz("Asia/Jakarta").format("YYYY-MM-DD"),
   token: localStorage.getItem('token'),
   api: {
-    host: "https://journal-florist-staging.herokuapp.com",
+    host: "http://localhost:8080/api",
     HEADER_KEY: "mantapjiwa",
     JWT_KEY: "Aj1257Xi202",
   },

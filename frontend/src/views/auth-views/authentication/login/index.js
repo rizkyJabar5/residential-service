@@ -36,7 +36,7 @@ const Login = props => {
 											<LoginForm {...props} otherSignIn={null} redirect={strings.navigation.main} />
 										</Col>
 									</Row>
-									<p className="text-center" style={{ marginTop: "5px" }}>Dapatkan Akses Dengan Menghubungi Admin di <span style={{color:"blue"}} >082257227265</span></p>
+									<p className="text-center" style={{ marginTop: "5px" }}>Dapatkan Akses Dengan Menghubungi Admin di <span style={{color:"blue"}} >08274323243</span></p>
 									{/* <p className="text-center" style={{ marginTop: "5px" }}>Tidak dapat link aktivasi?
 										<a href={`${strings.navigation.path.resend}`}> Tekan</a><br></br> <a href={strings.navigation.register}>Buat Akun Baru</a>
 									</p> */}

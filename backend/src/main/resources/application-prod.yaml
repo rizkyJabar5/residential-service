@@ -1,9 +1,6 @@
 server:
   port: 8080
 
-vaadin:
-  productionMode: true
-
 spring:
   datasource:
     url: ${POSTGRES_URL}

@@ -7,7 +7,7 @@ import java.io.Serializable;
 
 @Builder
 public record LoginRequest(
-        @Email(message = "Email tidak valid")
+        @Email(message = " tidak valid")
         String email,
         String password) implements Serializable {
 }

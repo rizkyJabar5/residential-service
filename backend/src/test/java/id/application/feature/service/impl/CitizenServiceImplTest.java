@@ -25,7 +25,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -123,7 +122,7 @@ class CitizenServiceImplTest {
         ArgumentCaptor<List<Citizen>> captor = ArgumentCaptor.forClass(List.class);
         verify(citizenRepository, atMostOnce()).saveAllAndFlush(captor.capture());
 
-        assertThat(actualResponse.responseMessage()).isEqualTo("Berhasil menambahkan anggota keluarga");
+        assertThat(actualResponse.message()).isEqualTo("Berhasil menambahkan anggota keluarga");
         assertThat(captor.getValue()).hasSize(3);
     }
 

@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record BaseResponse<T>(
-        String responseCode,
-        String responseMessage,
+        String code,
+        String message,
         T data) implements Serializable {
 }
