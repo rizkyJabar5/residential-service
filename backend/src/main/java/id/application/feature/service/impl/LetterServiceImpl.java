@@ -15,6 +15,7 @@ import id.application.util.enums.TypeLetter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -27,6 +28,7 @@ import static id.application.security.SecurityUtils.getUserLoggedIn;
 import static id.application.util.ConverterDateTime.convertToLocalDateDefaultPattern;
 import static id.application.util.ConverterDateTime.localDateToString;
 import static id.application.util.EntityUtil.persistUtil;
+import static id.application.util.FilterableUtil.pageable;
 
 @RequiredArgsConstructor
 @Service
@@ -35,9 +37,11 @@ public class LetterServiceImpl implements LetterService {
     private final TemplateConfig templateConfig;
 
     @Override
-    public Page<LetterRequest> findAll(RequestPagination pageRequest) {
+    public Page<LetterRequest> findAll(RequestPagination request) {
         getUserLoggedIn();
-        var pageable = FilterableUtil.pageable(pageRequest.page(), pageRequest.limitContent(), null);
+
+        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
         return repository.findAll(pageable);
     }
 

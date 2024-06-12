@@ -3,6 +3,9 @@ package id.application.endpoints;
 import id.application.feature.dto.request.LetterAddRequest;
 import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.dto.request.UpdateLetterStatusRequest;
+import id.application.feature.dto.response.BaseResponse;
+import id.application.feature.dto.response.LetterRequestDto;
+import id.application.feature.dto.response.PageResponse;
 import id.application.feature.model.entity.LetterRequest;
 import id.application.feature.service.LetterService;
 import id.application.util.enums.StatusLetter;
@@ -18,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static id.application.util.FilterableUtil.mappingContentPage;
+import static id.application.util.constant.StatusCodeConstant.CODE_CONTENT_EMPTY;
+import static id.application.util.constant.StatusCodeConstant.CODE_CONTENT_FOUND;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/letters")
@@ -26,9 +33,27 @@ public class LetterEndpoint {
     private final LetterService service;
 
     @GetMapping
-    public Page<LetterRequest> getAllLetter(RequestPagination pageRequest){
-        var contents = service.findAll(pageRequest);
-        return contents;
+    public BaseResponse<PageResponse<LetterRequestDto>> getAllLetters(@RequestParam(defaultValue = "0") Integer page,
+                                                                      @RequestParam(defaultValue = "10") Integer limitContent){
+        var letterRequest = service.findAll(RequestPagination.builder()
+                .page(page)
+                .limitContent(limitContent)
+                .build()
+        );
+
+        return BaseResponse.<PageResponse<LetterRequestDto>>builder()
+                .code(letterRequest.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
+                .message(letterRequest.isEmpty() ? "Data tidak ditemukan" : "Data ditemukan")
+                .data(PageResponse.<LetterRequestDto>builder()
+                        .size(letterRequest.getSize())
+                        .totalElements(letterRequest.getTotalElements())
+                        .totalPages(letterRequest.getTotalPages())
+                        .numberOfElements(letterRequest.getNumberOfElements())
+                        .pageOf(letterRequest.getPageable().getPageNumber())
+                        .page(letterRequest.getPageable().getPageSize())
+                        .content(mappingContentPage(letterRequest, LetterRequestDto::letterRequestDto))
+                        .build())
+                .build();
     }
 
     @GetMapping("/status")
