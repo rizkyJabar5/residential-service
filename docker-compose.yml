@@ -3,7 +3,7 @@ services:
     container_name: residential-backend
     build:
       dockerfile: Dockerfile
-      context: ./frontend/.
+      context: ./backend/.
     ports:
       - "8080:8080"
     networks:
