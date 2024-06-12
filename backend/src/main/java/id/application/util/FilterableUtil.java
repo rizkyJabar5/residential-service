@@ -2,11 +2,15 @@ package id.application.util;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FilterableUtil {
@@ -30,5 +34,13 @@ public class FilterableUtil {
         }
 
         return PageRequest.of(page, limit, sort);
+    }
+
+    public static <R, E extends BaseEntity> List<R> mappingContentPage(Page<E> contents, Function<E, R> dtoResponse) {
+        return contents.getContent().isEmpty()
+                ? Collections.emptyList()
+                : contents.getContent().stream()
+                .map(dtoResponse).toList();
+
     }
 }

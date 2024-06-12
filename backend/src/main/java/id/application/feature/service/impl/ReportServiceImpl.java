@@ -9,6 +9,7 @@ import id.application.feature.model.repositories.ReportRepository;
 import id.application.feature.service.ReportService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,14 +28,16 @@ public class ReportServiceImpl implements ReportService {
     private final CloudinaryConfig cloudinaryConfig;
 
     @Override
-    public Page<Report> findAll(RequestPagination pagination) {
-        var pageable = pageable(pagination.page(), pagination.limitContent(), pagination.sort());
+    public Page<Report> findAll(RequestPagination request) {
+        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
         return reportRepository.findAll(pageable);
     }
 
     @Override
-    public Page<Report> findReportByDate(String date, RequestPagination pagination) {
-        var pageable = pageable(pagination.page(), pagination.limitContent(), pagination.sort());
+    public Page<Report> findReportByDate(String date, RequestPagination request) {
+        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
 
         return reportRepository.findReportByDate(filterByDate(date), pageable);
     }

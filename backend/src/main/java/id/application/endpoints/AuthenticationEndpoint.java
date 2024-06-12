@@ -1,5 +1,6 @@
 package id.application.endpoints;
 
+import id.application.feature.dto.request.CitizenRegisterRequest;
 import id.application.feature.dto.request.LoginRequest;
 import id.application.feature.dto.request.PasswordRequest;
 import id.application.feature.dto.request.RequestValidateRegistration;
@@ -48,6 +49,11 @@ public class AuthenticationEndpoint {
     @PostMapping("/register")
     public BaseResponse<Void> register(@Valid @RequestBody UserRequest request) {
         return userService.createNewUser(request);
+    }
+
+    @PostMapping("/citizen/register")
+    public BaseResponse<Void> registerCitizen(@Valid @RequestBody CitizenRegisterRequest request) {
+        return userService.registerCitizen(request);
     }
 
     @PostMapping("/validate-citizen")

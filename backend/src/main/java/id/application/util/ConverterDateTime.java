@@ -4,6 +4,7 @@ import id.application.exception.AppRuntimeException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConverterDateTime {
-    public static final String DD_MM_YYYY = "dd-MM-yyyy";
+    public static final String DD_MM_YYYY = "dd/MM/yyyy";
     public static final String DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss z";
 
     public static LocalDate convertToLocalDateDefaultPattern(String date) {
@@ -59,5 +60,10 @@ public class ConverterDateTime {
     public static String localDateToString(LocalDate date) {
         var formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
         return date.format(formatter);
+    }
+
+    public static String dateToString(Date date) {
+        var formatter = new SimpleDateFormat(DATETIME_FORMAT);
+        return formatter.format(date);
     }
 }
