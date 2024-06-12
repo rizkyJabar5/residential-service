@@ -55,7 +55,7 @@ class AuthenticationServiceImplTest {
         assertThat(actualResponse).isNotNull();
         assertThat(mockAppUser.getId()).isEqualTo(mockUserInfo.getId());
         assertThat(mockAppUser.getUserInfo()).isEqualTo(mockUserInfo);
-        assertThat(actualResponse.responseMessage()).isEqualTo("Berhasil mendaftarkan akun warga");
+        assertThat(actualResponse.message()).isEqualTo("Berhasil mendaftarkan akun warga");
     }
 
     @Test
@@ -70,7 +70,7 @@ class AuthenticationServiceImplTest {
         verify(appUserRepository, atLeastOnce()).saveAndFlush(any());
 
         assertThat(actualResponse).isNotNull();
-        assertThat(actualResponse.responseMessage()).isEqualTo("Berhasil mendaftarkan " + ERole.RT);
+        assertThat(actualResponse.message()).isEqualTo("Berhasil mendaftarkan " + ERole.RT);
     }
 
     @Test

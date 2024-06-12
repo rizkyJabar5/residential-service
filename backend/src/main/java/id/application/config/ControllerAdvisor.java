@@ -20,8 +20,8 @@ public class ControllerAdvisor extends ResponseStatusExceptionHandler {
             InternalServerException.class, NumberFormatException.class, AuthenticationException.class})
     public ResponseEntity<Object> illegalActionDataHandler(RuntimeException exception) {
         var response = BaseResponse.<Void>builder()
-                .responseCode(String.valueOf(HttpStatus.CONFLICT.value()))
-                .responseMessage(exception.getMessage())
+                .code(String.valueOf(HttpStatus.CONFLICT.value()))
+                .message(exception.getMessage())
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
@@ -41,8 +41,8 @@ public class ControllerAdvisor extends ResponseStatusExceptionHandler {
                 });
 
         var response = BaseResponse.<Void>builder()
-                .responseCode(String.valueOf(HttpStatus.CONFLICT.value()))
-                .responseMessage(message.toString())
+                .code(String.valueOf(HttpStatus.CONFLICT.value()))
+                .message(message.toString())
                 .build();
 
         return new ResponseEntity<>(response, HttpStatus.CONFLICT);
