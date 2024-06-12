@@ -7,9 +7,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 
 public interface ReportService {
-    Page<Report> findAll(RequestPagination pagination);
+    Page<Report> findAll(RequestPagination request);
 
-    Page<Report> findReportByDate(String date, RequestPagination pagination);
+    Page<Report> findReportByDate(String date, RequestPagination request);
 
     @Transactional
     Report persistNew(RequestAddReport request);

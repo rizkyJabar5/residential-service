@@ -38,8 +38,9 @@ public class FilterableUtil {
 
     public static <R, E extends BaseEntity> List<R> mappingContentPage(Page<E> contents, Function<E, R> dtoResponse) {
         return contents.getContent().isEmpty()
-                ? contents.getContent().stream()
-                .map(dtoResponse).toList()
-                : Collections.emptyList();
+                ? Collections.emptyList()
+                : contents.getContent().stream()
+                .map(dtoResponse).toList();
+
     }
 }

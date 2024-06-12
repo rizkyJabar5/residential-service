@@ -5,6 +5,7 @@ import id.application.feature.model.repositories.AppUserRepository;
 import id.application.feature.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import static id.application.util.FilterableUtil.pageable;
@@ -16,7 +17,8 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public Page<AppUser> findAll(RequestPagination request) {
-        var pageable = pageable(request.page(), request.limitContent(), request.sort());
+        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
         return userRepository.findAll(pageable);
     }
 }

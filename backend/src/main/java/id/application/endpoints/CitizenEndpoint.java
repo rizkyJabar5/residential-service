@@ -3,6 +3,7 @@ package id.application.endpoints;
 import id.application.feature.dto.request.RequestAddFamilyMember;
 import id.application.feature.dto.request.CitizenInfoRequest;
 import id.application.feature.dto.request.RequestCitizenUpdate;
+import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.dto.response.BaseResponse;
 import id.application.feature.dto.response.CitizenDto;
 import id.application.feature.dto.response.PageResponse;
@@ -35,12 +36,21 @@ public class CitizenEndpoint {
 
     @GetMapping
     public BaseResponse<PageResponse<CitizenDto>> getAllCitizen(@RequestParam(defaultValue = "0") Integer page,
-                                                                @RequestParam(defaultValue = "50") Integer limitOfContent) {
-        var citizens = citizenService.findAllCitizen(page, limitOfContent);
+                                                                @RequestParam(defaultValue = "50") Integer limitContent) {
+        var citizens = citizenService.findAllCitizen(RequestPagination.builder()
+                .page(page)
+                .limitContent(limitContent)
+                .build());
         return BaseResponse.<PageResponse<CitizenDto>>builder()
                 .code(citizens.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
                 .message(citizens.isEmpty() ? "Data warga tidak ditemukan" : "Data warga ditemukan")
                 .data(PageResponse.<CitizenDto>builder()
+                        .size(citizens.getSize())
+                        .totalElements(citizens.getTotalElements())
+                        .totalPages(citizens.getTotalPages())
+                        .numberOfElements(citizens.getNumberOfElements())
+                        .pageOf(citizens.getPageable().getPageNumber())
+                        .page(citizens.getPageable().getPageSize())
                         .content(mappingContentPage(citizens, CitizenDto::entityToDto))
                         .build())
                 .build();

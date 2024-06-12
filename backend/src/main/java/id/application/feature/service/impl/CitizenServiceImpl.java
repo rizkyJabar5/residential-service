@@ -5,6 +5,7 @@ import id.application.exception.ResourceNotFoundException;
 import id.application.feature.dto.request.RequestAddFamilyMember;
 import id.application.feature.dto.request.CitizenInfoRequest;
 import id.application.feature.dto.request.RequestCitizenUpdate;
+import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.dto.response.BaseResponse;
 import id.application.feature.model.entity.Citizen;
 import id.application.feature.model.repositories.CitizenRepository;
@@ -34,8 +35,10 @@ public class CitizenServiceImpl implements CitizenService {
     private final UserInfoRepository userInfoRepository;
 
     @Override
-    public Page<Citizen> findAllCitizen(Integer page, Integer limitOfContent) {
-        return citizenRepository.findAll(pageable(page, limitOfContent, Sort.by(Sort.Order.asc("createdTime"))));
+    public Page<Citizen> findAllCitizen(RequestPagination request) {
+        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
+        return citizenRepository.findAll(pageable);
     }
 
     @Override
