@@ -2,7 +2,7 @@ import React, { Component, useState } from 'react'
 import { PrinterOutlined } from '@ant-design/icons';
 import { Card, Table, Button, message } from 'antd';
 import NumberFormat from 'react-number-format';
-import { fetchOneOrder } from "redux/features/orders"
+// import { fetchOneOrder } from "redux/features/letters"
 import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
@@ -24,6 +24,8 @@ export const INVOICE = () => {
 
 	let year = new Date().getFullYear()
 	let month = new Date().getMonth()
+
+	const fetchOneOrder = (id) =>{}
 
 	const getData = useCallback(async (id) => {
 		try {

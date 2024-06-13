@@ -22,11 +22,8 @@ export const addCitizensFamilies = async (data) =>
 
 export const getOneCitizens = async (id) =>
 	apiRequest({
-		path: `${url_citizens}/`,
+		path: `${url_citizens}/${id}`,
 		method: "GET",
-		params: {
-			categoryId: id
-		}
 	});
 
 export const updateOneCategories = async (data) =>
@@ -48,8 +45,7 @@ export const fetchAllCitizens = createAsyncThunk(
 	async (params, { rejectWithValue }) => {
 		return await getCitizens(params)
 			.then((res) => {
-				console.log(res.data.data.content)
-				return res.data.data.content
+				return res.data.data
 			})
 			.catch((err) => {
 				return rejectWithValue(err)
@@ -151,7 +147,8 @@ export const CitizenSlice = createSlice({
 		builder
 			.addCase(fetchAllCitizens.pending, startLoadingQuery)
 			.addCase(fetchAllCitizens.fulfilled, (state, action) => {
-				state.list = action.payload
+				state.list = action.payload.content
+				state.message = action.payload.message
 				state.loading.query = false
 			})
 			.addCase(fetchAllCitizens.rejected, stopLoadingQuery)
@@ -169,7 +166,7 @@ export const CitizenSlice = createSlice({
 			.addCase(updateCitizen.fulfilled, (state, action) => {
 				state.loading.query = false
 				state.selected = action.payload
-				state.message = "Success"
+				state.message = action.payload.message
 			})
 
 		builder

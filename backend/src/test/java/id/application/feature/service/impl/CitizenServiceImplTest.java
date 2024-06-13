@@ -170,7 +170,7 @@ class CitizenServiceImplTest {
                         .familyStatus(FamilyStatus.CHILDREN)
                         .jobType("Belum Bekerja")
                         .bloodType(BloodType.B)
-                        .marriageStatus(MarriageStatus.UNMARRIAGE)
+                        .marriageStatus(MarriageStatus.UNMARRIED)
                         .build()
         );
         return RequestAddFamilyMember.builder()

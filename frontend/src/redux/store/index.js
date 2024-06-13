@@ -6,7 +6,7 @@ import supplierReducer from 'redux/features/suppliers'
 import expenseReducer from 'redux/features/expenses'
 import reportReducer from 'redux/features/reports'
 import customerReducer from 'redux/features/customers'
-import orderReducer from 'redux/features/orders'
+import letterReducer from 'redux/features/letters'
 import citizensReducer from 'redux/features/citizens'
 import purchaseReducer from 'redux/features/purchase'
 import userReducer from 'redux/features/user'
@@ -16,7 +16,7 @@ const store = configureStore({
     theme: themeReducer,
     auth: authReducer,
     products:productsReducer,
-    orders:orderReducer,
+    letters:letterReducer,
     customers:customerReducer,
     purchases:purchaseReducer,
     reports:reportReducer,

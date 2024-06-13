@@ -1,8 +1,8 @@
-import { Button, Card, Col, Row, Table, message, Input, Select, Menu } from 'antd';
+import { Button, Card, Col, Row, Table, message as Message, Input, Select, Menu } from 'antd';
 import React, { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
-import { fetchAllCitizens, } from 'redux/features/citizens';
+import { fetchAllCitizens } from 'redux/features/citizens';
 import Flex from "../../../components/shared-components/Flex";
 import { SearchOutlined, PlusCircleOutlined, EyeOutlined } from "@ant-design/icons";
 import utils from "../../../utils";
@@ -12,7 +12,7 @@ import { DeleteOutlined } from "@material-ui/icons";
 
 const { Option } = Select
 
-export const Citizens = (props) => {
+export const Citizens = ( props ) => {
 	const history = useHistory()
 	const dispatch = useDispatch();
 	const {
@@ -21,21 +21,22 @@ export const Citizens = (props) => {
 		filter: { q: searchTerm },
 		loading: {
 			query: loadingQuery,
-			mutation: loadingMutation
-		}
-	} = useSelector(state => state.citizens)
-	// const [list, setList] = useState(ProductListData)
+			mutation: loadingMutation,
+		},
+		message,
+	} = useSelector( state => state.citizens )
 
-
-	const getData = useCallback(async () => {
+	console.log( `Message: ${ message }` )
+	const getData = useCallback( async () => {
 		try {
-			await dispatch(fetchAllCitizens()).unwrap()
+			await dispatch( fetchAllCitizens() ).unwrap()
+			Message.success( message )
 			// console.log(list)
 		} catch (error) {
-			console.log(error)
-			message.error(error?.message || 'Failed to fetch data')
+			console.log( error )
+			Message.error( error?.message || 'Failed to fetch data' )
 		}
-	}, [ dispatch ])
+	}, [ dispatch ] )
 
 	// const deleteData = useCallback(async (id) => {
 	// 	try {
@@ -47,54 +48,60 @@ export const Citizens = (props) => {
 	// 	}
 	// }, [ dispatch ])
 
-	useEffect(() => {
+	useEffect( () => {
 		getData()
-	}, [])
+	}, [] )
 
 	const addCitizen = () => {
-		history.push(`${ strings.navigation.path.detail_citizen }`)
+		history.push( `${ strings.navigation.path.detail_citizen }` )
 	}
 
 	const viewDetails = row => {
-		history.push(`${strings.navigation.path.detail_citizen}/${row.id}`)
+		history.push( `${ strings.navigation.path.detail_citizen }/${ row.id }` )
 	}
 
 	const dropdownMenu = row => (
 		<Menu>
-			<Menu.Item onClick={() => viewDetails(row)}>
+			<Menu.Item onClick={ () => viewDetails( row ) }>
 				<Flex alignItems="center">
-					<EyeOutlined />
+					<EyeOutlined/>
 					<span className="ml-2">Detail</span>
 				</Flex>
 			</Menu.Item>
-			<Menu.Item onClick={() => {
+			<Menu.Item onClick={ () => {
 				// deleteRow(row)
-			}}>
+			} }>
 				<Flex alignItems="center">
-					<DeleteOutlined />
-					<span className="ml-2">{selectedRows.length > 0 ? `Delete (${selectedRows.length})` : 'Delete'}</span>
+					<DeleteOutlined/>
+					<span className="ml-2">{ selectedRows.length > 0 ? `Delete (${ selectedRows.length })` : 'Delete' }</span>
 				</Flex>
 			</Menu.Item>
 		</Menu>
 	);
 
 	const tableColumns = [
-
 		{
-			title: 'No. KK',
-			dataIndex: 'kkId',
-			key: 'kkId',
-		},
-		{
-			title: 'NIK',
-			dataIndex: 'nik',
-			key: 'nik',
+			title: () => <div className="text-center">No. Identitas</div>,
+			children: [
+				{
+					title: 'No. KK',
+					dataIndex: 'kkId',
+					key: 'kkId',
+					width: 100,
+				},
+				{
+					title: 'NIK',
+					dataIndex: 'nik',
+					key: 'nik',
+					width: 100,
+				},
+			],
 		},
 		{
 			title: 'Nama Lengkap',
 			dataIndex: 'fullName',
 			key: 'fullName',
-			sorter: (a, b) => a.nameCategory.length - b.nameCategory.length,
+			sorter: ( a, b ) => a.nameCategory.length - b.nameCategory.length,
 		},
 		{
 			title: 'Alamat',
@@ -114,12 +121,12 @@ export const Citizens = (props) => {
 		{
 			title: '',
 			dataIndex: 'actions',
-			render: (_, elm) => (
+			render: ( _, elm ) => (
 				<div className="text-right">
-					<EllipsisDropdown menu={dropdownMenu(elm)}/>
+					<EllipsisDropdown menu={ dropdownMenu( elm ) }/>
 				</div>
-			)
-		}
+			),
+		},
 		// {
 		// 	title: () => <div className="text-center">Delete</div>,
 		// 	key: 'status',
@@ -136,7 +143,7 @@ export const Citizens = (props) => {
 	const onSearch = e => {
 		const value = e.currentTarget.value
 		const searchArray = e.currentTarget.value ? list : []
-		const data = utils.wildCardSearch(searchArray, value)
+		const data = utils.wildCardSearch( searchArray, value )
 		// setList(data)
 		// setSelectedRowKeys([])
 	}
@@ -147,31 +154,32 @@ export const Citizens = (props) => {
 				{ props.noTitle ? (
 					<div></div>
 				) : (
-					(<Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
+					( <Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
 						<h2>Daftar Warga</h2>
-					</Col>)
+						<p>Informasi seputar warga</p>
+					</Col> )
 				) }
 			</Row>
 			<Row gutter={ 24 }>
 				<Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
-					<Card size="small" title="Daftar semua data warga">
+					<Card>
 						<Flex alignItems="center" justifyContent="between" mobileFlex={ false }>
 							<Flex className="mb-1" mobileFlex={ false }>
 								<div className="mr-md-3 mb-4">
-									<Input placeholder="Search" prefix={ <SearchOutlined/> } onChange={ e => onSearch(e) }/>
+									<Input placeholder="Search" prefix={ <SearchOutlined/> } onChange={ e => onSearch( e ) }/>
 								</div>
 							</Flex>
 							<div>
-								<Button onClick={ addCitizen } type="primary" icon={ <PlusCircleOutlined/> } block>Tambah </Button>
+								<Button onClick={ addCitizen } type="primary" icon={ <PlusCircleOutlined/> } block>Tambah</Button>
 							</div>
 						</Flex>
 						<Table
 							className="no-border-last"
 							columns={ tableColumns }
 							dataSource={ list }
-							rowKey='categoryId'
+							rowKey="kkId"
 							pagination={ {
-								pageSize: 8
+								pageSize: 8,
 							} }
 						/>
 					</Card>
@@ -182,4 +190,4 @@ export const Citizens = (props) => {
 }
 
 
-export default withRouter(Citizens);
+export default withRouter( Citizens );

@@ -6,7 +6,7 @@ import { useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom/cjs/react-router-dom.min';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
-import { fetchOneOrder, updateOrder, createOrder } from "redux/features/orders"
+import { fetchOneLetter, updateLetter, createLetter } from "redux/features/letters"
 import { fetchAllCustomer } from "redux/features/customers"
 import { fetchAllProduct } from "redux/features/products"
 import Modal from 'react-modal';
@@ -33,7 +33,7 @@ const customStyles = {
   },
 };
 
-export const DETAILPRODUCT = () => {
+export const DetailLetter = () => {
 
   const history = useHistory()
   const location = useLocation();
@@ -111,7 +111,7 @@ export const DETAILPRODUCT = () => {
 
   const getData = useCallback(async (id) => {
     try {
-      await dispatch(fetchOneOrder(id)).unwrap().then(data => {
+      await dispatch(fetchOneLetter(id)).unwrap().then(data => {
         form.setFieldsValue(product.list[0]);
       })
         .catch(err => {
@@ -436,4 +436,4 @@ export const DETAILPRODUCT = () => {
   )
 }
 
-export default DETAILPRODUCT
+export default DetailLetter

@@ -44,7 +44,7 @@ public class FakeData {
         letterRequest.setNationality("Indonesia");
         letterRequest.setReligion(Religion.HINDU);
         letterRequest.setNik("84937903874627164532");
-        letterRequest.setMarriageStatus(MarriageStatus.UNMARRIAGE);
+        letterRequest.setMarriageStatus(MarriageStatus.UNMARRIED);
         letterRequest.setJobType("Pegawai");
         letterRequest.setAddress("Blok A6/87");
         letterRequest.setType(TypeLetter.BUSINESS);

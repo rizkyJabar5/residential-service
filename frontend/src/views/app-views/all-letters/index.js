@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
-import { fetchAllOrder, deleteOrder } from 'redux/features/orders';
+import { fetchAllLetter, downloadLetter } from 'redux/features/letters';
 import Modal from 'react-modal';
 
 const formatter = new Intl.NumberFormat('en-US', {
@@ -24,7 +24,7 @@ const customStyles = {
 	},
 };
 
-export const ORDERS = () => {
+export const Letters = () => {
 	const [modalIsOpen, setIsOpen] = React.useState(false)
 	const [amountCredit, setAmountCredit] = useState(0)
 	const [selectedPaymentId, setSelectedPaymentId] = useState(0)
@@ -32,7 +32,7 @@ export const ORDERS = () => {
 	const dispatch = useDispatch();
 	const {
 		list,
-	} = useSelector(state => state.orders)
+	} = useSelector(state => state.letters)
 
 	const bayar = async (event) => {
 		event.preventDefault()
@@ -80,7 +80,7 @@ export const ORDERS = () => {
 
 	const getData = useCallback(async () => {
 		try {
-			await dispatch(fetchAllOrder(params)).unwrap()
+			await dispatch(fetchAllLetter(params)).unwrap()
 		} catch (error) {
 			message.error(error?.message || 'Failed to fetch data')
 		}
@@ -259,5 +259,4 @@ export const ORDERS = () => {
 	)
 }
 
-
-export default withRouter(ORDERS);
+export default withRouter(Letters);

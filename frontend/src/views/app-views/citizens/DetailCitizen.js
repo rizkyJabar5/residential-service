@@ -5,13 +5,14 @@ import { useEffect, useCallback } from 'react';
 import { useLocation, useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchOneCitizen, updateCitizen, addCitizen } from 'redux/features/citizens';
+import { FormCitizen } from "./components/FormCitizen";
 
 export const DetailCitizen = () => {
   const history = useHistory()
   const location = useLocation();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
-  const category = useSelector(state => state.categories)
+  const citizen = useSelector(state => state.citizens)
   const [type, setType] = useState('update')
 
   const getData = useCallback(async (id) => {
@@ -60,14 +61,14 @@ export const DetailCitizen = () => {
     <>
       <Row gutter={24}>
         <Col xs={24} sm={24} md={24} lg={24}>
-          <h2>Detail Category</h2>
+          <h2></h2>
           <p>Update data ini</p>
         </Col>
       </Row>
       <Row>
-        <Col xs={18} sm={18} md={18} lg={18}>
+        <Col xs={24} sm={24} md={24} lg={24}>
           <Card>
-            <h2>{category?.selected?.fullName}</h2>
+            <h2>{citizen?.selected?.fullName}</h2>
             <Form
               name="basic"
               form={form}
@@ -75,17 +76,7 @@ export const DetailCitizen = () => {
               onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
-              <Form.Item name="nameCategory" label="Nama Category">
-                <Input placeholder="Nama Category" />
-              </Form.Item>
-              {
-                type === 'update' && <Form.Item name="publicKey" label="Category ID">
-                  <Input placeholder="Category ID" />
-                </Form.Item>
-              }
-              <Form.Item name="description" label="Deskripsi">
-                <Input placeholder="Deskripsi" />
-              </Form.Item>
+              <FormCitizen />
               <Form.Item>
                 <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
                   Submit

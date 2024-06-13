@@ -7,22 +7,22 @@ import Loading from 'components/shared-components/Loading';
 // Pages
 import DASHBOARD from "./dashboard"
 import PRODUCTS from "./all-products"
-import ORDERS from "./all-orders"
+import Letters from "./all-letters"
 import CUSTOMERS from "./all-customers"
 import SUPPLIERS from "./all-suppliers"
 import PURCHASE from "./all-purchase"
-import CATEGORIES from "./all-citizens"
+import Citizens from "./citizens"
 import SETTINGS from "./settings"
 import USERS from "./all-users"
 
 import DETAILREPORT from "./detail-report"
 import DETAILSUPPLIER from "./detail-supplier"
-import DETAILORDER from "./detail-order"
+import DETAILORDER from "./detail-order/DetailLetter"
 import DETAILPRODUCT from "./detail-product"
 import DETAILCUSTOMER from "./detail-customer"
 import DETAILUSER from "./detail-user"
 import INVOICE from "./invoice"
-import DetailCitizen from "./detail-citizen";
+import DetailCitizen from "./citizens/DetailCitizen";
 import DETAILPURCHASE from "./detail-purchase";
 
 export const AppViews = ({ match }) => {
@@ -32,8 +32,8 @@ export const AppViews = ({ match }) => {
       <Switch>
         {/* <PrivateRoute path={`${match.url}`} component={DASHBOARD} /> */}
         <PrivateRoute path={`${strings.navigation.path.dashboard}`} component={DASHBOARD} />
-        <PrivateRoute path={`${strings.navigation.path.citizen}`} component={CATEGORIES} />
-        <PrivateRoute path={`${strings.navigation.path.letter}`} component={ORDERS} />
+        <PrivateRoute path={`${strings.navigation.path.citizen}`} component={Citizens} />
+        <PrivateRoute path={`${strings.navigation.path.letter}`} component={Letters} />
         {/* <PrivateRoute path={`${strings.navigation.path.categories}`} component={CATEGORIES} /> */}
         {/* <PrivateRoute path={`${strings.navigation.path.expenses}`} component={EXPENSES} /> */}
         <PrivateRoute path={`${strings.navigation.path.reports}`} component={PRODUCTS} />
