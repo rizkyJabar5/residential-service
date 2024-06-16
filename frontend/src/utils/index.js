@@ -1,4 +1,17 @@
 class Utils {
+	static formatDateToLocal(requestDate) {
+		let format = {
+			day: '2-digit',
+			month: '2-digit',
+			year: 'numeric',
+			separator: '/',
+		};
+		const formatter = new Intl.DateTimeFormat('en-US', format)
+
+
+		return formatter.format(requestDate)
+			.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$2/$1/$3'); // Regex to swap month and day
+	}
 
 	/**
 	 * Get first character from first & last sentences of a username
@@ -17,77 +30,90 @@ class Utils {
 	 * @return {Object} object that contained the path string
 	 */
 	static getRouteInfo(navTree, path) {
-		if( navTree.path === path ){
-		  return navTree;
+		if(navTree.path === path) {
+			return navTree;
 		}
-		let route; 
-		for (let p in navTree) {
-		  if( navTree.hasOwnProperty(p) && typeof navTree[p] === 'object' ) {
+		let route;
+		for(let p in navTree) {
+			if(navTree.hasOwnProperty(p) && typeof navTree[p] === 'object') {
 				route = this.getRouteInfo(navTree[p], path);
-				if(route){
+				if(route) {
 					return route;
 				}
-		  }
+			}
 		}
 		return route;
-	}	
+	}
 
 	/**
 	 * Get accessible color contrast
 	 * @param {String} hex - Hex color code e.g '#3e82f7'
 	 * @return {String} 'dark' or 'light'
 	 */
-	static getColorContrast(hex){
+	static getColorContrast(hex) {
 		const threshold = 130;
 		const hRed = hexToR(hex);
 		const hGreen = hexToG(hex);
 		const hBlue = hexToB(hex);
-		function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
-		function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
-		function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
-		function cutHex(h) {return (h.charAt(0) === '#') ? h.substring(1,7):h}
+
+		function hexToR(h) {
+			return parseInt((cutHex(h)).substring(0, 2), 16)
+		}
+
+		function hexToG(h) {
+			return parseInt((cutHex(h)).substring(2, 4), 16)
+		}
+
+		function hexToB(h) {
+			return parseInt((cutHex(h)).substring(4, 6), 16)
+		}
+
+		function cutHex(h) {
+			return (h.charAt(0) === '#') ? h.substring(1, 7) : h
+		}
+
 		const cBrightness = ((hRed * 299) + (hGreen * 587) + (hBlue * 114)) / 1000;
-		if (cBrightness > threshold){
+		if(cBrightness > threshold) {
 			return 'dark'
-		} else { 
+		} else {
 			return 'light'
-		}	
+		}
 	}
 
 	/**
-	 * Darken or lighten a hex color 
+	 * Darken or lighten a hex color
 	 * @param {String} color - Hex color code e.g '#3e82f7'
 	 * @param {Number} percent - Percentage -100 to 100, positive for lighten, negative for darken
-	 * @return {String} Darken or lighten color 
+	 * @return {String} Darken or lighten color
 	 */
 	static shadeColor(color, percent) {
-		let R = parseInt(color.substring(1,3),16);
-		let G = parseInt(color.substring(3,5),16);
-		let B = parseInt(color.substring(5,7),16);
+		let R = parseInt(color.substring(1, 3), 16);
+		let G = parseInt(color.substring(3, 5), 16);
+		let B = parseInt(color.substring(5, 7), 16);
 		R = parseInt(R * (100 + percent) / 100);
 		G = parseInt(G * (100 + percent) / 100);
 		B = parseInt(B * (100 + percent) / 100);
-		R = (R<255)?R:255;  
-		G = (G<255)?G:255;  
-		B = (B<255)?B:255;  
-		const RR = ((R.toString(16).length === 1) ? `0${R.toString(16)}` : R.toString(16));
-		const GG = ((G.toString(16).length === 1) ? `0${G.toString(16)}` : G.toString(16));
-		const BB = ((B.toString(16).length === 1) ? `0${B.toString(16)}` : B.toString(16));
-		return `#${RR}${GG}${BB}`; 
+		R = (R < 255) ? R : 255;
+		G = (G < 255) ? G : 255;
+		B = (B < 255) ? B : 255;
+		const RR = ((R.toString(16).length === 1) ? `0${ R.toString(16) }` : R.toString(16));
+		const GG = ((G.toString(16).length === 1) ? `0${ G.toString(16) }` : G.toString(16));
+		const BB = ((B.toString(16).length === 1) ? `0${ B.toString(16) }` : B.toString(16));
+		return `#${ RR }${ GG }${ BB }`;
 	}
 
 	/**
-	 * Returns either a positive or negative 
+	 * Returns either a positive or negative
 	 * @param {Number} number - number value
 	 * @param {any} positive - value that return when positive
 	 * @param {any} negative - value that return when negative
 	 * @return {any} positive or negative value based on param
 	 */
 	static getSignNum(number, positive, negative) {
-		if (number > 0) {
+		if(number > 0) {
 			return positive
 		}
-		if (number < 0) {
+		if(number < 0) {
 			return negative
 		}
 		return null
@@ -114,7 +140,7 @@ class Utils {
 	}
 
 	/**
-	 * Filter array of object 
+	 * Filter array of object
 	 * @param {Array} list - array of objects that need to filter
 	 * @param {String} key - object key target
 	 * @param {any} value  - value that excluded from filter
@@ -152,16 +178,16 @@ class Utils {
 	static wildCardSearch(list, input) {
 		const searchText = (item) => {
 			const upInput = input.toString().toUpperCase();
-			for (let key in item) {
-				if (item[key] == null) {
+			for(let key in item) {
+				if(item[key] == null) {
 					continue;
 				}
-				if (typeof item[key] === 'object') {
+				if(typeof item[key] === 'object') {
 					const isMatch = Object.values(item[key]).map(value => value?.toString().toUpperCase().includes(upInput)).includes(true)
-					if (isMatch) return true;
+					if(isMatch) return true;
 					else continue;
 				}
-				if (item[key].toString().toUpperCase().indexOf(upInput) !== -1) {
+				if(item[key].toString().toUpperCase().indexOf(upInput) !== -1) {
 					return true;
 				}
 			}
@@ -177,10 +203,10 @@ class Utils {
 	 */
 	static getBreakPoint(screens) {
 		let breakpoints = []
-		for (const key in screens) {
-			if (screens.hasOwnProperty(key)) {
+		for(const key in screens) {
+			if(screens.hasOwnProperty(key)) {
 				const element = screens[key];
-				if (element) {
+				if(element) {
 					breakpoints.push(key)
 				}
 			}
@@ -198,10 +224,11 @@ export default Utils;
  */
 export function getAuthBackgroundStyle(param) {
 	return !param.includes('#') ? {
-		backgroundImage: `url(${param})`,
+		backgroundImage: `url(${ param })`,
 		backgroundRepeat: 'no-repeat',
-		backgroundSize: 'cover'
+		backgroundSize: 'cover',
 	} : {
 		backgroundColor: param,
 	}
 }
+

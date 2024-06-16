@@ -2,55 +2,55 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { message } from 'antd';
 import URLS from 'redux/urls'
 import { apiRequest } from 'redux/utils/api';
-import request from 'redux/utils/request'
 
 const url_citizens = URLS.CITIZENS
 
 export const getCitizens = async (params) =>
 	apiRequest({
-		path: `${url_citizens}`,
+		path: `${ url_citizens }`,
 		method: "GET",
 		params,
 	});
 
 export const addCitizensFamilies = async (data) =>
 	apiRequest({
-		path: `${url_citizens}/families`,
+		path: `${ url_citizens }/families`,
 		method: "POST",
-		data
+		data,
 	});
 
 export const getOneCitizens = async (id) =>
 	apiRequest({
-		path: `${url_citizens}/${id}`,
+		path: `${ url_citizens }/${ id }`,
 		method: "GET",
 	});
 
-export const updateOneCategories = async (data) =>
+export const updateOneCitizen = async (data) =>
 	apiRequest({
-		path: `${url_citizens}`,
+		path: `${ url_citizens }`,
 		method: "PUT",
-		data
+		data,
 	});
 
-export const addOneCategories = async (data) =>
+export const addOneCitizen = async (data) =>
 	apiRequest({
-		path: `${url_citizens}`,
+		path: `${ url_citizens }`,
 		method: "POST",
-		data
+		data,
 	});
 
 export const fetchAllCitizens = createAsyncThunk(
 	'Citizen/fetchAllCitizen',
 	async (params, { rejectWithValue }) => {
-		return await getCitizens(params)
-			.then((res) => {
-				return res.data.data
-			})
-			.catch((err) => {
-				return rejectWithValue(err)
-			})
-	}
+        return await getCitizens(params)
+            .then((res) => {
+				message.success(res.data.message)
+                return res.data.data;
+            })
+            .catch((err) => {
+                return rejectWithValue(err)
+            });
+	},
 )
 
 export const fetchOneCitizen = createAsyncThunk(
@@ -63,20 +63,20 @@ export const fetchOneCitizen = createAsyncThunk(
 			.catch((err) => {
 				return rejectWithValue(err)
 			})
-	}
+	},
 )
 
 export const updateCitizen = createAsyncThunk(
 	'Citizen/updateCitizen',
 	async (data, { rejectWithValue }) => {
-		return await updateOneCategories(data)
+		return await updateOneCitizen(data)
 			.then((res) => {
 				return res.data.data
 			})
 			.catch((err) => {
 				return rejectWithValue(err)
 			})
-	}
+	},
 )
 
 export const addCitizenFamilies = createAsyncThunk(
@@ -89,38 +89,40 @@ export const addCitizenFamilies = createAsyncThunk(
 				return data
 			})
 			.catch((err) => {
+				console.error(`ASUUU ERROR: ${err.message}`)
 				return rejectWithValue(err)
 			})
-	}
+	},
 )
 
 export const addCitizen = createAsyncThunk(
-	'Citizen/updateCitizen',
+	'Citizen/addCitizen',
 	async (data, { rejectWithValue }) => {
-		return await addOneCategories(data)
+		return await addOneCitizen(data)
 			.then((res) => {
 				const data = res.data
 				message.success(data.message)
 				return data
 			})
 			.catch((err) => {
+				console.log(`ERR${err.response.data}`)
 				return rejectWithValue(err)
 			})
-	}
+	},
 )
 
 const initialState = {
 	loading: {
 		query: false,
-		mutation: false
+		mutation: false,
 	},
 	filter: {
-		q: ''
+		q: '',
 	},
 	list: [],
 	message: "",
 	selected: {},
-	selectedRows: []
+	selectedRows: [],
 }
 
 const loadingReducer = (fieldName, status) => (state) => {
@@ -131,6 +133,8 @@ const startLoadingQuery = loadingReducer('query', true)
 const stopLoadingQuery = loadingReducer('query', false)
 const startLoadingMutation = loadingReducer('mutation', true)
 const stopLoadingMutation = loadingReducer('mutation', false)
+const startLoadingData = loadingReducer('data', true)
+const stopLoadingData = loadingReducer('data', true)
 
 export const CitizenSlice = createSlice({
 	name: 'Citizen',
@@ -141,7 +145,7 @@ export const CitizenSlice = createSlice({
 		},
 		setSelectedRows: (state, action) => {
 			state.selectedRows = action.payload
-		}
+		},
 	},
 	extraReducers: builder => {
 		builder
@@ -159,6 +163,19 @@ export const CitizenSlice = createSlice({
 			.addCase(fetchOneCitizen.fulfilled, (state, action) => {
 				state.loading.query = false
 				state.selected = action.payload
+				state.message = action.payload.message
+			})
+		builder
+			.addCase(addCitizen.pending, startLoadingQuery)
+			.addCase(addCitizen.rejected, (state, action) => {
+				state.loading.query = false
+        state.selected = action.payload
+        state.message = action.payload.response.data.message
+			})
+			.addCase(addCitizen.fulfilled, (state, action) => {
+				state.loading.query = false
+				state.selected = action.payload
+				state.message = action.payload
 			})
 		builder
 			.addCase(updateCitizen.pending, startLoadingQuery)
@@ -173,7 +190,7 @@ export const CitizenSlice = createSlice({
 			.addCase(addCitizenFamilies.pending, startLoadingMutation)
 			.addCase(addCitizenFamilies.fulfilled, stopLoadingMutation)
 			.addCase(addCitizenFamilies.rejected, stopLoadingMutation)
-	}
+	},
 });
 
 

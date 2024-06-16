@@ -38,7 +38,7 @@ export const DETAILPRODUCT = () => {
     } catch (error) {
       message.error(error?.message || 'Failed to data')
     }
-  }, [dispatch])
+  }, [ dispatch, form, product.list ])
 
   const getCategories = useCallback(async () => {
     try {

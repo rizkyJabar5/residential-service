@@ -1,5 +1,15 @@
 import { strings } from 'res';
-import { CashHandoverIcon, ReportIcon, DeliveryIcon, OutletIcon, CustomerIcon, DashboardIcon, CommandCenterIcon, SettingIcon, SLAIcon, ProductIcon, OrderIcon } from "../assets/svg/icon";
+import {
+  CashHandoverIcon,
+  ReportIcon,
+  DeliveryIcon, OutletIcon,
+  CustomerIcon,
+  DashboardIcon,
+  CommandCenterIcon, SettingIcon,
+  SLAIcon,
+  ProductIcon,
+  OrderIcon
+} from "../assets/svg/icon";
 
 const dashBoardNavTree = [{
   key: "Main",
@@ -27,7 +37,7 @@ const societyTree = [{
   submenu: [
     {
       key: "Citizens",
-      path: strings.navigation.path.citizen,
+      path: strings.navigation.path.citizen.list,
       title: "Warga",
       icon: CustomerIcon,
       breadcrumb: false,
@@ -97,7 +107,7 @@ const userManagementTree = [{
 const newsTree = [{
   key: "Information",
   path: strings.navigation.path.news,
-  title: "Information",
+  title: "Informasi",
   breadcrumb: false,
   submenu: [
     {

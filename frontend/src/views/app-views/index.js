@@ -22,8 +22,10 @@ import DETAILPRODUCT from "./detail-product"
 import DETAILCUSTOMER from "./detail-customer"
 import DETAILUSER from "./detail-user"
 import INVOICE from "./invoice"
-import DetailCitizen from "./citizens/DetailCitizen";
+import DetailCitizen from "./citizens/detail-citizen";
 import DETAILPURCHASE from "./detail-purchase";
+import AddCitizen from "./citizens/add-citizen";
+import EditCitizen from "./citizens/edit-citizen";
 
 export const AppViews = ({ match }) => {
 
@@ -32,8 +34,14 @@ export const AppViews = ({ match }) => {
       <Switch>
         {/* <PrivateRoute path={`${match.url}`} component={DASHBOARD} /> */}
         <PrivateRoute path={`${strings.navigation.path.dashboard}`} component={DASHBOARD} />
-        <PrivateRoute path={`${strings.navigation.path.citizen}`} component={Citizens} />
+
+        {/*CITIZEN*/}
+        <PrivateRoute exact path={`${strings.navigation.path.citizen.list}`} component={Citizens} />
+        <PrivateRoute path={`${strings.navigation.path.citizen.add}`} component={AddCitizen} />
+        <PrivateRoute path={`${strings.navigation.path.citizen.list}/:id`} component={EditCitizen} />
+
         <PrivateRoute path={`${strings.navigation.path.letter}`} component={Letters} />
+
         {/* <PrivateRoute path={`${strings.navigation.path.categories}`} component={CATEGORIES} /> */}
         {/* <PrivateRoute path={`${strings.navigation.path.expenses}`} component={EXPENSES} /> */}
         <PrivateRoute path={`${strings.navigation.path.reports}`} component={PRODUCTS} />
@@ -50,7 +58,6 @@ export const AppViews = ({ match }) => {
         <PrivateRoute path={`${strings.navigation.path.detail_products}`} component={DETAILPRODUCT} />
         <PrivateRoute path={`${strings.navigation.path.detail_customers}`} component={DETAILCUSTOMER} />
         <PrivateRoute path={`${strings.navigation.path.detail_users}`} component={DETAILUSER} />
-        <PrivateRoute path={`${strings.navigation.path.detail_citizen}`} component={DetailCitizen} />
         <PrivateRoute path={`${strings.navigation.path.detail_purchase}`} component={DETAILPURCHASE} />
 
         {/* INVOICE */}

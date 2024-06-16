@@ -1,18 +1,17 @@
-import { Button, Card, Col, Row, Table, message as Message, Input, Select, Menu } from 'antd';
+import { Button, Card, Col, Row, Table, message as Message, Input, Menu } from 'antd';
 import React, { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
-import { fetchAllCitizens } from 'redux/features/citizens';
+import { fetchAllCitizens, setSelectedRows } from 'redux/features/citizens';
 import Flex from "../../../components/shared-components/Flex";
 import { SearchOutlined, PlusCircleOutlined, EyeOutlined } from "@ant-design/icons";
 import utils from "../../../utils";
 import { strings } from "../../../res";
-import EllipsisDropdown from "../../../components/shared-components/EllipsisDropdown";
+import citizenTableColumn from "../components/citizen/table";
 import { DeleteOutlined } from "@material-ui/icons";
+import EllipsisDropdown from "../../../components/shared-components/EllipsisDropdown";
 
-const { Option } = Select
-
-export const Citizens = ( props ) => {
+export const Citizens = (props) => {
 	const history = useHistory()
 	const dispatch = useDispatch();
 	const {
@@ -23,20 +22,18 @@ export const Citizens = ( props ) => {
 			query: loadingQuery,
 			mutation: loadingMutation,
 		},
-		message,
-	} = useSelector( state => state.citizens )
+		message
+	} = useSelector(state => state.citizens)
 
-	console.log( `Message: ${ message }` )
-	const getData = useCallback( async () => {
+	console.log(`Message: ${ message }`)
+	const getData = useCallback(async () => {
 		try {
-			await dispatch( fetchAllCitizens() ).unwrap()
-			Message.success( message )
-			// console.log(list)
+			await dispatch(fetchAllCitizens()).unwrap()
 		} catch (error) {
-			console.log( error )
-			Message.error( error?.message || 'Failed to fetch data' )
+			console.log(error)
+			Message.error(error?.message || 'Failed to fetch data')
 		}
-	}, [ dispatch ] )
+	}, [dispatch])
 
 	// const deleteData = useCallback(async (id) => {
 	// 	try {
@@ -48,21 +45,29 @@ export const Citizens = ( props ) => {
 	// 	}
 	// }, [ dispatch ])
 
-	useEffect( () => {
+	useEffect(() => {
 		getData()
-	}, [] )
+	}, [getData])
 
 	const addCitizen = () => {
-		history.push( `${ strings.navigation.path.detail_citizen }` )
+		history.push(`${ strings.navigation.path.citizen.add }`)
+	}
+
+	const onSearch = e => {
+		const value = e.currentTarget.value
+		const searchArray = e.currentTarget.value ? list : []
+		const data = utils.wildCardSearch(searchArray, value)
+		// setList(data)
+		// setSelectedRows([])
 	}
 
 	const viewDetails = row => {
-		history.push( `${ strings.navigation.path.detail_citizen }/${ row.id }` )
+		history.push(`${ strings.navigation.path.citizen.list }/${ row.id }`)
 	}
 
 	const dropdownMenu = row => (
 		<Menu>
-			<Menu.Item onClick={ () => viewDetails( row ) }>
+			<Menu.Item onClick={ () => viewDetails(row) }>
 				<Flex alignItems="center">
 					<EyeOutlined/>
 					<span className="ml-2">Detail</span>
@@ -79,7 +84,7 @@ export const Citizens = ( props ) => {
 		</Menu>
 	);
 
-	const tableColumns = [
+	const tableColumn = [
 		{
 			title: () => <div className="text-center">No. Identitas</div>,
 			children: [
@@ -101,7 +106,7 @@ export const Citizens = ( props ) => {
 			title: 'Nama Lengkap',
 			dataIndex: 'fullName',
 			key: 'fullName',
-			sorter: ( a, b ) => a.nameCategory.length - b.nameCategory.length,
+			sorter: (a, b) => a.nameCategory.length - b.nameCategory.length,
 		},
 		{
 			title: 'Alamat',
@@ -121,9 +126,9 @@ export const Citizens = ( props ) => {
 		{
 			title: '',
 			dataIndex: 'actions',
-			render: ( _, elm ) => (
+			render: (_, elm) => (
 				<div className="text-right">
-					<EllipsisDropdown menu={ dropdownMenu( elm ) }/>
+					<EllipsisDropdown menu={ dropdownMenu(elm) }/>
 				</div>
 			),
 		},
@@ -140,24 +145,16 @@ export const Citizens = ( props ) => {
 		// },
 	];
 
-	const onSearch = e => {
-		const value = e.currentTarget.value
-		const searchArray = e.currentTarget.value ? list : []
-		const data = utils.wildCardSearch( searchArray, value )
-		// setList(data)
-		// setSelectedRowKeys([])
-	}
-
 	return (
 		<>
 			<Row gutter={ 24 }>
 				{ props.noTitle ? (
 					<div></div>
 				) : (
-					( <Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
+					(<Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
 						<h2>Daftar Warga</h2>
 						<p>Informasi seputar warga</p>
-					</Col> )
+					</Col>)
 				) }
 			</Row>
 			<Row gutter={ 24 }>
@@ -166,16 +163,22 @@ export const Citizens = ( props ) => {
 						<Flex alignItems="center" justifyContent="between" mobileFlex={ false }>
 							<Flex className="mb-1" mobileFlex={ false }>
 								<div className="mr-md-3 mb-4">
-									<Input placeholder="Search" prefix={ <SearchOutlined/> } onChange={ e => onSearch( e ) }/>
+									<Input placeholder="Search" prefix={ <SearchOutlined/> } onChange={ e => onSearch(e) }/>
 								</div>
 							</Flex>
 							<div>
-								<Button onClick={ addCitizen } type="primary" icon={ <PlusCircleOutlined/> } block>Tambah</Button>
+								<Button
+									onClick={ addCitizen }
+									type="primary"
+									icon={ <PlusCircleOutlined/> }
+									block>
+									Tambah
+								</Button>
 							</div>
 						</Flex>
 						<Table
 							className="no-border-last"
-							columns={ tableColumns }
+							columns={ tableColumn }
 							dataSource={ list }
 							rowKey="kkId"
 							pagination={ {
@@ -189,5 +192,4 @@ export const Citizens = ( props ) => {
 	)
 }
 
-
-export default withRouter( Citizens );
+export default withRouter(Citizens);
