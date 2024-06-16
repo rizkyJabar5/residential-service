@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static id.application.security.SecurityUtils.getUserLoggedIn;
 import static id.application.util.EntityUtil.persistUtil;
 import static id.application.util.constant.AppConstants.EMAIL_OR_USERNAME_NOT_PROVIDED_MSG;
 import static id.application.util.constant.AppConstants.USER_NOT_FOUND_MSG;
@@ -67,6 +68,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public BaseResponse<Void> registerCitizen(CitizenRegisterRequest request) {
+        var userLoggedIn = getUserLoggedIn();
         var existsAccount = this.userInfoRepository.existsByKkId(request.kkId(), request.phoneNumber());
 
         if (existsAccount) {
@@ -79,7 +81,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setAccountNonExpired(true);
         user.setEnabled(true);
         user.setCredentialsNonExpired(true);
-        persistUtil(user, "ADMIN");
+        persistUtil(user, userLoggedIn.getName());
         AppUser appUser = userRepository.saveAndFlush(user);
 
         persistedUserInfo(request.phoneNumber(), request.kkId(), appUser);

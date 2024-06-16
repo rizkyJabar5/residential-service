@@ -1,14 +1,11 @@
 package id.application.feature.dto.response;
 
+import id.application.feature.model.entity.AppUser;
 import id.application.util.enums.ERole;
-import id.application.util.enums.Gender;
-import id.application.util.enums.LatestEducation;
-import id.application.util.enums.Religion;
 import id.application.util.enums.StatusRegistered;
 import lombok.Builder;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Date;
 
 /**
@@ -24,25 +21,35 @@ public record AppUserDto(
         String name,
         String email,
         UserInfoDto userInfo,
-        ERole role,
-        boolean isAccountNonExpired,
-        boolean isAccountNonLocked,
-        boolean isCredentialsNonExpired,
-        boolean isEnabled) implements Serializable {
+        ERole role) implements Serializable {
     /**
      * DTO for {@link id.application.feature.model.entity.UserInfo}
      */
     @Builder
     public record UserInfoDto(
             String citizenId,
-            Integer kkId,
-            Integer nik,
+            String kkId,
             String phoneNumber,
-            String placeOfBirth,
-            ZonedDateTime dateOfBirth,
-            StatusRegistered statusRegistered,
-            Gender gender,
-            Religion religion,
-            LatestEducation latestEducation,
-            Integer homeId) implements Serializable {}
+            StatusRegistered statusRegistered) implements Serializable {}
+
+    public static AppUserDto entityToDto(AppUser appUser) {
+        var userInfo = appUser.getUserInfo();
+
+        return AppUserDto.builder()
+                .id(appUser.getId())
+                .name(appUser.getName())
+                .createdTime(appUser.getCreatedTime())
+                .createdBy(appUser.getCreatedBy())
+                .updatedTime(appUser.getUpdatedTime())
+                .updatedBy(appUser.getUpdatedBy())
+                .email(appUser.getUsername())
+                .role(appUser.getRole())
+                .userInfo(userInfo != null ? UserInfoDto.builder()
+                        .kkId(userInfo.getKkId())
+                        .citizenId(userInfo.getCitizenId())
+                        .phoneNumber(userInfo.getPhoneNumber())
+                        .statusRegistered(userInfo.getStatusRegistered())
+                        .build() : null)
+                .build();
+    }
 }

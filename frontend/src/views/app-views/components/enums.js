@@ -82,3 +82,11 @@ export function valueOfLatestEducation(label) {
   const foundLatestEducation = latestEducation.find(item => item.label === label);
   return foundLatestEducation?.value;
 }
+
+export const rolesEnum = [
+	{ value: "CITIZEN", label: "Warga" },
+	{ value: "SECRETARY_RW", label: "Secretaris RW" },
+	{ value: "RW", label: "RW" },
+	{ value: "SECRETARY_RT", label: "Secretaris RT" },
+	{ value: "ADMIN", label: "ADMIN" },
+]

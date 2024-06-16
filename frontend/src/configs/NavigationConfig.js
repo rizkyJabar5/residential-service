@@ -83,7 +83,7 @@ const userManagementTree = [{
   submenu: [
     {
       key: "User",
-      path: strings.navigation.path.users,
+      path: strings.navigation.path.users.list,
       title: "User",
       icon: CustomerIcon,
       breadcrumb: false,

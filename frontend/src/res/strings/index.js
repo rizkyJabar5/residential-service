@@ -60,7 +60,15 @@ export const strings = {
       suppliers: "/app/suppliers",
       news: "/app/news",
       finance: "/app/finance",
-      users: "/app/users",
+
+	    users: {
+				list: "/app/users",
+        add: "/app/users/add",
+        edit: "/app/users/edit",
+        detail: "/app/users/detail",
+        delete: "/app/users/delete",
+	    },
+
       detail_products: "/app/detail-product",
       invoice: "/app/invoice",
       detail_orders: "/app/detail-order",

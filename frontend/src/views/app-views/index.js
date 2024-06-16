@@ -7,25 +7,27 @@ import Loading from 'components/shared-components/Loading';
 // Pages
 import DASHBOARD from "./dashboard"
 import PRODUCTS from "./all-products"
-import Letters from "./all-letters"
+import Letters from "./letters/all-letters"
 import CUSTOMERS from "./all-customers"
 import SUPPLIERS from "./all-suppliers"
 import PURCHASE from "./all-purchase"
 import Citizens from "./citizens"
 import SETTINGS from "./settings"
-import USERS from "./all-users"
+import USERS from "./users"
 
 import DETAILREPORT from "./detail-report"
 import DETAILSUPPLIER from "./detail-supplier"
-import DETAILORDER from "./detail-order/DetailLetter"
+import DETAILORDER from "./letters/detail-order/DetailLetter"
 import DETAILPRODUCT from "./detail-product"
 import DETAILCUSTOMER from "./detail-customer"
-import DETAILUSER from "./detail-user"
+import DetailUser from "./users/detail-user"
 import INVOICE from "./invoice"
 import DetailCitizen from "./citizens/detail-citizen";
 import DETAILPURCHASE from "./detail-purchase";
 import AddCitizen from "./citizens/add-citizen";
 import EditCitizen from "./citizens/edit-citizen";
+import AddUser from "./users/add-user";
+import EditUser from "./users/edit-user";
 
 export const AppViews = ({ match }) => {
 
@@ -48,16 +50,18 @@ export const AppViews = ({ match }) => {
         <PrivateRoute path={`${strings.navigation.path.news}`} component={CUSTOMERS} />
         <PrivateRoute path={`${strings.navigation.path.finance}`} component={PURCHASE} />
         <PrivateRoute path={`${strings.navigation.path.suppliers}`} component={SUPPLIERS} />
-        <PrivateRoute path={`${strings.navigation.path.users}`} component={USERS} />
         <PrivateRoute path={`${strings.navigation.path.settings}`} component={SETTINGS} />
+	      {/* USERS */}
+	      <PrivateRoute exact path={`${strings.navigation.path.users.list}`} component={USERS} />
+	      <PrivateRoute path={`${strings.navigation.path.users.add}`} component={AddUser} />
+	      <PrivateRoute path={`${strings.navigation.path.users.list}/:id`} component={EditUser} />
 
-        {/* DETAIL */}
-        <PrivateRoute path={`${strings.navigation.path.detail_reports}`} component={DETAILREPORT} />
-        <PrivateRoute path={`${strings.navigation.path.detail_suppliers}`} component={DETAILSUPPLIER} />
-        <PrivateRoute path={`${strings.navigation.path.detail_orders}`} component={DETAILORDER} />
-        <PrivateRoute path={`${strings.navigation.path.detail_products}`} component={DETAILPRODUCT} />
-        <PrivateRoute path={`${strings.navigation.path.detail_customers}`} component={DETAILCUSTOMER} />
-        <PrivateRoute path={`${strings.navigation.path.detail_users}`} component={DETAILUSER} />
+	      {/* DETAIL */}
+	      <PrivateRoute path={`${strings.navigation.path.detail_reports}`} component={DETAILREPORT} />
+	      <PrivateRoute path={`${strings.navigation.path.detail_suppliers}`} component={DETAILSUPPLIER} />
+	      <PrivateRoute path={`${strings.navigation.path.detail_orders}`} component={DETAILORDER} />
+	      <PrivateRoute path={`${strings.navigation.path.detail_products}`} component={DETAILPRODUCT} />
+	      <PrivateRoute path={`${strings.navigation.path.detail_customers}`} component={DETAILCUSTOMER} />
         <PrivateRoute path={`${strings.navigation.path.detail_purchase}`} component={DETAILPURCHASE} />
 
         {/* INVOICE */}

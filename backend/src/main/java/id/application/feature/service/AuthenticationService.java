@@ -14,8 +14,10 @@ public interface AuthenticationService extends UserDetailsService {
     @Transactional
     BaseResponse<Void> createNewUser(UserRequest request);
 
+    @Transactional
     BaseResponse<Void> registerCitizen(CitizenRegisterRequest request);
 
+    @Transactional
     BaseResponse<Void> validateRegistrationCitizen(RequestValidateRegistration request);
 
     @Transactional

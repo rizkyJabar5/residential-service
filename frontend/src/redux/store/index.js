@@ -23,7 +23,7 @@ const store = configureStore({
     suppliers:supplierReducer,
     expenses:expenseReducer,
     citizens:citizensReducer,
-    user:userReducer,
+    accounts:userReducer,
   }
 });
 

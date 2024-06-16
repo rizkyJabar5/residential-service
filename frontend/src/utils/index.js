@@ -7,12 +7,16 @@ class Utils {
 			separator: '/',
 		};
 		const formatter = new Intl.DateTimeFormat('en-US', format)
-
-
 		return formatter.format(requestDate)
 			.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$2/$1/$3'); // Regex to swap month and day
 	}
 
+	static ACTION_TYPE = {
+		ADD: 'ADD',
+    EDIT: 'EDIT',
+    DELETE: 'DELETE',
+    VIEW: 'VIEW',
+	}
 	/**
 	 * Get first character from first & last sentences of a username
 	 * @param {String} name - Username
