@@ -18,12 +18,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-    import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static id.application.security.SecurityUtils.getUserLoggedIn;
-import static id.application.util.ConverterDateTime.convertToDateDefaultPattern;
 import static id.application.util.ConverterDateTime.convertToLocalDateDefaultPattern;
 import static id.application.util.EntityUtil.persistUtil;
 import static id.application.util.FilterableUtil.pageable;
@@ -58,12 +57,12 @@ public class CitizenServiceImpl implements CitizenService {
         var alreadyRegistered = this.isCitizenRegistered(request.nik());
 
         if (alreadyRegistered) {
-            throw new AppConflictException("Data kamu telah terdaftar");
+            throw new AppConflictException(String.format("Data %s telah terdaftar", request.fullName()));
         }
 
-        validateCitizenIsAlReadyRegistered(request.fullName(), request.nik());
+//        validateCitizenIsAlReadyRegistered(request.fullName(), request.nik());
 
-        var entity  = this.buildCitizen(request);
+        var entity = this.buildCitizen(request);
         persistUtil(entity, userLoggedIn.getName());
 
         return citizenRepository.save(entity);
@@ -75,10 +74,6 @@ public class CitizenServiceImpl implements CitizenService {
 
         var existCitizen = citizenRepository.findCitizenByFullName(request.fullName())
                 .orElseThrow();
-
-        var addressSplit = existCitizen.getHomeAddress().split(" No. ");
-        var block = addressSplit[0];
-        var homeId = Integer.parseInt(addressSplit[1]);
 
         var familyMembers = new ArrayList<Citizen>();
         for (var familyMember : request.familyMembers()) {
@@ -95,8 +90,7 @@ public class CitizenServiceImpl implements CitizenService {
                     .jobType(familyMember.jobType())
                     .bloodType(familyMember.bloodType())
                     .marriageStatus(familyMember.marriageStatus())
-                    .block(block)
-                    .homeId(homeId)
+                    .address(existCitizen.getAddress())
                     .build());
             persistUtil(family, userLoggedIn.getName());
             familyMembers.add(family);
@@ -113,29 +107,29 @@ public class CitizenServiceImpl implements CitizenService {
     public Citizen updateById(RequestCitizenUpdate request) {
         var userLoggedIn = getUserLoggedIn();
 
-        var existingCitizen = this.findCitizenById(request.name());
-        if (request.name() != null) {
-            existingCitizen.setFullName(request.name());
-        }
-        if (request.block() != null) {
-            existingCitizen.setBlock(request.block());
-        }
-        if (request.homeId() != null) {
-            existingCitizen.setHomeId(request.homeId());
-
-        }
-        if (request.familyNumber() != null) {
-            existingCitizen.setFamilyNumber(request.familyNumber());
-        }
+        var existingCitizen = this.findCitizenById(request.id());
+        existingCitizen.setKkId(request.kkId());
+        existingCitizen.setFullName(request.fullName());
+        existingCitizen.setNik(request.nik());
+        existingCitizen.setGender(request.gender());
+        existingCitizen.setPlaceOfBirth(request.placeOfBirth());
+        existingCitizen.setDateOfBirth(convertToLocalDateDefaultPattern(request.dateOfBirth()));
+        existingCitizen.setReligion(request.religion());
+        existingCitizen.setLatestEducation(request.latestEducation());
+        existingCitizen.setFamilyStatus(request.familyStatus());
+        existingCitizen.setJobType(request.jobType());
+        existingCitizen.setBloodType(request.bloodType());
+        existingCitizen.setMarriageStatus(request.marriageStatus());
+        existingCitizen.setAddress(request.address());
 
         existingCitizen.setUpdatedBy(userLoggedIn.getName());
-        existingCitizen.setUpdatedTime(convertToDateDefaultPattern(LocalDate.now().toString()));
+        existingCitizen.setUpdatedTime(new Date(System.currentTimeMillis()));
 
         return citizenRepository.save(existingCitizen);
     }
 
     private Citizen buildCitizen(CitizenInfoRequest request) {
-        var entity  = new Citizen();
+        var entity = new Citizen();
         entity.setKkId(request.kkId());
         entity.setFullName(request.fullName());
         entity.setNik(request.nik());
@@ -148,8 +142,7 @@ public class CitizenServiceImpl implements CitizenService {
         entity.setJobType(request.jobType());
         entity.setBloodType(request.bloodType());
         entity.setMarriageStatus(request.marriageStatus());
-        entity.setBlock(request.block());
-        entity.setHomeId(request.homeId());
+        entity.setAddress(request.address());
 
         return entity;
     }
