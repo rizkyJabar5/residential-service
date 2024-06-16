@@ -10,6 +10,7 @@ public class AppWebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("*")
-                .allowedHeaders("*");
+                .allowedHeaders("*")
+                .allowedMethods("*");
     }
 }

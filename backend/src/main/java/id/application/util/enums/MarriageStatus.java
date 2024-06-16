@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum MarriageStatus {
     MARRIAGE("Kawin"),
-    UNMARRIAGE("Belum Kawin");
+    UNMARRIED("Belum Kawin");
 
     private final String status;
 }

@@ -45,11 +45,10 @@ export const apiRequest = async ({
 
     return axios(config)
         .then(function(res){
-            console.log(`JeMBOOOOOOOOT: ${res.data.data}`)
             return res
         })
         .catch((err) => {
-            console.info("[ERROR] Api Request: ", err.response.data);
+            console.info(`[ERROR ${err.response}] Api Request: ${err}`);
             throw err;
         });
 };

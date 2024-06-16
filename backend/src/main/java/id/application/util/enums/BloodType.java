@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum BloodType {
-    A("a"),
+    A("A"),
     B("B"),
     AB("AB"),
     O("O"),

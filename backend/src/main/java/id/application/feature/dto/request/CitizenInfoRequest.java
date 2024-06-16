@@ -36,6 +36,5 @@ public record CitizenInfoRequest(
         String jobType,
         BloodType bloodType,
         MarriageStatus marriageStatus,
-        String block,
-        Integer homeId) implements Serializable {
+        String address) implements Serializable {
 }

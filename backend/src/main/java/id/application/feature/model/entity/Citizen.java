@@ -14,7 +14,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -59,16 +58,8 @@ public class Citizen extends BaseEntity {
 
     private MarriageStatus marriageStatus;
 
-    @Getter(AccessLevel.NONE)
-    private String block;
-
-    @Getter(AccessLevel.NONE)
-    private Integer homeId;
+    private String address;
 
     @Column(length = 10)
     private Integer familyNumber;
-
-    public String getHomeAddress() {
-        return block + " No. " + homeId;
-    }
 }

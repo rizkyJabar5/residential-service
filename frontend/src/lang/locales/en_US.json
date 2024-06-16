@@ -1,3 +1,12 @@
 {
-	"home": "Home"
+  "Main": "Main",
+  "Beranda": "Beranda",
+  "Masyarakat": "Masyarakat",
+  "Warga": "Warga",
+  "Surat Pengajuan": "Surat Pengajuan",
+  "User": "User",
+  "Informasi": "Informasi",
+  "Berita": "Berita",
+  "Keuangan": "Keuangan",
+  "Laporan Kerusakan": "Laporan Kerusakan"
 }

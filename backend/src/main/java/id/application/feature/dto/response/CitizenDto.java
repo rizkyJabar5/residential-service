@@ -12,6 +12,7 @@ import static id.application.util.ConverterDateTime.dateToString;
  */
 @Builder
 public record CitizenDto(
+        String id,
         String kkId,
         String fullName,
         String nik,
@@ -33,6 +34,7 @@ public record CitizenDto(
 
     public static CitizenDto entityToDto(Citizen citizen) {
         return CitizenDto.builder()
+                .id(citizen.getId())
                 .kkId(citizen.getKkId())
                 .fullName(citizen.getFullName())
                 .nik(citizen.getNik())
@@ -45,7 +47,7 @@ public record CitizenDto(
                 .jobType(citizen.getJobType())
                 .bloodType(citizen.getBloodType().getBlood())
                 .marriageStatus(citizen.getMarriageStatus().getStatus())
-                .homeAddress(citizen.getHomeAddress())
+                .homeAddress(citizen.getAddress())
                 .familyNumber(citizen.getFamilyNumber())
                 .createdTime(dateToString(citizen.getCreatedTime()))
                 .createdBy(citizen.getCreatedBy())

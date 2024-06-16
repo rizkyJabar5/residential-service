@@ -46,7 +46,13 @@ export const strings = {
       please: 'please',
       logout: "logout",
       dashboard: "/app/dashboard",
-      citizen: "/app/citizens",
+
+
+      citizen: {
+        list: "/app/citizens",
+        add: "/app/citizens/add",
+      },
+
       letter: "/app/letters",
       categories: "/app/categories",
       reports: "/app/reports",
@@ -62,7 +68,6 @@ export const strings = {
       detail_customers: "/app/detail-customer",
       detail_suppliers: "/app/detail-supplier",
       detail_expenses: "/app/detail-expense",
-      detail_categories: "/app/detail-categories",
       detail_purchase: "/app/detail-purchase",
       detail_users: "/app/detail-user",
       profile: "/app/profile",

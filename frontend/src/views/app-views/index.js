@@ -7,25 +7,25 @@ import Loading from 'components/shared-components/Loading';
 // Pages
 import DASHBOARD from "./dashboard"
 import PRODUCTS from "./all-products"
-import ORDERS from "./all-orders"
+import Letters from "./all-letters"
 import CUSTOMERS from "./all-customers"
 import SUPPLIERS from "./all-suppliers"
 import PURCHASE from "./all-purchase"
-import EXPENSES from "./all-expenses"
-import REPORTS from "./all-reports"
-import CATEGORIES from "./all-categories"
+import Citizens from "./citizens"
 import SETTINGS from "./settings"
-import USERS, {PASIEN} from "./all-users"
+import USERS from "./all-users"
 
 import DETAILREPORT from "./detail-report"
 import DETAILSUPPLIER from "./detail-supplier"
-import DETAILORDER from "./detail-order"
+import DETAILORDER from "./detail-order/DetailLetter"
 import DETAILPRODUCT from "./detail-product"
 import DETAILCUSTOMER from "./detail-customer"
 import DETAILUSER from "./detail-user"
 import INVOICE from "./invoice"
-import DETAILCATEGORY from "./detail-category";
+import DetailCitizen from "./citizens/detail-citizen";
 import DETAILPURCHASE from "./detail-purchase";
+import AddCitizen from "./citizens/add-citizen";
+import EditCitizen from "./citizens/edit-citizen";
 
 export const AppViews = ({ match }) => {
 
@@ -34,8 +34,14 @@ export const AppViews = ({ match }) => {
       <Switch>
         {/* <PrivateRoute path={`${match.url}`} component={DASHBOARD} /> */}
         <PrivateRoute path={`${strings.navigation.path.dashboard}`} component={DASHBOARD} />
-        <PrivateRoute path={`${strings.navigation.path.citizen}`} component={CATEGORIES} />
-        <PrivateRoute path={`${strings.navigation.path.letter}`} component={ORDERS} />
+
+        {/*CITIZEN*/}
+        <PrivateRoute exact path={`${strings.navigation.path.citizen.list}`} component={Citizens} />
+        <PrivateRoute path={`${strings.navigation.path.citizen.add}`} component={AddCitizen} />
+        <PrivateRoute path={`${strings.navigation.path.citizen.list}/:id`} component={EditCitizen} />
+
+        <PrivateRoute path={`${strings.navigation.path.letter}`} component={Letters} />
+
         {/* <PrivateRoute path={`${strings.navigation.path.categories}`} component={CATEGORIES} /> */}
         {/* <PrivateRoute path={`${strings.navigation.path.expenses}`} component={EXPENSES} /> */}
         <PrivateRoute path={`${strings.navigation.path.reports}`} component={PRODUCTS} />
@@ -52,7 +58,6 @@ export const AppViews = ({ match }) => {
         <PrivateRoute path={`${strings.navigation.path.detail_products}`} component={DETAILPRODUCT} />
         <PrivateRoute path={`${strings.navigation.path.detail_customers}`} component={DETAILCUSTOMER} />
         <PrivateRoute path={`${strings.navigation.path.detail_users}`} component={DETAILUSER} />
-        <PrivateRoute path={`${strings.navigation.path.detail_categories}`} component={DETAILCATEGORY} />
         <PrivateRoute path={`${strings.navigation.path.detail_purchase}`} component={DETAILPURCHASE} />
 
         {/* INVOICE */}
