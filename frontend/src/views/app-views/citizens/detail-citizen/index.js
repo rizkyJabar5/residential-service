@@ -73,7 +73,6 @@ const DetailCitizen = ({ type = ADD, param }) => {
 					await dispatch(updateCitizen(request)).unwrap()
 						.then((res) => {
 							setSubmitLoading(true)
-							message.success(res.message)
 							history.push('/app/citizens')
 						})
 						.catch((err) => {
@@ -84,7 +83,6 @@ const DetailCitizen = ({ type = ADD, param }) => {
 					await dispatch(addCitizen(request)).unwrap()
 						.then((res) => {
 							setSubmitLoading(true)
-							message.success(res.message)
 							history.push('/app/citizens')
 						})
 						.catch((err) => {

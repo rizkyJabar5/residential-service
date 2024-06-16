@@ -71,6 +71,7 @@ export const updateCitizen = createAsyncThunk(
 	async (data, { rejectWithValue }) => {
 		return await updateOneCitizen(data)
 			.then((res) => {
+				message.success(data.message)
 				return res.data.data
 			})
 			.catch((err) => {
