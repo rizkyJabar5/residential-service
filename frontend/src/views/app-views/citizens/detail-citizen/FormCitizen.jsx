@@ -3,7 +3,7 @@ import {
 	Button, Card,
 	Col, DatePicker,
 	Form,
-	Input, InputNumber,
+	Input,
 	Row, Select,
 } from "antd";
 import {
@@ -41,7 +41,7 @@ const ADD = 'ADD'
 const FormCitizen = ({
 	                     form, onFinish, onFinishFailed, title, submitLoading, type, onCancel, header, selected,
                      }) => {
-	const [ selectedGender, setSelectedGender ] = useState(selected.gender)
+	const [ selectedGender, setSelectedGender ] = useState(valueOfGender(selected.gender))
 	const [ selectedReligion, setSelectedReligion ] = useState(valueOfReligion(selected.religion))
 	const [ selectedLatestEducation, setSelectedLatestEducation ] = useState(valueOfLatestEducation(selected.latestEducation))
 	const [ selectedFamilyStatus, setSelectedFamilyStatus ] = useState(valueOfFamilyStatus(selected.familyStatus))

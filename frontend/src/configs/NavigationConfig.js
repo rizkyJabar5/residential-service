@@ -2,12 +2,9 @@ import { strings } from 'res';
 import {
   CashHandoverIcon,
   ReportIcon,
-  DeliveryIcon, OutletIcon,
   CustomerIcon,
   DashboardIcon,
-  CommandCenterIcon, SettingIcon,
   SLAIcon,
-  ProductIcon,
   OrderIcon
 } from "../assets/svg/icon";
 
