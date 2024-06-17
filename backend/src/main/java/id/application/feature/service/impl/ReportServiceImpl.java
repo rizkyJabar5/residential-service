@@ -29,7 +29,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Page<Report> findAll(RequestPagination request) {
-        var sortByCreatedTime = Sort.by(Sort.Order.asc("createAt"));
+        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
         return reportRepository.findAll(pageable);
     }
