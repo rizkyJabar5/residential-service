@@ -48,7 +48,7 @@ export const apiRequest = async ({
             return res
         })
         .catch((err) => {
-            console.info(`[ERROR ${err.response}] Api Request: ${err}`);
+            console.info(`[ERROR ${err.response.status}] Api Request: ${err.response.data.message}`);
             throw err;
         });
 };

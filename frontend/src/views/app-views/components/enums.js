@@ -84,9 +84,14 @@ export function valueOfLatestEducation(label) {
 }
 
 export const rolesEnum = [
-	{ value: "CITIZEN", label: "Warga" },
-	{ value: "SECRETARY_RW", label: "Secretaris RW" },
+	{ value: "SECRETARY_RW", label: "Sekretaris RW" },
 	{ value: "RW", label: "RW" },
-	{ value: "SECRETARY_RT", label: "Secretaris RT" },
+	{ value: "RT", label: "RT" },
+	{ value: "SECRETARY_RT", label: "Sekretaris RT" },
 	{ value: "ADMIN", label: "ADMIN" },
 ]
+
+export function valueOfRoles(label) {
+	const foundRoles = rolesEnum.find(item => item.label === label);
+	return foundRoles?.value;
+}

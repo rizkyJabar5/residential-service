@@ -11,12 +11,43 @@ class Utils {
 			.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$2/$1/$3'); // Regex to swap month and day
 	}
 
+	static convertDateTimeToLocal(requestDate) {
+		const parsedDate = new Date(requestDate);
+
+		// Check if parsing was successful (returns Invalid Date if parsing fails)
+		if(isNaN(parsedDate.getTime())) {
+			throw new Error('Invalid date format: Please provide a valid date string.');
+		}
+		const monthNames = {
+			0: 'Jan',
+			1: 'Feb',
+			2: 'Mar',
+			3: 'Apr',
+			4: 'Mei',
+			5: 'Jun',
+			6: 'Jul',
+			7: 'Agu',
+			8: 'Sep',
+			9: 'Okt',
+			10: 'Nov',
+			11: 'Des',
+		};
+
+		let format = {
+			hour: 'numeric',
+			minute: 'numeric',
+			hour12: false,
+		};
+		return `${ parsedDate.toLocaleDateString('id-ID', { day: '2-digit' }) } ${ monthNames[parsedDate.getMonth()] } ${ parsedDate.getFullYear() } ${ parsedDate.toLocaleTimeString('id-ID', format) } WIB`;
+	}
+
 	static ACTION_TYPE = {
 		ADD: 'ADD',
-    EDIT: 'EDIT',
-    DELETE: 'DELETE',
-    VIEW: 'VIEW',
+		EDIT: 'EDIT',
+		DELETE: 'DELETE',
+		VIEW: 'VIEW',
 	}
+
 	/**
 	 * Get first character from first & last sentences of a username
 	 * @param {String} name - Username

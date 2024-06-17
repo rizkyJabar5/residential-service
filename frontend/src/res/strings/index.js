@@ -63,8 +63,10 @@ export const strings = {
 
 	    users: {
 				list: "/app/users",
-        add: "/app/users/add",
-        edit: "/app/users/edit",
+        add_staff: "/app/users/staff/add",
+        add_citizen: "/app/users/citizen/add",
+        edit_staff: "/app/users/staff/",
+        edit_citizen: "/app/users/citizen/",
         detail: "/app/users/detail",
         delete: "/app/users/delete",
 	    },

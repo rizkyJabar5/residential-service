@@ -5,17 +5,26 @@ import request from 'redux/utils/request'
 import { message } from "antd";
 
 const url = URLS.USER
+const url_register = URLS.REGISTER
+const url_citizen_register = URLS.CITIZEN_REGISTER
 
-export const getUsers = async (params) =>
+const getUsers = async (params) =>
 	apiRequest({
 		path: `${ url }`,
 		method: 'GET',
 		params,
 	});
 
-export const addUser = async (data) =>
+const registerUser = async (data) =>
 	apiRequest({
-		path: `/users/add-user`,
+		path: `${ url_register }`,
+		method: "POST",
+		data,
+	});
+
+const registerCitizen = async (data) =>
+	apiRequest({
+		path: `${ url_citizen_register }`,
 		method: "POST",
 		data,
 	});
@@ -24,15 +33,7 @@ export const fetchAllUser = createAsyncThunk(
 	'Users/fetchAllUser',
 	async (params, { rejectWithValue }) => {
 		const res = await getUsers(params)
-		console.log(res.data)
 		return res.data.data
-			// .then((res) => {
-			// 	console.log(res.data.data.content)
-			// 	return res.data.data;
-			// })
-			// .catch((err) => {
-			// 	return rejectWithValue(err)
-			// });
 	},
 )
 
@@ -44,6 +45,30 @@ export const fetchOneUser = createAsyncThunk(
 			return response.data
 		} catch (error) {
 			return rejectWithValue(error)
+		}
+	},
+)
+
+export const addNewStaff = createAsyncThunk(
+	'User/addNewStaff',
+	async (data, { rejectWithValue }) => {
+		try {
+			const res = await registerUser(data)
+			return res.data
+		} catch (error) {
+			return rejectWithValue(error.response.data)
+		}
+	},
+)
+
+export const addNewCitizen = createAsyncThunk(
+	'User/addNewCitizen',
+	async (data, { rejectWithValue }) => {
+		try {
+			const res = await registerCitizen(data)
+			return res.data
+		} catch (error) {
+			return rejectWithValue(error.response.data)
 		}
 	},
 )
@@ -61,26 +86,23 @@ export const deleteUser = createAsyncThunk(
 )
 
 const initialState = {
-	loading: {
-		query: false,
-		mutation: false,
-	},
+	isLoading: false,
+	error: null,
 	filter: {
 		q: '',
 	},
+	message: '',
 	list: [],
 	selected: {},
 	selectedRows: [],
 }
 
-const loadingReducer = (fieldName, status) => (state) => {
-	state.loading[fieldName] = status
+const loadingReducer = (status) => (state) => {
+	state.isLoading = status
 }
 
-const startLoadingQuery = loadingReducer('query', true)
-const stopLoadingQuery = loadingReducer('query', false)
-const startLoadingMutation = loadingReducer('mutation', true)
-const stopLoadingMutation = loadingReducer('mutation', false)
+const startLoading = loadingReducer(true)
+const stopLoading = loadingReducer(false)
 
 export const UserSlice = createSlice({
 	name: 'user',
@@ -95,34 +117,63 @@ export const UserSlice = createSlice({
 	},
 	extraReducers: builder => {
 		builder
-			.addCase(fetchAllUser.pending, startLoadingQuery)
+			.addCase(fetchAllUser.pending, startLoading)
 			.addCase(fetchAllUser.fulfilled, (state, action) => {
 				if(action.payload?.content) {
 					state.list = action.payload.content;
 				} else {
-					// Handle cases where content is missing in the response
 					message.warn('Gagal mendapatkan data user');
 				}
-				state.loading.query = false
-				state.message = action.payload
+				state.isLoading = false
+				state.message = action.payload.message
 			})
-			.addCase(fetchAllUser.rejected, (state, action ) => {
-				state.loading.query = false
+			.addCase(fetchAllUser.rejected, (state, action) => {
+				state.isLoading = false
+				state.error = action.payload
 				message.error('Gagal mendapatkan data user:', action.error.message); // Use Ant Design message for error notification
 			})
 
 		builder
-			.addCase(fetchOneUser.pending, startLoadingQuery)
-			.addCase(fetchOneUser.rejected, stopLoadingQuery)
+			.addCase(fetchOneUser.pending, startLoading)
+			.addCase(fetchOneUser.rejected, stopLoading)
 			.addCase(fetchOneUser.fulfilled, (state, action) => {
-				state.loading.query = false
+				state.isLoading = false
 				state.selected = action.payload
 			})
-
 		builder
-			.addCase(deleteUser.pending, startLoadingMutation)
-			.addCase(deleteUser.fulfilled, stopLoadingMutation)
-			.addCase(deleteUser.rejected, stopLoadingMutation)
+			.addCase(addNewStaff.pending, startLoading)
+			.addCase(addNewStaff.rejected, (state, action) => {
+				state.isLoading = false
+				state.error = action.payload
+				state.message = action.payload.message
+				message.error(state.message);
+			})
+			.addCase(addNewStaff.fulfilled, (state, action) => {
+				state.isLoading = false
+				state.error = null
+				state.message = action.payload.message
+				state.selected = action.payload.data;
+				message.success(state.message)
+			})
+		builder
+			.addCase(addNewCitizen.pending, startLoading)
+			.addCase(addNewCitizen.rejected, (state, action) => {
+				state.isLoading = false
+				state.error = action.payload
+				state.message = action.payload.message
+				message.error(state.message);
+			})
+			.addCase(addNewCitizen.fulfilled, (state, action) => {
+				state.isLoading = false
+				state.error = null
+				state.message = action.payload.message
+				state.selected = action.payload.data;
+				message.success(state.message)
+			})
+		builder
+			.addCase(deleteUser.pending, startLoading)
+			.addCase(deleteUser.fulfilled, stopLoading)
+			.addCase(deleteUser.rejected, stopLoading)
 	},
 });
 
