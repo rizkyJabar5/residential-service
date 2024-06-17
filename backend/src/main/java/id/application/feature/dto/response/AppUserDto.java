@@ -21,7 +21,7 @@ public record AppUserDto(
         String name,
         String email,
         UserInfoDto userInfo,
-        ERole role) implements Serializable {
+        String role) implements Serializable {
     /**
      * DTO for {@link id.application.feature.model.entity.UserInfo}
      */
@@ -43,7 +43,7 @@ public record AppUserDto(
                 .updatedTime(appUser.getUpdatedTime())
                 .updatedBy(appUser.getUpdatedBy())
                 .email(appUser.getUsername())
-                .role(appUser.getRole())
+                .role(appUser.getRole().getName())
                 .userInfo(userInfo != null ? UserInfoDto.builder()
                         .kkId(userInfo.getKkId())
                         .citizenId(userInfo.getCitizenId())

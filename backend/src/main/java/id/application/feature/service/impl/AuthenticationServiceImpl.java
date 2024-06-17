@@ -42,6 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public BaseResponse<Void> createNewUser(UserRequest request) {
+        var userLoggedIn = getUserLoggedIn();
         var existsUser = this.userRepository.existsUsername(request.email());
 
         if (existsUser) {
@@ -57,8 +58,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setAccountNonExpired(true);
         user.setEnabled(true);
         user.setCredentialsNonExpired(true);
-
+        persistUtil(user, userLoggedIn.getName());
         userRepository.saveAndFlush(user);
+
+        var userInfo = new UserInfo();
+        userInfo.setPhoneNumber(request.phoneNumber());
+        userInfo.setAppUser(user);
+        userInfo.setKkId(request.kkId());
+        userInfo.setStatusRegistered(StatusRegistered.REGISTERED);
+        userInfoRepository.saveAndFlush(userInfo);
 
         return BaseResponse.<Void>builder()
                 .code(String.valueOf(HttpStatus.OK.value()))
