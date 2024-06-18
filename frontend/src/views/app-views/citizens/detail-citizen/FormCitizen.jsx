@@ -145,7 +145,7 @@ const FormCitizen = ({
 							label="Tanggal Lahir"
 							rules={ rules.citizen.field.dateOfBirth }
 						>
-							<DatePicker format="DD/MM/YYYY"/>
+							<DatePicker placeholder="Pilih Tanggal" format="DD/MM/YYYY"/>
 						</Form.Item>
 					</Col>
 				</Row>

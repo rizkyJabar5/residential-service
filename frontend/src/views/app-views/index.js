@@ -7,7 +7,7 @@ import Loading from 'components/shared-components/Loading';
 // Pages
 import DASHBOARD from "./dashboard"
 import PRODUCTS from "./all-products"
-import Letters from "./letters/all-letters"
+import Letters from "./letters"
 import CUSTOMERS from "./all-customers"
 import SUPPLIERS from "./all-suppliers"
 import PURCHASE from "./all-purchase"
@@ -17,7 +17,7 @@ import USERS from "./users"
 
 import DETAILREPORT from "./detail-report"
 import DETAILSUPPLIER from "./detail-supplier"
-import DETAILORDER from "./letters/detail-order/DetailLetter"
+import DETAILORDER from "./ssssss"
 import DETAILPRODUCT from "./detail-product"
 import DETAILCUSTOMER from "./detail-customer"
 import INVOICE from "./invoice"
@@ -26,6 +26,7 @@ import AddCitizen from "./citizens/add-citizen";
 import EditCitizen from "./citizens/edit-citizen";
 import { AddAccountCitizen, AddAccountStaff } from "./users/add-user";
 import { EditAccountCitizen, EditAccountStaff } from "./users/edit-user";
+import AddLetter from "./letters/add-letter";
 
 export const AppViews = ({ match }) => {
 
@@ -40,7 +41,10 @@ export const AppViews = ({ match }) => {
 				<PrivateRoute path={ `${ strings.navigation.path.citizen.add }` } component={ AddCitizen }/>
 				<PrivateRoute path={ `${ strings.navigation.path.citizen.list }/:id` } component={ EditCitizen }/>
 
-				<PrivateRoute path={ `${ strings.navigation.path.letter }` } component={ Letters }/>
+				<PrivateRoute exact path={ `${ strings.navigation.path.letters.list }` } component={ Letters }/>
+				<PrivateRoute path={ `${ strings.navigation.path.letters.add }` } component={ AddLetter }/>
+				<PrivateRoute path={ `${ strings.navigation.path.letters.edit }/:id` } component={ Letters }/>
+				<PrivateRoute path={ `${ strings.navigation.path.letters.delete }` } component={ Letters }/>
 
 				{/* <PrivateRoute path={`${strings.navigation.path.categories}`} component={CATEGORIES} /> */ }
 				{/* <PrivateRoute path={`${strings.navigation.path.expenses}`} component={EXPENSES} /> */ }

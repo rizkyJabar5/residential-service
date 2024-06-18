@@ -6,7 +6,7 @@ import { DeleteOutlined } from "@material-ui/icons";
 import { strings } from "../../../res";
 import { useHistory } from "react-router-dom";
 
-const MenuActionTable = (row, path,  selectedRows) => {
+const MenuActionTable = (row, path,  selectedRows, hasDeleted) => {
 	const history = useHistory()
 
 	const viewDetails = row => {
@@ -21,14 +21,15 @@ const MenuActionTable = (row, path,  selectedRows) => {
 					<span className="ml-2">Detail</span>
 				</Flex>
 			</Menu.Item>
-			<Menu.Item onClick={ () => {
-				// deleteRow(row)
-			} }>
-				<Flex alignItems="center">
-					<DeleteOutlined/>
-					<span className="ml-2">{ selectedRows.length > 0 ? `Delete (${ selectedRows.length })` : 'Delete' }</span>
-				</Flex>
-			</Menu.Item>
+			{
+				hasDeleted &&
+        <Menu.Item onClick={ () => {} }>
+          <Flex alignItems="center">
+            <DeleteOutlined/>
+            <span className="ml-2">Delete</span>
+          </Flex>
+        </Menu.Item>
+			}
 		</Menu>
 	);
 }

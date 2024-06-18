@@ -79,8 +79,8 @@ export function valueOfMarriageStatus(label) {
 }
 
 export function valueOfLatestEducation(label) {
-  const foundLatestEducation = latestEducation.find(item => item.label === label);
-  return foundLatestEducation?.value;
+	const foundLatestEducation = latestEducation.find(item => item.label === label);
+	return foundLatestEducation?.value;
 }
 
 export const rolesEnum = [
@@ -94,4 +94,24 @@ export const rolesEnum = [
 export function valueOfRoles(label) {
 	const foundRoles = rolesEnum.find(item => item.label === label);
 	return foundRoles?.value;
+}
+
+export const typeLetter = [
+	{ value: 1, label: "Permohonan Kartu Keluarga" },
+	{ value: 2, label: "Permohonan Rekam/Cetak E-KTP" },
+	{ value: 3, label: "Permohonan Surat Keterangan Domisili" },
+	{ value: 4, label: "Permohonan Surat Keterangan Usaha" },
+	{ value: 5, label: "Permohonan Surat Keterangan Tidak Mampu(SKTM}" },
+	{ value: 6, label: "Permohonan Surat Pindah/Datang" },
+	{ value: 7, label: "Permohonan Surat Pengantar Skck" },
+	{ value: 8, label: "Permohonan Surat Mengurus Surat Nikah" },
+	{ value: 9, label: "Permohonan Surat Keterangan Lahir" },
+	{ value: 10, label: "Permohonan Surat Keterangan Kematian" },
+	{ value: 11, label: "Permohonan Surat Izin Keramaian" },
+	{ value: 12, label: "Lainnya" },
+]
+
+export function valueOfTypeLetter(label) {
+	const result = typeLetter.find(item => item.label === label);
+	return result?.value;
 }

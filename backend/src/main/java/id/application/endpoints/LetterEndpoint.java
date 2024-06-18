@@ -86,9 +86,9 @@ public class LetterEndpoint {
         service.updateStatusLetter(request);
     }
 
-    @GetMapping("/download/{letterId}")
-    public byte[] downloadSubmissionLetter(@PathVariable String letterId){
-        var content = service.downloadLetter(letterId);
+    @GetMapping("/download/{id}")
+    public byte[] downloadSubmissionLetter(@PathVariable String id){
+        var content = service.downloadLetter(id);
         return content;
     }
 }

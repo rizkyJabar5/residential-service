@@ -141,7 +141,8 @@ export const USERS = () => {
 						elm.role === 'Warga'
 							? strings.navigation.path.users.edit_citizen
 							: strings.navigation.path.users.edit_staff,
-						selectedRows) }
+						selectedRows,
+						true) }
 					/>
 				</div>
 			),

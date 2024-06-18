@@ -42,7 +42,7 @@ const societyTree = [{
     },
     {
       key: "Letter",
-      path: strings.navigation.path.letter,
+      path: strings.navigation.path.letters.list,
       title: "Surat Pengajuan",
       icon: OrderIcon,
       breadcrumb: false,

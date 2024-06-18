@@ -8,7 +8,7 @@ public enum Religion {
     KATOLIK("Katolik"),
     PROTESTAN("Protestan"),
     HINDU("Hindu"),
-    BUDDHA("Buddha");
+    BUDHA("Budha");
 
     private final String name;
 

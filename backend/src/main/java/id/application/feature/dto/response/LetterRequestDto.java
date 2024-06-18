@@ -7,6 +7,7 @@ import java.io.Serializable;
 
 @Builder
 public record LetterRequestDto(
+        String id,
         String letterId,
         String citizenId,
         String fullName,
@@ -23,6 +24,7 @@ public record LetterRequestDto(
 
     public static LetterRequestDto letterRequestDto(LetterRequest letterRequest){
         return LetterRequestDto.builder()
+                .id(letterRequest.getId())
                 .letterId(letterRequest.getLetterId())
                 .citizenId(letterRequest.getCitizenId())
                 .fullName(letterRequest.getFullName())
