@@ -1,7 +1,7 @@
 const URLS = Object.freeze({
 	LOGIN: `/auth/login`,
 	REGISTER: `/auth/register`,
-	STORE_GOOGLE_ACCOUNT: `/user/auth-google`,
+	CITIZEN_REGISTER: `/auth/citizen/register`,
 	ACTIVATION: `/send-activation`,
 	RESET_PASSWORD: `user/reset-password`,
 	RESEND_ACTIVATION: `user/resend-activation`,

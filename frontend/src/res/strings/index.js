@@ -53,14 +53,31 @@ export const strings = {
         add: "/app/citizens/add",
       },
 
-      letter: "/app/letters",
+      letters: {
+				list: "/app/letters",
+        add: "/app/letters/add",
+        // detail: "/app/letters/detail",
+        edit: "/app/letters/edit",
+        delete: "/app/letters/delete",
+      } ,
+
       categories: "/app/categories",
       reports: "/app/reports",
       customers: "/app/customers",
       suppliers: "/app/suppliers",
       news: "/app/news",
       finance: "/app/finance",
-      users: "/app/users",
+
+	    users: {
+				list: "/app/users",
+        add_staff: "/app/users/staff/add",
+        add_citizen: "/app/users/citizen/add",
+        edit_staff: "/app/users/staff/",
+        edit_citizen: "/app/users/citizen",
+        detail: "/app/users/detail",
+        delete: "/app/users/delete",
+	    },
+
       detail_products: "/app/detail-product",
       invoice: "/app/invoice",
       detail_orders: "/app/detail-order",

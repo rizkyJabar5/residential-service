@@ -3,7 +3,6 @@ package id.application.feature.dto.request;
 import id.application.util.enums.Gender;
 import id.application.util.enums.MarriageStatus;
 import id.application.util.enums.Religion;
-import id.application.util.enums.TypeLetter;
 import lombok.Builder;
 
 import java.io.Serializable;
@@ -23,5 +22,5 @@ public record LetterAddRequest(
         MarriageStatus marriageStatus,
         String jobType,
         String address,
-        TypeLetter type) implements Serializable {
+        int type) implements Serializable {
 }

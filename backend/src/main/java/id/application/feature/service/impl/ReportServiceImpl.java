@@ -36,7 +36,7 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Page<Report> findReportByDate(String date, RequestPagination request) {
-        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var sortByCreatedTime = Sort.by(Sort.Order.asc("createAt"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
 
         return reportRepository.findReportByDate(filterByDate(date), pageable);

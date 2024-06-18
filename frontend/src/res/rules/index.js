@@ -72,16 +72,36 @@ export const rules = {
 			bloodType: [
 				{
 					required: true,
+					message: 'Pilih Golongan Darah Anda!',
 				},
 			],
 			marriageStatus: [
 				{
 					required: true,
+					message: 'Pilih status perkawinan Anda!',
 				},
 			],
 			address: [
 				{
 					required: true,
+					message: 'Masukkan alamat Anda!',
+				},
+			],
+			onlyRequired: [
+				{
+					required: true,
+				},
+			],
+			letterType: [
+				{
+					required: true,
+					message: 'Pilih salah satu jenis pengajuan',
+				},
+			],
+			nationality: [
+				{
+					required: true,
+					message: 'Masukkan kewarganegaraan Anda!',
 				},
 			],
 		}, // field

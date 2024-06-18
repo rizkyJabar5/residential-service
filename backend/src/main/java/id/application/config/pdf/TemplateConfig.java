@@ -2,6 +2,7 @@ package id.application.config.pdf;
 
 import id.application.exception.ResourceNotFoundException;
 import id.application.feature.dto.request.LetterAddRequest;
+import id.application.util.enums.TypeLetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -50,7 +51,7 @@ public class TemplateConfig {
         argument.put("marriageStatus", request.marriageStatus());
         argument.put("jobType", request.jobType());
         argument.put("address", request.address());
-        argument.put("type", request.type());
+        argument.put("type", TypeLetter.valueOf(request.type()));
         return argument;
     }
 }

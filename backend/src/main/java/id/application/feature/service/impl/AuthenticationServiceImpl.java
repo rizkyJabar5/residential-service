@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import static id.application.security.SecurityUtils.getUserLoggedIn;
 import static id.application.util.EntityUtil.persistUtil;
 import static id.application.util.constant.AppConstants.EMAIL_OR_USERNAME_NOT_PROVIDED_MSG;
 import static id.application.util.constant.AppConstants.USER_NOT_FOUND_MSG;
@@ -41,6 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public BaseResponse<Void> createNewUser(UserRequest request) {
+        var userLoggedIn = getUserLoggedIn();
         var existsUser = this.userRepository.existsUsername(request.email());
 
         if (existsUser) {
@@ -56,8 +58,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setAccountNonExpired(true);
         user.setEnabled(true);
         user.setCredentialsNonExpired(true);
-
+        persistUtil(user, userLoggedIn.getName());
         userRepository.saveAndFlush(user);
+
+        var userInfo = new UserInfo();
+        userInfo.setPhoneNumber(request.phoneNumber());
+        userInfo.setAppUser(user);
+        userInfo.setKkId(request.kkId());
+        userInfo.setStatusRegistered(StatusRegistered.REGISTERED);
+        userInfoRepository.saveAndFlush(userInfo);
 
         return BaseResponse.<Void>builder()
                 .code(String.valueOf(HttpStatus.OK.value()))
@@ -67,6 +76,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public BaseResponse<Void> registerCitizen(CitizenRegisterRequest request) {
+        var userLoggedIn = getUserLoggedIn();
         var existsAccount = this.userInfoRepository.existsByKkId(request.kkId(), request.phoneNumber());
 
         if (existsAccount) {
@@ -79,7 +89,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setAccountNonExpired(true);
         user.setEnabled(true);
         user.setCredentialsNonExpired(true);
-        persistUtil(user, "ADMIN");
+        persistUtil(user, userLoggedIn.getName());
         AppUser appUser = userRepository.saveAndFlush(user);
 
         persistedUserInfo(request.phoneNumber(), request.kkId(), appUser);

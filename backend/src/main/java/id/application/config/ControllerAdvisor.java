@@ -17,8 +17,7 @@ import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 @RestControllerAdvice
 public class ControllerAdvisor extends ResponseStatusExceptionHandler {
     @ExceptionHandler({AppRuntimeException.class, AppConflictException.class,
-            ResourceNotFoundException.class, DataIntegrityViolationException.class,
-            InternalServerException.class, NumberFormatException.class})
+            ResourceNotFoundException.class, InternalServerException.class, NumberFormatException.class})
     public ResponseEntity<Object> illegalActionDataHandler(RuntimeException exception) {
         var response = BaseResponse.<Void>builder()
                 .code(String.valueOf(HttpStatus.CONFLICT.value()))

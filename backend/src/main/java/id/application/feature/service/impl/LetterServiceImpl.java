@@ -10,6 +10,7 @@ import id.application.feature.model.entity.LetterRequest;
 import id.application.feature.model.repositories.LetterRequestRepository;
 import id.application.feature.service.LetterService;
 import id.application.util.FilterableUtil;
+import id.application.util.enums.ERole;
 import id.application.util.enums.StatusLetter;
 import id.application.util.enums.TypeLetter;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +34,7 @@ import static id.application.util.FilterableUtil.pageable;
 @RequiredArgsConstructor
 @Service
 public class LetterServiceImpl implements LetterService {
+    public static final String MSG_LETTER_NOT_FOUND = "Surat pengajuan tidak ditemukan";
     private final LetterRequestRepository repository;
     private final TemplateConfig templateConfig;
 
@@ -56,7 +58,7 @@ public class LetterServiceImpl implements LetterService {
     public LetterRequest findById(String id) {
         getUserLoggedIn();
         return repository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Surat pengajuan tidak ditemukan"));
+                .orElseThrow(() -> new ResourceNotFoundException(MSG_LETTER_NOT_FOUND));
     }
 
     @Override
@@ -69,14 +71,19 @@ public class LetterServiceImpl implements LetterService {
     @Override
     public LetterRequest persistNew(LetterAddRequest request) {
         var authenticatedUser = getUserLoggedIn();
-        var citizenId = authenticatedUser.getUserInfo().getCitizenId();
         var userLoggedIn = authenticatedUser.getName();
 
         var nik = request.nik();
-        this.duplicateLetterRequest(nik, request.type());
+        var typeLetter = TypeLetter.valueOf(request.type());
+        this.duplicateLetterRequest(nik, typeLetter);
         var entity = repository.findLetterRejected(nik).orElse(new LetterRequest());
         entity.generateLetterId();
-        entity.setCitizenId(citizenId);
+
+        if (authenticatedUser.getRole() == ERole.CITIZEN) {
+            var citizenId = authenticatedUser.getUserInfo().getCitizenId();
+            entity.setCitizenId(citizenId);
+        }
+
         entity.setFullName(request.fullName());
         entity.setPlaceBirth(request.pob());
         entity.setDateOfBirth(convertToLocalDateDefaultPattern(request.dob()));
@@ -87,7 +94,7 @@ public class LetterServiceImpl implements LetterService {
         entity.setMarriageStatus(request.marriageStatus());
         entity.setJobType(request.jobType());
         entity.setAddress(request.jobType());
-        entity.setType(request.type());
+        entity.setType(typeLetter);
         entity.setStatus(StatusLetter.WAITING);
         persistUtil(entity, userLoggedIn);
 
@@ -98,7 +105,7 @@ public class LetterServiceImpl implements LetterService {
     public void updateStatusLetter(UpdateLetterStatusRequest request) {
         var authenticatedUser = getUserLoggedIn();
         var existLetter = repository.findById(request.letterId())
-                .orElseThrow(() -> new ResourceNotFoundException("Surat pengajuan tidak ditemukan"));
+                .orElseThrow(() -> new ResourceNotFoundException(MSG_LETTER_NOT_FOUND));
 
         var statusLetter = StatusLetter.valueOf(request.status());
         existLetter.setStatus(statusLetter);
@@ -109,9 +116,9 @@ public class LetterServiceImpl implements LetterService {
     }
 
     @Override
-    public byte[] downloadLetter(String letterId) {
-        var existSubmission = repository.findByLetterId(letterId)
-                .orElseThrow();
+    public byte[] downloadLetter(String id) {
+        var existSubmission = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(MSG_LETTER_NOT_FOUND));
 
         var templateHtml = templateConfig.ruEnrichProcessor(LetterAddRequest.builder()
                 .fullName(existSubmission.getFullName())
@@ -124,7 +131,7 @@ public class LetterServiceImpl implements LetterService {
                 .marriageStatus(existSubmission.getMarriageStatus())
                 .jobType(existSubmission.getJobType())
                 .address(existSubmission.getAddress())
-                .type(existSubmission.getType())
+                .type(existSubmission.getType().getId())
                 .build());
         var template = writePdfFile(templateHtml, getFirstName(existSubmission.getFullName()));
         return getContent(template);

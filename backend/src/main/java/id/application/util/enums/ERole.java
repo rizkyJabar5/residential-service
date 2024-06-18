@@ -7,11 +7,11 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ERole {
     CITIZEN("Warga"),
-    SECRETARY_RW("Secretary RW"),
+    SECRETARY_RW("Sekretaris RW"),
     RW("RW"),
-    SECRETARY_RT("Secretary RT"),
+    SECRETARY_RT("Sekretaris RT"),
     RT("RT"),
-    ADMIN("ADMIN");
+    ADMIN("Admin");
 
     private final String name;
 

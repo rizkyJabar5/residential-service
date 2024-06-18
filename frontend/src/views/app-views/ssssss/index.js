@@ -33,7 +33,7 @@ const customStyles = {
   },
 };
 
-export const DetailLetter = () => {
+export const Index = () => {
 
   const history = useHistory()
   const location = useLocation();
@@ -436,4 +436,4 @@ export const DetailLetter = () => {
   )
 }
 
-export default DetailLetter
+export default Index

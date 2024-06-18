@@ -27,10 +27,9 @@ import java.util.Random;
 @NoArgsConstructor
 @Table(name = "letter_request")
 public class LetterRequest extends BaseEntity {
-    @Column(length = 15)
+    @Column(length = 16)
     private String letterId;
 
-    @Column(nullable = false)
     private String citizenId;
 
     private String fullName;
