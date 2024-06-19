@@ -19,6 +19,12 @@ const validateCitizen = async (data) =>
 		data,
 	})
 
+const logout = async () =>
+	apiRequest({
+		path: URLS.LOGOUT,
+		method: 'post',
+	})
+
 export const login = createAsyncThunk(
 	'auth/signIn',
 	async (credentials, { rejectWithValue }) => {
@@ -62,10 +68,15 @@ export const sendActivation = createAsyncThunk(
 )
 
 export const sendLogout = createAsyncThunk(
-	'auth/storeGoogleAccountToken',
-	async () => {
-		const response = await request('post', URLS.LOGOUT)
-		return response
+	'auth/logout',
+	async (_, { rejectWithValue }) => {
+		try {
+			const response = await logout()
+			return response.data
+		} catch (err) {
+			console.log(err.response.data)
+			return rejectWithValue(err.response.data)
+		}
 	},
 )
 
@@ -190,7 +201,11 @@ export const authSlice = createSlice({
 		builder
 			.addCase(sendLogout.pending, startLoading)
 			.addCase(sendLogout.fulfilled, (state, action) => {
-				state.message = action.payload
+				state.message = action.payload.message
+				state.token = null;
+				state.redirect = '/';
+				state.loading = false;
+				state.user = null;
 			})
 			.addCase(sendLogout.rejected, stopLoading)
 		builder
