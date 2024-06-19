@@ -63,7 +63,7 @@ export const sendActivation = createAsyncThunk(
 
 export const sendLogout = createAsyncThunk(
 	'auth/storeGoogleAccountToken',
-	async (tokenId) => {
+	async () => {
 		const response = await request('post', URLS.LOGOUT)
 		return response
 	},

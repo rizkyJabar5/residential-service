@@ -6,7 +6,7 @@ import {
 } from '@ant-design/icons';
 import Icon from 'components/util-components/Icon';
 import { sendLogout } from "../../redux/features/auth";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 const menuItem = [
   // {
@@ -32,7 +32,6 @@ const menuItem = [
 ]
 
 export const NavProfile = ({ }) => {
-	const { user } = useSelector(state => state.auth);
 	const dispatch = useDispatch();
 
   const profileMenu = (
@@ -84,5 +83,3 @@ export const NavProfile = ({ }) => {
     </Dropdown>
   );
 }
-
-export default NavProfile

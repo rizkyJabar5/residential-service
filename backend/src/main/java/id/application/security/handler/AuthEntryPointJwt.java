@@ -18,8 +18,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
-import static id.application.util.ConverterDateTime.formatDateTime;
-
 @Component
 @Slf4j
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
