@@ -13,15 +13,16 @@ export const LoginForm = (props) => {
 	let history = useHistory();
 	const { showForgetPassword, extra } = props
 
-	const getUserData = async (token) => {
+	const getUserData = async (user) => {
 		try {
-			localStorage.setItem('token', token)
-			// const response = await dispatch(getUserProfile(token)).unwrap()
-			// dispatch(authenticated({ token, user: response.doc }))
-			console.log(token)
+			localStorage.setItem('user', JSON.stringify(user))
+			localStorage.setItem('token', user?.accessToken)
+			localStorage.setItem('refreshToken', user?.refreshToken)
 			history.push("/app/dashboard/");
 		} catch {
 			localStorage.removeItem('token')
+			localStorage.removeItem('refreshToken')
+			localStorage.removeItem('user')
 			history.push("/auth");
 		}
 	}
@@ -29,19 +30,17 @@ export const LoginForm = (props) => {
 	// handleValidSubmit
 	const handleValidSubmit = async (values) => {
 		try {
-			dispatch(showLoading())
+			// dispatch(showLoading())
 			const credentials = {
 				email: values.username,
-				password: values.password
+				password: values.password,
 			}
 
-			const user = await dispatch(login(credentials)).unwrap()
-			const token = user.accessToken
+			const response = await dispatch(login(credentials)).unwrap()
+			const user = response.data
 
-			console.log(token)
-
-			if (token) {
-				getUserData(token)
+			if(user) {
+				getUserData(user)
 			} else {
 				dispatch(showAuthMessage(user.message))
 			}
@@ -51,7 +50,8 @@ export const LoginForm = (props) => {
 	}
 
 	useEffect(() => {
-		if (localStorage.getItem('token') !== null) {
+		if(localStorage.getItem('token') !== null
+			&& localStorage.getItem('user') !== null) {
 			dispatch(showLoading())
 			history.push("/app/dashboard/");
 		}
@@ -60,22 +60,22 @@ export const LoginForm = (props) => {
 	return (
 		<>
 			<motion.div
-				initial={{ opacity: 0, marginBottom: 0 }}
-				animate={{
+				initial={ { opacity: 0, marginBottom: 0 } }
+				animate={ {
 					opacity: showMessage ? 1 : 0,
-					marginBottom: showMessage ? 20 : 0
-				}}>
-				<Alert type='error' showIcon message={message}></Alert>
+					marginBottom: showMessage ? 20 : 0,
+				} }>
+				<Alert type="error" showIcon message={ message }></Alert>
 			</motion.div>
 			<Form
 				layout="vertical"
 				name="login-form"
-				onFinish={handleValidSubmit}
+				onFinish={ handleValidSubmit }
 			>
 				<Form.Item
 					name="username"
 					label="E-mail"
-					rules={[
+					rules={ [
 						{
 							required: true,
 							message: 'Masukkan Email',
@@ -83,20 +83,21 @@ export const LoginForm = (props) => {
 						{
 							type: 'email',
 							message: 'Email anda tidak valid',
-						}
-					]}
+						},
+					] }
 				>
-					<Input prefix={<MailOutlined className="text-primary" />} />
+					<Input prefix={ <MailOutlined className="text-primary"/> }/>
 				</Form.Item>
 				<Form.Item
 					name="password"
 					label={
-						<div className={`${showForgetPassword ? 'd-flex justify-content-between w-100 align-items-center' : ''}`}>
+						<div
+							className={ `${ showForgetPassword ? 'd-flex justify-content-between w-100 align-items-center' : '' }` }>
 							<span>Password</span>
 							{
 								showForgetPassword &&
 								<span
-									onClick={() => history.push("/auth/forgot-password")}
+									onClick={ () => history.push("/auth/forgot-password") }
 									className="cursor-pointer font-size-sm font-weight-normal text-muted"
 								>
 									Lupa Kata Sandi?
@@ -104,22 +105,22 @@ export const LoginForm = (props) => {
 							}
 						</div>
 					}
-					rules={[
+					rules={ [
 						{
 							required: true,
 							message: 'Masukkan password',
-						}
-					]}
+						},
+					] }
 				>
-					<Input.Password prefix={<LockOutlined className="text-primary" />} />
+					<Input.Password prefix={ <LockOutlined className="text-primary"/> }/>
 				</Form.Item>
 				<Form.Item>
-					<Button type="primary" style={{ border: "0px" }} htmlType="submit" block loading={loading}>
+					<Button type="primary" style={ { border: "0px" } } htmlType="submit" block loading={ loading }>
 						Masuk
 					</Button>
 				</Form.Item>
 
-				{extra}
+				{ extra }
 			</Form>
 			{/* <div>
 				<Divider>
@@ -134,7 +135,7 @@ export const LoginForm = (props) => {
 						cookiePolicy={'single_host_origin'}
 					></GoogleLogin>
 				</div>
-			</div> */}
+			</div> */ }
 		</>
 	)
 }
@@ -144,13 +145,13 @@ LoginForm.propTypes = {
 	showForgetPassword: PropTypes.bool,
 	extra: PropTypes.oneOfType([
 		PropTypes.string,
-		PropTypes.element
+		PropTypes.element,
 	]),
 };
 
 LoginForm.defaultProps = {
 	otherSignIn: true,
-	showForgetPassword: true
+	showForgetPassword: true,
 };
 
 export default LoginForm
