@@ -1,12 +1,16 @@
 import React from 'react'
 import RegisterForm from '../../components/RegisterForm'
-import { Card, Row, Col } from "antd";
+import { Card, Row, Col, Button } from "antd";
 import { strings } from 'res';
 import { useSelector } from 'react-redux';
 import { getAuthBackgroundStyle } from 'utils';
 
 const Register = props => {
 	const { authBackground, companyLogo } = useSelector(state => state.theme)
+
+	const onLogin = () => {
+		props.history.push(strings.navigation.login)
+	}
 
 	return (
 		<div className="h-100" style={getAuthBackgroundStyle(authBackground)}>
@@ -24,9 +28,10 @@ const Register = props => {
 										<RegisterForm {...props}/>
 									</Col>
 								</Row>
-								<p className="text-center">{strings.auth_form.alreadyHaveAccount} 
-									<a href={strings.navigation.login}>{strings.auth_form.sign_in}</a>
-								</p>
+								<p className="text-center">{strings.auth_form.alreadyHaveAccount}</p>
+								<Row align="stretch" justify="center">
+									<Button style={{alignContent: 'center'}} onClick={ onLogin } type="link">{strings.auth_form.sign_in}</Button>
+								</Row>
 							</div>
 						</Card>
 					</Col>

@@ -106,4 +106,36 @@ export const rules = {
 			],
 		}, // field
 	},
+	auth: {
+		confirm: [
+			{
+				required: true,
+				message: 'Konfirmasi password Anda!',
+			},
+			({ getFieldValue }) => ({
+				validator(rule, value) {
+					if(!value || getFieldValue('password') === value) {
+						return Promise.resolve();
+					}
+					return Promise.reject('Password tidak cocok');
+				},
+			}),
+		],
+		password: [
+			{
+				required: true,
+				message: 'Masukkan password',
+			},
+		],
+		email: [
+			{
+				required: true,
+				message: 'Masukka alamat email',
+			},
+			{
+				type: 'email',
+				message: 'Email tidak valid!',
+			},
+		],
+	},
 }

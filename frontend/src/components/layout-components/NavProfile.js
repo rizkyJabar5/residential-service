@@ -5,6 +5,8 @@ import {
   LogoutOutlined
 } from '@ant-design/icons';
 import Icon from 'components/util-components/Icon';
+import { sendLogout } from "../../redux/features/auth";
+import { useDispatch, useSelector } from "react-redux";
 
 const menuItem = [
   // {
@@ -30,16 +32,19 @@ const menuItem = [
 ]
 
 export const NavProfile = ({ }) => {
+	const { user } = useSelector(state => state.auth);
+	const dispatch = useDispatch();
+
   const profileMenu = (
     <div className="nav-profile nav-dropdown">
-      {/* <div className="nav-profile-header">
-        <div className="d-flex">
-          <div className="pl-3">
-            <h4 className="mb-0">Charlie Howard</h4>
-            <span className="text-muted">Frontend Developer</span>
-          </div>
-        </div>
-      </div> */}
+      {/*<div className="nav-profile-header">*/}
+      {/*  <div className="d-flex">*/}
+      {/*    <div className="pl-3">*/}
+      {/*      <h4 className="mb-0">user.</h4>*/}
+      {/*      <span className="text-muted">Frontend Developer</span>*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*</div>*/}
       <div className="nav-profile-body">
         <Menu>
           {menuItem.map((el, i) => {
@@ -52,9 +57,13 @@ export const NavProfile = ({ }) => {
               </Menu.Item>
             );
           })}
-          <Menu.Item key={menuItem.legth + 1} onClick={e => {
-            localStorage.clear()
-            window.location.href = "/auth"
+          <Menu.Item key={menuItem.length + 1} onClick={ async () => {
+	          const res = await dispatch(sendLogout()).unwrap()
+
+	          if(res === 'You logged out successfully.') {
+		          localStorage.clear();
+		          window.location.href = "/auth"
+	          }
           }}>
             <span>
               <LogoutOutlined className="mr-3" />

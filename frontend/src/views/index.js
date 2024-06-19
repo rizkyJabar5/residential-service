@@ -6,10 +6,10 @@ import AuthLayout from 'layouts/auth-layout';
 import AppLocale from "lang";
 import jwt_decode from 'jwt-decode'
 import { IntlProvider } from "react-intl";
-import { ConfigProvider, message } from 'antd';
+import { ConfigProvider } from 'antd';
 import { strings } from "res";
 import PrivateRoute from "components/PrivateRoute";
-import { authenticated, getUserProfile, signOutSuccess } from "redux/features/auth";
+import { signOutSuccess } from "redux/features/auth";
 
 export const Views = () => {
   const dispatch = useDispatch()
@@ -24,14 +24,7 @@ export const Views = () => {
         const token = localStorage.getItem('token');
         const decoded = jwt_decode(token);
         const currentTime = Date.now() / 1000; // to get in milliseconds
-        // dispatch(getUserProfile(decoded._id))
-        //   .unwrap()
-        //   .then(response => {
-        //     dispatch(authenticated({ token, user: response.data }))
-        //   })
-        //   .catch((err) =>{
-        //     message.error(err.message)
-        //   })
+
         if (decoded.exp < currentTime) {
           // Logout user
           localStorage.clear()

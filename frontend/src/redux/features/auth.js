@@ -1,47 +1,72 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import URLS from 'redux/urls'
 import request from 'redux/utils/request'
+import { apiRequest } from "../utils/api";
 
 const AUTH_TOKEN = 'auth_token'
 
+const sendLogin = async (creds) =>
+	apiRequest({
+		path: URLS.LOGIN,
+		method: 'post',
+		data: creds,
+	})
+
+const validateCitizen = async (data) =>
+	apiRequest({
+		path: URLS.VALIDATE_CITIZEN,
+		method: 'post',
+		data,
+	})
+
 export const login = createAsyncThunk(
 	'auth/signIn',
-	async (credentials) => {
-		const response = await request('post', URLS.LOGIN, credentials)
-		return response
-	}
+	async (credentials, { rejectWithValue }) => {
+		try {
+			const response = await sendLogin(credentials)
+			return response.data
+		} catch (err) {
+			console.log(err.response.data)
+			return rejectWithValue(err.response.data)
+		}
+	},
 )
 
 export const getUserProfile = createAsyncThunk(
 	'auth/getUserProfile',
 	async (data) => {
-		const response = await request('get', `/users/${data}`)
+		const response = await request('get', `/users/${ data }`)
 		return response
-	}
+	},
 )
 
-export const register = createAsyncThunk(
+export const sendValidateCitizen = createAsyncThunk(
 	'auth/register',
-	async (data) => {
-		const response = await request('post', URLS.REGISTER, data)
-		return response
-	}
+	async (data, { rejectWithValue }) => {
+		try {
+			const response = await validateCitizen(data)
+			return response.data
+		} catch (err) {
+			console.log(err.response.data)
+			return rejectWithValue(err.response.data)
+		}
+	},
 )
 
 export const sendActivation = createAsyncThunk(
 	'auth/sendActivation',
 	async (data) => {
-		const response = await request('get', `${URLS.ACTIVATION}/${data.id}/${data.email}`)
+		const response = await request('get', `${ URLS.ACTIVATION }/${ data.id }/${ data.email }`)
 		return response
-	}
+	},
 )
 
-export const storeGoogleAccountToken = createAsyncThunk(
+export const sendLogout = createAsyncThunk(
 	'auth/storeGoogleAccountToken',
 	async (tokenId) => {
-		const response = await request('post', URLS.STORE_GOOGLE_ACCOUNT, { tokenId })
+		const response = await request('post', URLS.LOGOUT)
 		return response
-	}
+	},
 )
 
 export const resetPassword = createAsyncThunk(
@@ -50,10 +75,10 @@ export const resetPassword = createAsyncThunk(
 		try {
 			const response = await request('post', URLS.RESET_PASSWORD, { email })
 			return response
-		} catch(error) {
+		} catch (error) {
 			return rejectWithValue(error)
 		}
-	}
+	},
 )
 
 export const resendActivation = createAsyncThunk(
@@ -62,19 +87,19 @@ export const resendActivation = createAsyncThunk(
 		try {
 			const response = await request('post', URLS.RESEND_ACTIVATION, { email })
 			return response
-		} catch(error) {
+		} catch (error) {
 			return rejectWithValue(error)
 		}
-	}
+	},
 )
 
 const initialState = {
-  loading: false,
-  message: '',
-  showMessage: false,
-  redirect: '',
-  token: localStorage.getItem(AUTH_TOKEN),
-  user: {}
+	loading: false,
+	message: '',
+	showMessage: false,
+	redirect: '',
+	token: localStorage.getItem(AUTH_TOKEN),
+	user: {},
 }
 
 const loadingReducer = (status) => (state) => {
@@ -91,11 +116,10 @@ export const authSlice = createSlice({
 		authenticated: (state, action) => {
 			state.loading = false;
 			state.redirect = '/';
-			state.token = action.payload.token;
-			state.user = action.payload.user;
+			state.token = action.payload.data.accessToken;
+			state.user = action.payload.data;
 		},
-		showAuthMessage: (state, action) => {
-			state.message = action.payload;
+		showAuthMessage: (state) => {
 			state.showMessage = true;
 			state.loading = false;
 		},
@@ -123,13 +147,36 @@ export const authSlice = createSlice({
 		signInWithFacebookAuthenticated: (state, action) => {
 			state.loading = false;
 			state.token = action.payload;
-		}
+		},
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(register.pending, startLoading)
-			.addCase(register.fulfilled, stopLoading)
-			.addCase(register.rejected, stopLoading)
+			.addCase(login.pending, startLoading)
+			.addCase(login.fulfilled, (state, action) => {
+				state.loading = false;
+				state.message = action.payload.data.message;
+				state.user = action.payload.data;
+				state.token = action.payload.data.accessToken;
+				state.redirect = '/';
+			})
+			.addCase(login.rejected, (state, action) => {
+				state.loading = false;
+				state.message = action.payload.message;
+				state.redirect = '/auth';
+				state.showMessage = true;
+			})
+		builder
+			.addCase(sendValidateCitizen.pending, startLoading)
+			.addCase(sendValidateCitizen.fulfilled, (state, action) => {
+				state.loading = false;
+				state.message = action.payload.message;
+				state.redirect = '/auth';
+			})
+			.addCase(sendValidateCitizen.rejected, (state, action) => {
+				state.loading = false;
+				state.message = action.payload.message;
+				state.showMessage = true;
+			})
 		builder
 			.addCase(sendActivation.pending, startLoading)
 			.addCase(sendActivation.fulfilled, stopLoading)
@@ -141,14 +188,23 @@ export const authSlice = createSlice({
 			})
 			.addCase(getUserProfile.rejected, stopLoading)
 		builder
+			.addCase(sendLogout.pending, startLoading)
+			.addCase(sendLogout.fulfilled, (state, action) => {
+				state.message = action.payload
+			})
+			.addCase(sendLogout.rejected, stopLoading)
+		builder
 			.addCase(resetPassword.pending, startLoading)
-			.addCase(resetPassword.fulfilled, stopLoading)
+			.addCase(resetPassword.fulfilled, (state, action) => {
+				state.loading = false;
+				state.message = action.payload.message;
+			})
 			.addCase(resetPassword.rejected, stopLoading)
 		builder
 			.addCase(resendActivation.pending, startLoading)
 			.addCase(resendActivation.fulfilled, stopLoading)
 			.addCase(resendActivation.rejected, stopLoading)
-	}
+	},
 });
 
 export const {
@@ -156,10 +212,7 @@ export const {
 	showAuthMessage,
 	hideAuthMessage,
 	signOutSuccess,
-	signUpSuccess,
 	showLoading,
-	signInWithGoogleAuthenticated,
-	signInWithFacebookAuthenticated
 } = authSlice.actions;
 
 export default authSlice.reducer;

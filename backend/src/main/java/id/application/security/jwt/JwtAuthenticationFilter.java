@@ -35,7 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         if (request.getServletPath().equals("/api/v1/auth/login")
-                || request.getServletPath().equals("/api/v1/auth/refreshToken")) {
+                || request.getServletPath().equals("/api/v1/auth/refreshToken")
+                || request.getServletPath().equals("/api/v1/auth/validate-citizen")
+                || request.getServletPath().equals("/api/v1/auth/reset-password/{id}")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -49,12 +51,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String username = jwtClaimsSet.getSubject();
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
-//                @SuppressWarnings("unchecked")
-//                var roles = (List<Map<String, Object>>) jwtClaimsSet.getClaim("role");
-//                var authorities = roles == null ? null : roles.stream()
-//                        .map(args -> new SimpleGrantedAuthority(args.get("role").toString()))
-//                        .toList();
 
                 SecurityUtils.authenticateUserWithoutCredentials(request, userDetails);
             }
