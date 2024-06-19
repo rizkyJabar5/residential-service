@@ -58,8 +58,7 @@ export const NavProfile = ({ }) => {
           })}
           <Menu.Item key={menuItem.length + 1} onClick={ async () => {
 	          const res = await dispatch(sendLogout()).unwrap()
-
-	          if(res === 'You logged out successfully.') {
+	          if(res.code === '200') {
 		          localStorage.clear();
 		          window.location.href = "/auth"
 	          }

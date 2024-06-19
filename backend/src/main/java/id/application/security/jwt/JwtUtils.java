@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -43,7 +42,7 @@ public class JwtUtils {
     @Value("${jwt.secretKey}")
     private String secretKey;
 
-    public <T extends GrantedAuthority> JwtResponse generateJwtToken(AppUser appUser) {
+    public JwtResponse generateJwtToken(AppUser appUser) {
         String username = appUser.getUsername();
         Validate.notBlank(username, CANNOT_BE_BLANK);
         JWTClaimsSet claimsSetAccessToken = new JWTClaimsSet.Builder()
@@ -70,6 +69,8 @@ public class JwtUtils {
         return JwtResponse.builder()
                 .userId(appUser.getId())
                 .username(username)
+                .name(appUser.getName())
+                .role(appUser.getRole().name())
                 .accessToken(accessToken)
                 .expirationAccessToken(durationExpiredAccessToken)
                 .refreshToken(refreshToken)

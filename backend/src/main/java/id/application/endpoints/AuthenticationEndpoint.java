@@ -68,8 +68,11 @@ public class AuthenticationEndpoint {
     }
 
     @PostMapping("/logout")
-    public String logout() {
+    public BaseResponse<Void> logout() {
         SecurityUtils.clearAuthentication();
-        return "You logged out successfully.";
+        return BaseResponse.<Void>builder()
+                .code("200")
+                .message("You logged out successfully.")
+                .build();
     }
 }
