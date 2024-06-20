@@ -125,7 +125,7 @@ const newsTree = [{
     },
     {
       key: "Reports",
-      path: strings.navigation.path.reports,
+      path: strings.navigation.path.reports.list,
       title: "Laporan Kerusakan",
       icon: ReportIcon,
       breadcrumb: false,

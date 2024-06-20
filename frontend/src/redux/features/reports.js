@@ -2,91 +2,28 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import URLS from 'redux/urls'
 import request from 'redux/utils/request'
 import { apiRequest } from 'redux/utils/api';
+import {message} from "antd";
 
-export const getStoreSum = async () =>
+
+export const getReports = async (params) =>
 	apiRequest({
-		path: `/summaries/store`,
+		path: `${URLS.REPORTS}`,
 		method: "GET",
+		params
 	});
 
-export const getLedgerSum = async () =>
-	apiRequest({
-		path: `/summaries/ledger`,
-		method: "GET",
-	});
-
-export const getExpenseSupplier = async () =>
-	apiRequest({
-		path: `/expenses/suppliers`,
-		method: "GET",
-	});
-
-export const getSales = async () =>
-	apiRequest({
-		path: `${URLS.SALES}?page=1&limit=50`,
-		method: "GET",
-	});
-
-export const fetchSumStore = createAsyncThunk(
-	'Report/fetchSumStore',
-	async (_, { rejectWithValue }) => {
-		return await getStoreSum()
+export const fetchAllReports = createAsyncThunk(
+	'Report/fetchAllReports',
+	async (params, { rejectWithValue }) => {
+		return await getReports(params)
 			.then((res) => {
-				return res.data.data
+				console.log("ini data : ", res.data.data.content)
+				message.success(res.data.message)
+				return res.data;
 			})
-			.catch((err) => {
-				return rejectWithValue(err)
-			})
-	}
-)
-
-export const fetchSumLedger = createAsyncThunk(
-	'Report/fetchSumLedger',
-	async (_, { rejectWithValue }) => {
-		return await getLedgerSum()
-			.then((res) => {
-				return res.data.data
-			})
-			.catch((err) => {
-				return rejectWithValue(err)
-			})
-	}
-)
-
-
-export const fetchExpenseSuppliers = createAsyncThunk(
-	'Report/fetchExpenseSuppliers',
-	async (_, { rejectWithValue }) => {
-		try {
-			return await getExpenseSupplier()
-			.then((res) => {
-				return res.data.data
-			})
-			.catch((err) => {
-				return rejectWithValue(err)
-			})
-			
-		} catch (error) {
-			return rejectWithValue(error)
-		}
-	}
-)
-
-export const fetchSales = createAsyncThunk(
-	'Report/fetchOneReport',
-	async (id, { rejectWithValue }) => {
-		try {
-			return await getSales()
-			.then((res) => {
-				return res.data.data.content
-			})
-			.catch((err) => {
-				return rejectWithValue(err)
-			})
-
-		} catch (error) {
-			return rejectWithValue(error)
-		}
+			.catch((error) => {
+				return rejectWithValue(error)
+			});
 	}
 )
 
@@ -120,17 +57,15 @@ const initialState = {
 		query: false,
 		mutation: false
 	},
+	error: {},
+	hasData: false,
+	listReports: [],
 	filter: {
 		q: ''
 	},
-	list: [],
 	message: "",
 	selected: {},
 	selectedRows: [],
-	store: [],
-	ledger: [],
-	expenseSuppliers: [],
-    sales: []
 }
 
 const loadingReducer = (fieldName, status) => (state) => {
@@ -154,50 +89,35 @@ export const ReportSlice = createSlice({
 		}
 	},
 	extraReducers: builder => {
-		builder
-			.addCase(fetchExpenseSuppliers.pending, startLoadingQuery)
-			.addCase(fetchExpenseSuppliers.fulfilled, (state, action) => {
-				state.expenseSuppliers = action.payload
-				state.loading.query = false
-			})
-			.addCase(fetchExpenseSuppliers.rejected, stopLoadingQuery)
 
 		builder
-			.addCase(fetchSumStore.pending, startLoadingQuery)
-			.addCase(fetchSumStore.fulfilled, (state, action) => {
-				state.store = action.payload
-				state.loading.query = false
+			.addCase(fetchAllReports.pending, startLoadingQuery)
+			.addCase(fetchAllReports.fulfilled, (state, action) => {
+				state.listReports = action.payload.data.content
+				state.hasData = true
+				state.error = null
+				state.isLoading = false
 			})
-			.addCase(fetchSumStore.rejected, stopLoadingQuery)
-
-		builder
-			.addCase(fetchSumLedger.pending, startLoadingQuery)
-			.addCase(fetchSumLedger.fulfilled, (state, action) => {
-				state.ledger = action.payload
-				state.loading.query = false
-			})
-			.addCase(fetchSumLedger.rejected, stopLoadingQuery)
-
-		builder
-			.addCase(fetchSales.pending, startLoadingQuery)
-			.addCase(fetchSales.rejected, stopLoadingQuery)
-			.addCase(fetchSales.fulfilled, (state, action) => {
-				state.loading.query = false
-				state.sales = action.payload
-			})
-		builder
-			.addCase(updateReport.pending, startLoadingQuery)
-			.addCase(updateReport.rejected, stopLoadingQuery)
-			.addCase(updateReport.fulfilled, (state, action) => {
-				state.loading.query = false
-				state.selected = action.payload
-				state.message = "Success"
+			.addCase(fetchAllReports.rejected, (state, action) => {
+				state.hasData = false
+				state.error = action.payload
+				state.isLoading = false
 			})
 
-		builder
-			.addCase(deleteReport.pending, startLoadingMutation)
-			.addCase(deleteReport.fulfilled, stopLoadingMutation)
-			.addCase(deleteReport.rejected, stopLoadingMutation)
+
+		// builder
+		// 	.addCase(updateReport.pending, startLoadingQuery)
+		// 	.addCase(updateReport.rejected, stopLoadingQuery)
+		// 	.addCase(updateReport.fulfilled, (state, action) => {
+		// 		state.loading.query = false
+		// 		state.selected = action.payload
+		// 		state.message = "Success"
+		// 	})
+		//
+		// builder
+		// 	.addCase(deleteReport.pending, startLoadingMutation)
+		// 	.addCase(deleteReport.fulfilled, stopLoadingMutation)
+		// 	.addCase(deleteReport.rejected, stopLoadingMutation)
 	}
 });
 
