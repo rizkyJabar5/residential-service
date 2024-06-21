@@ -1,7 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import URLS from 'redux/urls'
-import request from 'redux/utils/request'
-import requestOne from 'redux/utils/requestOne'
 import { apiRequest } from 'redux/utils/api';
 import { message } from "antd";
 
@@ -214,8 +212,9 @@ export const LetterSlice = createSlice({
 			.addCase(updateLetter.fulfilled, (state, action) => {
 				state.isLoading = false
 				state.selected = action.payload
-				state.message = action.payload.message
+				state.message = "Anda telah menyetujui pengajuan!"
 				state.error = null
+				console.log(state.message)
 			})
 		builder
 			.addCase(createLetter.pending, startLoading)

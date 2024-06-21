@@ -4,6 +4,7 @@ import id.application.feature.model.entity.LetterRequest;
 import lombok.Builder;
 
 import java.io.Serializable;
+import java.time.format.DateTimeFormatter;
 
 @Builder
 public record LetterRequestDto(
@@ -15,6 +16,7 @@ public record LetterRequestDto(
         String dob,
         String gender,
         String nationality,
+        String religion,
         String nik,
         String marriageStatus,
         String jobType,
@@ -29,9 +31,10 @@ public record LetterRequestDto(
                 .citizenId(letterRequest.getCitizenId())
                 .fullName(letterRequest.getFullName())
                 .pob(letterRequest.getPlaceBirth())
-                .dob(letterRequest.getPlaceBirth())
+                .dob(letterRequest.getDateOfBirth().format(DateTimeFormatter.ofPattern("dd MMMM yyyy")))
                 .gender(letterRequest.getGender().getName())
                 .nationality(letterRequest.getNationality())
+                .religion(letterRequest.getReligion().getName())
                 .nik(letterRequest.getNik())
                 .marriageStatus(letterRequest.getMarriageStatus().getStatus())
                 .jobType(letterRequest.getJobType())

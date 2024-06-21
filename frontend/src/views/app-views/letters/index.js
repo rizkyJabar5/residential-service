@@ -1,5 +1,4 @@
-import { Button, Card, Col, Row, Table, message, Tag, Input, ConfigProvider, Tooltip, Popover, Menu } from 'antd';
-import axios from 'axios';
+import { Button, Card, Col, Row, Table, message, Tag, Input, ConfigProvider, Modal, Popover, Menu } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,20 +14,110 @@ import {
 } from "@ant-design/icons";
 import { strings } from "../../../res";
 import EllipsisDropdown from "../../../components/shared-components/EllipsisDropdown";
-import MenuActionTable from "../components/MenuActionTable";
-import { CheckCircleOutline, CheckCircleTwoTone, DeleteOutlined, SyncOutlined } from "@material-ui/icons";
+import { CheckCircleOutline, SyncOutlined } from "@material-ui/icons";
+
+const DescriptionItem = ({ title, content }) => (
+	<div
+		style={ {
+			fontSize: 14,
+			lineHeight: '22px',
+			marginBottom: 7,
+			color: 'rgba(0,0,0,0.65)',
+		} }
+	>
+		<p
+			style={ {
+				marginRight: 8,
+				display: 'inline-block',
+				color: 'rgba(0,0,0,0.85)',
+			} }
+		>
+			{ title }:
+		</p>
+		{ content }
+	</div>
+);
+
+
+const ContentReview = ({
+	                       fullName,
+	                       pob,
+	                       dob,
+	                       jobType,
+	                       gender,
+	                       nationality,
+	                       religion,
+	                       nik,
+	                       marriageStatus,
+	                       address,
+	                       type,
+                       }) => {
+
+	return (
+		<>
+			<p
+				// className="primary"
+				style={ { fontWeight: 'bold', fontSize: 14, marginBottom: 24 } }
+			>
+				{ type }
+			</p>
+			<Row>
+				<Col span={ 24 }>
+					<DescriptionItem title="Nama Lengkap" content={ fullName }/>
+				</Col>
+				<Col span={ 12 }>
+					<DescriptionItem
+						title="NIK"
+						content={ nik }
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 12 }>
+					<DescriptionItem title="Tempat Lahir" content={ pob }/>
+				</Col>
+				<Col span={ 12 }>
+					<DescriptionItem title="Tanggal Lahir" content={ dob }/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 12 }>
+					<DescriptionItem title="Jenis Kelamin" content={ gender }/>
+				</Col>
+				<Col span={ 12 }>
+					<DescriptionItem title="Agama" content={ religion }/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 12 }>
+					<DescriptionItem title="Kewarganegaraan" content={ nationality }/>
+				</Col>
+				<Col span={ 12 }>
+					<DescriptionItem title="Status Perkawinan" content={ marriageStatus }/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 24 }>
+					<DescriptionItem title="Alamat" content={ address }/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 12 }>
+					<DescriptionItem title="Pekerjaan" content={ jobType }/>
+				</Col>
+			</Row>
+		</>
+	);
+}
 
 export const Letters = () => {
-	const [ modalIsOpen, setIsOpen ] = React.useState(false)
-	const [ amountCredit, setAmountCredit ] = useState(0)
-	const [ selectedPaymentId, setSelectedPaymentId ] = useState(0)
+	const [ visible, setVisible ] = useState(false)
+	const [ letter, setLetter ] = useState({})
 	const history = useHistory()
 	const dispatch = useDispatch();
 	const {
 		lettersData,
 		isLoading,
-		selectedRows,
-		filter: { q: searchTerm },
 		message: msgResponse,
 		hasData,
 	} = useSelector(state => state.letters)
@@ -56,6 +145,10 @@ export const Letters = () => {
 				"letterId": id,
 				"status": 7,
 			})).unwrap()
+			console.log(msgResponse)
+			message
+				.loading('Mengupdate pengajuan...', 2)
+				.then(() => message.success(msgResponse))
 		} catch (error) {
 			console.log(error)
 			message.error(error?.message || 'Failed to delete data')
@@ -158,7 +251,7 @@ export const Letters = () => {
 				return (
 					<div className="text-info">
 						<Flex className="py-2" mobileFlex={ false } justifyContent="between" alignItems="center">
-						<Popover trigger="click" placement="top" content={ !approved ? content : 'Unduh Pengajuan' }>
+							<Popover trigger="click" placement="top" content={ !approved ? content : 'Unduh Pengajuan' }>
 								<InfoCircleFilled/>
 							</Popover>
 							<Button
@@ -180,10 +273,9 @@ export const Letters = () => {
 				const approved = elm.status === 'Pengajuan Telah Disetujui';
 				return (
 					<div className="text-right">
-						<EllipsisDropdown menu={ () => {
-							return <Menu>
-								<Menu.Item onClick={ () => {
-								} }>
+						<EllipsisDropdown menu={ () =>
+							<Menu>
+								<Menu.Item onClick={ () => showModal(elm) }>
 									<Flex alignItems="center">
 										<EyeOutlined/>
 										<span className="ml-2">Review</span>
@@ -196,7 +288,7 @@ export const Letters = () => {
 										<Menu.Item onClick={ () => approvedLetter(elm.id) }>
 											<Flex alignItems="center">
 												{ isLoading
-													? <SyncOutlined spin/>
+													? <SyncOutlined/>
 													: <CheckCircleOutline style={ { fontSize: '16px', color: '#00cc29' } }/>
 												}
 												<span className="ml-2">Setujui</span>
@@ -204,8 +296,7 @@ export const Letters = () => {
 										</Menu.Item>
 								}
 							</Menu>
-						} }
-						/>
+						}/>
 					</div>
 				);
 			},
@@ -223,8 +314,58 @@ export const Letters = () => {
 		</div>
 	);
 
+	const showModal = (record) => {
+		setLetter(record);
+		setVisible(true);
+	};
+
+	const handleOk = () => {
+
+		setTimeout(() => {
+			setVisible(false);
+			setLetter({})
+		}, 2000);
+	};
+
+	const handleCancel = () => {
+		setLetter({})
+		setVisible(false)
+	};
+
 	return (
 		<>
+			<Modal
+				centered
+				closable={ false }
+				title={ `Review Pengajuan ${ letter.letterId }` }
+				visible={ visible }
+				maskClosable={ false }
+				footer={ [
+					<Button key="back" type="default" danger onClick={ handleCancel }>
+						Batal
+					</Button>,
+					<Button key="submit" type="primary"
+					        loading={ isLoading }
+					        onClick={ handleOk }
+					        style={ { backgroundColor: 'green' } }>
+						Setujui
+					</Button>,
+				] }
+			>
+				<ContentReview
+					fullName={ letter.fullName }
+					pob={ letter.pob }
+					dob={ letter.dob }
+					gender={ letter.gender }
+					nationality={ letter.nationality }
+					religion={ letter.religion }
+					nik={ letter.nik }
+					marriageStatus={ letter.marriageStatus }
+					jobType={ letter.jobType }
+					type={ letter.type }
+					address={ letter.address }
+				/>
+			</Modal>
 			<Row gutter={ 24 }>
 				<Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
 					<Card title="Daftar Semua Pengajuan">

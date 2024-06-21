@@ -40,7 +40,10 @@ public class LetterRequest extends BaseEntity {
     private Gender gender;
 
     private String nationality;
+
+    @Enumerated(EnumType.STRING)
     private Religion religion;
+
     private String nik;
 
     @Enumerated(EnumType.STRING)
