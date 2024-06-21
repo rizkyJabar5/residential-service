@@ -61,8 +61,12 @@ export const strings = {
         delete: "/app/letters/delete",
       } ,
 
+      reports: {
+        list : "/app/reports"
+      },
+
+
       categories: "/app/categories",
-      reports: "/app/reports",
       customers: "/app/customers",
       suppliers: "/app/suppliers",
       news: "/app/news",

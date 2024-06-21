@@ -182,7 +182,6 @@ export const LetterSlice = createSlice({
 				state.error = null
 				state.message = action.payload.message
 				state.isLoading = false
-				console.log(`LETTERS ${state.lettersData}`)
 				message.info(state.message)
 			})
 			.addCase(fetchAllLetter.rejected, (state, action) => {
