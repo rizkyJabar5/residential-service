@@ -9,7 +9,7 @@ public enum StatusLetter {
     REJECTED(0, "Pengajuan Ditolak"),
     WAITING(1, "Menunggu Review Sekretaris RT"),
     REVIEW_SECRETARY_RT(2, "Sedang direview Sekretaris RT"),
-    REVIEW_RT(3, "Sedang direview oleh Sekretaris RT"),
+    REVIEW_RT(3, "Sedang direview oleh RT"),
     APPROVED_RT(4, "Pengajuan Disetujui RT"),
     REVIEW_SECRETARY_RW(5, "Sedang direview oleh Sekretaris RW"),
     REVIEW_RW(6, "Sedang direview oleh RW"),

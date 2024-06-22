@@ -42,7 +42,7 @@ public class LetterServiceImpl implements LetterService {
     public Page<LetterRequest> findAll(RequestPagination request) {
         getUserLoggedIn();
 
-        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
         return repository.findAll(pageable);
     }
@@ -93,7 +93,7 @@ public class LetterServiceImpl implements LetterService {
         entity.setNik(request.nik());
         entity.setMarriageStatus(request.marriageStatus());
         entity.setJobType(request.jobType());
-        entity.setAddress(request.jobType());
+        entity.setAddress(request.address());
         entity.setType(typeLetter);
         entity.setStatus(StatusLetter.WAITING);
         persistUtil(entity, userLoggedIn);

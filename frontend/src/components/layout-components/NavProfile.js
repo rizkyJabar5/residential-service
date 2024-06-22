@@ -7,6 +7,7 @@ import {
 import Icon from 'components/util-components/Icon';
 import { sendLogout } from "../../redux/features/auth";
 import { useDispatch } from "react-redux";
+import { labelOfRoles } from "views/app-views/components/enums";
 
 const menuItem = [
   // {
@@ -33,17 +34,19 @@ const menuItem = [
 
 export const NavProfile = ({ }) => {
 	const dispatch = useDispatch();
+	const user = JSON.parse(localStorage.getItem('user'))
+  const userName = String(user.name).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
 
   const profileMenu = (
     <div className="nav-profile nav-dropdown">
-      {/*<div className="nav-profile-header">*/}
-      {/*  <div className="d-flex">*/}
-      {/*    <div className="pl-3">*/}
-      {/*      <h4 className="mb-0">user.</h4>*/}
-      {/*      <span className="text-muted">Frontend Developer</span>*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*</div>*/}
+      <div className="nav-profile-header">
+       <div className="d-flex">
+         <div className="pl-3">
+           <h4 className="mb-0">{ userName }</h4>
+           <span className="text-muted">{ labelOfRoles(user.role) }</span>
+         </div>
+       </div>
+      </div>
       <div className="nav-profile-body">
         <Menu>
           {menuItem.map((el, i) => {

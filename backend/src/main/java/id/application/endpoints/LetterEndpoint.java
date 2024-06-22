@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Objects;
+
 import static id.application.util.FilterableUtil.mappingContentPage;
 import static id.application.util.constant.StatusCodeConstant.CODE_CONTENT_EMPTY;
 import static id.application.util.constant.StatusCodeConstant.CODE_CONTENT_FOUND;
@@ -57,28 +59,52 @@ public class LetterEndpoint {
     }
 
     @GetMapping("/status")
-    public Page<LetterRequest> getLetterByStatus(@RequestParam int status){
+    public BaseResponse<PageResponse<LetterRequestDto>> getLetterByStatus(@RequestParam int status){
         var statusLetter = StatusLetter.valueOf(status);
         Page<LetterRequest> contents = service.findLetterByStatus(statusLetter);
-        return contents;
+        return BaseResponse.<PageResponse<LetterRequestDto>>builder()
+                .code(contents.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
+                .message(contents.isEmpty() ? "Data tidak ditemukan" : "Data Pengajuan ditemukan")
+                .data(PageResponse.<LetterRequestDto>builder()
+                        .size(contents.getSize())
+                        .totalElements(contents.getTotalElements())
+                        .totalPages(contents.getTotalPages())
+                        .numberOfElements(contents.getNumberOfElements())
+                        .pageOf(contents.getPageable().getPageNumber())
+                        .page(contents.getPageable().getPageSize())
+                        .content(mappingContentPage(contents, LetterRequestDto::letterRequestDto))
+                        .build())
+                .build();
     }
 
     @GetMapping("/{id}")
-    public LetterRequest getLetterById(@PathVariable String id){
+    public BaseResponse<LetterRequestDto> getLetterById(@PathVariable String id){
         var content = service.findById(id);
-        return content;
+        return BaseResponse.<LetterRequestDto>builder()
+                .code(CODE_CONTENT_FOUND)
+                .message(Objects.isNull(content) ? "Data tidak ditemukan" : "Data Pengajuan ditemukan")
+                .data(LetterRequestDto.letterRequestDto(content))
+                .build();
     }
 
     @GetMapping("/letter/{nik}")
-    public LetterRequest getLetterByLetterId(@PathVariable String nik){
+    public BaseResponse<LetterRequestDto> getLetterByLetterId(@PathVariable String nik){
         var content = service.findByLetterId(nik);
-        return content;
+        return BaseResponse.<LetterRequestDto>builder()
+                .code(CODE_CONTENT_FOUND)
+                .message(Objects.isNull(content) ? "Data tidak ditemukan" : "Data Pengajuan ditemukan")
+                .data(LetterRequestDto.letterRequestDto(content))
+                .build();
     }
 
     @PostMapping
-    public LetterRequest createLetter(@RequestBody LetterAddRequest request){
+    public BaseResponse<LetterRequestDto> createLetter(@RequestBody LetterAddRequest request){
         var content = service.persistNew(request);
-        return content;
+        return BaseResponse.<LetterRequestDto>builder()
+                .code(CODE_CONTENT_FOUND)
+                .message("Surat pengajuan berhasil dibuat")
+                .data(LetterRequestDto.letterRequestDto(content))
+                .build();
     }
 
     @PutMapping

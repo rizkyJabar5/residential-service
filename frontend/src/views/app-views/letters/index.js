@@ -1,5 +1,4 @@
-import { Button, Card, Col, Row, Table, message, Tag, Input, ConfigProvider, Tooltip, Popover, Menu } from 'antd';
-import axios from 'axios';
+import { Button, Card, Col, Row, Table, message, Tag, Input, ConfigProvider, Modal, Popover, Menu } from 'antd';
 import moment from 'moment';
 import React, { useEffect, useState, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,23 +14,114 @@ import {
 } from "@ant-design/icons";
 import { strings } from "../../../res";
 import EllipsisDropdown from "../../../components/shared-components/EllipsisDropdown";
-import MenuActionTable from "../components/MenuActionTable";
-import { CheckCircleOutline, CheckCircleTwoTone, DeleteOutlined, SyncOutlined } from "@material-ui/icons";
+import { CheckCircleOutline, SyncOutlined } from "@material-ui/icons";
+
+const DescriptionItem = ({ title, content }) => (
+	<div
+		style={ {
+			fontSize: 14,
+			lineHeight: '22px',
+			marginBottom: 7,
+			color: 'rgba(0,0,0,0.65)',
+		} }
+	>
+		<p
+			style={ {
+				marginRight: 8,
+				display: 'inline-block',
+				color: 'rgba(0,0,0,0.85)',
+			} }
+		>
+			{ title }:
+		</p>
+		{ content }
+	</div>
+);
+
+
+const ContentReview = ({
+	                       fullName,
+	                       pob,
+	                       dob,
+	                       jobType,
+	                       gender,
+	                       nationality,
+	                       religion,
+	                       nik,
+	                       marriageStatus,
+	                       address,
+	                       type,
+                       }) => {
+
+	return (
+		<>
+			<p
+				style={ { fontWeight: 'bold', fontSize: 14, marginBottom: 24 } }
+			>
+				{ type }
+			</p>
+			<Row>
+				<Col span={ 24 }>
+					<DescriptionItem title="Nama Lengkap" content={ fullName }/>
+				</Col>
+				<Col span={ 12 }>
+					<DescriptionItem
+						title="NIK"
+						content={ nik }
+					/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 12 }>
+					<DescriptionItem title="Tempat Lahir" content={ pob }/>
+				</Col>
+				<Col span={ 12 }>
+					<DescriptionItem title="Tanggal Lahir" content={ dob }/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 12 }>
+					<DescriptionItem title="Jenis Kelamin" content={ gender }/>
+				</Col>
+				<Col span={ 12 }>
+					<DescriptionItem title="Agama" content={ religion }/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 12 }>
+					<DescriptionItem title="Kewarganegaraan" content={ nationality }/>
+				</Col>
+				<Col span={ 12 }>
+					<DescriptionItem title="Status Perkawinan" content={ marriageStatus }/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 24 }>
+					<DescriptionItem title="Alamat" content={ address }/>
+				</Col>
+			</Row>
+			<Row>
+				<Col span={ 12 }>
+					<DescriptionItem title="Pekerjaan" content={ jobType }/>
+				</Col>
+			</Row>
+		</>
+	);
+}
 
 export const Letters = () => {
-	const [ modalIsOpen, setIsOpen ] = React.useState(false)
-	const [ amountCredit, setAmountCredit ] = useState(0)
-	const [ selectedPaymentId, setSelectedPaymentId ] = useState(0)
+	const [ visible, setVisible ] = useState(false)
+	const [ letter, setLetter ] = useState({})
 	const history = useHistory()
 	const dispatch = useDispatch();
 	const {
 		lettersData,
 		isLoading,
-		selectedRows,
-		filter: { q: searchTerm },
 		message: msgResponse,
 		hasData,
 	} = useSelector(state => state.letters)
+	const [ disabled, setDisabled ] = useState(false)
+	const user = JSON.parse(localStorage.getItem('user'))
 
 	const getData = useCallback(async () => {
 		const params = {
@@ -56,6 +146,11 @@ export const Letters = () => {
 				"letterId": id,
 				"status": 7,
 			})).unwrap()
+			console.log(msgResponse)
+			message
+				.loading('Mengupdate pengajuan...', 2)
+				.then(() => message.success('Anda telah menyetujui pengajuan'))
+				.then(() => getData())
 		} catch (error) {
 			console.log(error)
 			message.error(error?.message || 'Failed to delete data')
@@ -116,7 +211,7 @@ export const Letters = () => {
 					"Pengajuan Ditolak": "red",
 					"Menunggu Review Sekretaris RT": "orange",
 					"Sedang direview Sekretaris RT": "orange",
-					"Sedang direview oleh Sekretaris RT": "orange",
+					"Sedang direview oleh RT": "orange",
 					"Pengajuan Disetujui RT": "blue",
 					"Sedang direview oleh Sekretaris RW": "orange",
 					"Sedang direview oleh RW": "blue",
@@ -124,10 +219,10 @@ export const Letters = () => {
 				}
 				return (
 					<span>
-							<Tag color={ enums[record.status] } key={ record.status }>
-								{ record.status }
-							</Tag>
-						</span>
+						<Tag color={ enums[record.status] } key={ record.status }>
+							{ record.status }
+						</Tag>
+					</span>
 				)
 			},
 		},
@@ -158,7 +253,7 @@ export const Letters = () => {
 				return (
 					<div className="text-info">
 						<Flex className="py-2" mobileFlex={ false } justifyContent="between" alignItems="center">
-						<Popover trigger="click" placement="top" content={ !approved ? content : 'Unduh Pengajuan' }>
+							<Popover trigger="click" placement="top" content={ !approved ? content : 'Unduh Pengajuan' }>
 								<InfoCircleFilled/>
 							</Popover>
 							<Button
@@ -176,14 +271,12 @@ export const Letters = () => {
 			colSpan: 0,
 			dataIndex: 'actions',
 			render: (_, elm) => {
-				const role = 'ADMIN'; // TODO: WILL be replace from local storage
 				const approved = elm.status === 'Pengajuan Telah Disetujui';
 				return (
 					<div className="text-right">
-						<EllipsisDropdown menu={ () => {
-							return <Menu>
-								<Menu.Item onClick={ () => {
-								} }>
+						<EllipsisDropdown menu={ () =>
+							<Menu>
+								<Menu.Item onClick={ () => showModal(elm) }>
 									<Flex alignItems="center">
 										<EyeOutlined/>
 										<span className="ml-2">Review</span>
@@ -192,11 +285,11 @@ export const Letters = () => {
 								{
 									approved
 										? null
-										: role === 'ADMIN' &&
+										: user.role === 'ADMIN' &&
 										<Menu.Item onClick={ () => approvedLetter(elm.id) }>
 											<Flex alignItems="center">
 												{ isLoading
-													? <SyncOutlined spin/>
+													? <SyncOutlined/>
 													: <CheckCircleOutline style={ { fontSize: '16px', color: '#00cc29' } }/>
 												}
 												<span className="ml-2">Setujui</span>
@@ -204,8 +297,7 @@ export const Letters = () => {
 										</Menu.Item>
 								}
 							</Menu>
-						} }
-						/>
+						}/>
 					</div>
 				);
 			},
@@ -223,8 +315,124 @@ export const Letters = () => {
 		</div>
 	);
 
+	const showModal = async (record) => {
+		if (user.role === 'SECRETARY_RT') {
+			if (record.status === 'Menunggu Review Sekretaris RT') {
+				await dispatch(updateLetter({
+					"letterId": record.id,
+					"status": 2,
+				})).unwrap()
+				getData()
+			}
+			const isStatusScrectaryRT = record.status !== 'Sedang direview Sekretaris RT' 
+			console.log(isStatusScrectaryRT)
+			setDisabled(isStatusScrectaryRT)
+		} else if (user.role === 'RT') {
+			const isStatusRT = record.status !== 'Sedang direview oleh RT'
+			setDisabled(isStatusRT)
+		} else if (user.role === 'SECRETARY_RW') {
+			if (record.status === 'Pengajuan Disetujui RT') {
+				await dispatch(updateLetter({
+					"letterId": record.id,
+					"status": 5,
+				})).unwrap()
+				getData()
+			}
+			
+			const isStatusScrectaryRW = record.status !== 'Sedang direview oleh Sekretaris RW'
+			setDisabled(isStatusScrectaryRW)
+			if (record.status === 'Pengajuan Disetujui RT') {
+				setDisabled(false)
+			}
+		} else if (user.role === 'RW') {
+			const isStatusApproved = record.status === 'Pengajuan Telah Disetujui'
+			setDisabled(isStatusApproved)
+		} else if (user.role === 'ADMIN') {
+			const isStatusApproved = record.status === 'Pengajuan Telah Disetujui'
+			setDisabled(isStatusApproved)
+		}
+
+		setLetter(record);
+		setVisible(true);
+	};
+
+	const handleOk = async (record) => {
+		let status = 1;
+
+		switch(user.role) {
+			case 'SECRETARY_RT':
+				status += 2;
+				break;
+			case 'RT':
+				status += 3;
+				break;
+			case 'SECRETARY_RW':
+				status += 5;
+				break;
+			case 'RW':
+				status += 6;
+				break;
+			case 'ADMIN':
+				status += 6;
+				break;
+			default:
+				status -= 1
+		}
+
+		await dispatch(updateLetter({
+			"letterId": record.id,
+			"status": status,
+		})).unwrap()
+		message
+			.loading('Sedang update data...', 2)
+			.then(() => {
+				message.success('Anda telah menyetujui pengajuan!')
+				setVisible(false)
+				setLetter({})
+			})
+			.then(() => getData())
+	};
+
+	const handleCancel = () => {
+		setLetter({})
+		setVisible(false)
+	};
+
 	return (
 		<>
+			<Modal
+				centered
+				closable={ false }
+				title={ `Review Pengajuan ${ letter.letterId }` }
+				visible={ visible }
+				maskClosable={ false }
+				footer={ [
+					<Button key="back" type="default" danger onClick={ handleCancel }>
+						Batal
+					</Button>,
+					<Button key="submit" type="primary"
+					        loading={ isLoading }
+					        onClick={ () => handleOk(letter) }
+					        disabled={ disabled }
+					        style={ disabled ? { backgroundColor: '#6dab5e', color: '#babdb9' } : { backgroundColor: 'green' } }>
+						{ disabled ? 'Telah disejutui' : 'Setujui' }
+					</Button>,
+				] }
+			>
+				<ContentReview
+					fullName={ letter.fullName }
+					pob={ letter.pob }
+					dob={ letter.dob }
+					gender={ letter.gender }
+					nationality={ letter.nationality }
+					religion={ letter.religion }
+					nik={ letter.nik }
+					marriageStatus={ letter.marriageStatus }
+					jobType={ letter.jobType }
+					type={ letter.type }
+					address={ letter.address }
+				/>
+			</Modal>
 			<Row gutter={ 24 }>
 				<Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
 					<Card title="Daftar Semua Pengajuan">

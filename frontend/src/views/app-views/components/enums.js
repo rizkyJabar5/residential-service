@@ -115,3 +115,17 @@ export function valueOfTypeLetter(label) {
 	const result = typeLetter.find(item => item.label === label);
 	return result?.value;
 }
+
+export const roles = [
+	{ value: 'ADMIN', label: "Admin" },
+	{ value: 'CITIZEN', label: "Warga" },
+	{ value: 'RW', label: "Ketua RW" },
+	{ value: 'RT', label: "Ketua RT" },
+	{ value: 'SECRETARY_RT', label: "Sekretaris RT" },
+	{ value: 'SECRETARY_RW', label: "Sekretaris RW" },
+]
+
+export function labelOfRoles(value) {
+	const result = roles.find(item => item.value === value);
+	return result?.label;
+}
