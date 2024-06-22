@@ -28,6 +28,7 @@ import { AddAccountCitizen, AddAccountStaff } from "./users/add-user";
 import { EditAccountCitizen, EditAccountStaff } from "./users/edit-user";
 import AddLetter from "./letters/add-letter";
 import Reports from "./reports";
+import AddReport from "./reports/add-report";
 
 export const AppViews = ({ match }) => {
 
@@ -49,7 +50,11 @@ export const AppViews = ({ match }) => {
 
 				{/* <PrivateRoute path={`${strings.navigation.path.categories}`} component={CATEGORIES} /> */ }
 				{/* <PrivateRoute path={`${strings.navigation.path.expenses}`} component={EXPENSES} /> */ }
-				<PrivateRoute path={ `${ strings.navigation.path.reports.list }` } component={ Reports }/>
+
+				{/* Reports */}
+				<PrivateRoute exact path={ `${ strings.navigation.path.reports.list }` } component={ Reports }/>
+				<PrivateRoute path={ `${ strings.navigation.path.reports.add }` } component={ AddReport }/>
+
 				<PrivateRoute path={ `${ strings.navigation.path.news }` } component={ CUSTOMERS }/>
 				<PrivateRoute path={ `${ strings.navigation.path.finance }` } component={ PURCHASE }/>
 				<PrivateRoute path={ `${ strings.navigation.path.suppliers }` } component={ SUPPLIERS }/>

@@ -106,6 +106,34 @@ export const rules = {
 			],
 		}, // field
 	},
+	report : {
+		field: {
+			nameReports: [
+				{
+					required: true,
+					message: 'Masukkan nama laporan!',
+				},
+			],
+			location: [
+				{
+					required: true,
+					message: 'Masukkan alamat lokasi kerusakan!'
+				}
+			],
+			typeFacility: [
+				{
+					required: true,
+					message: 'Pilih type jenis fasilitas!'
+				}
+			],
+			imageUrl: [
+				{
+					required: true,
+					message: 'Masukkan gambar fasilitas yang rusak!'
+				}
+			]
+		}
+	},
 	auth: {
 		confirm: [
 			{

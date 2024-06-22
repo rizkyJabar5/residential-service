@@ -1,11 +1,14 @@
-import { Button, Card, Col, Row, Table, message, Input, Space } from 'antd';
+import {Button, Card, Col, Row, Table, message, Input, Space, ConfigProvider} from 'antd';
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
 import { fetchAllProduct, deleteProduct } from 'redux/features/products';
 import {fetchAllReports} from "../../../redux/features/reports";
+import Flex from "../../../components/shared-components/Flex";
+import {CloseCircleTwoTone, PlusCircleOutlined, SearchOutlined} from "@ant-design/icons";
+import {strings} from "../../../res";
 
-export const PRODUCTS = (props) => {
+export const REPORTS = (props) => {
 	const history = useHistory()
 	const dispatch = useDispatch();
 	const {
@@ -15,7 +18,8 @@ export const PRODUCTS = (props) => {
 		loading: {
 			query: loadingQuery,
 			mutation: loadingMutation
-		}
+		},
+		message: msgResponse,
 	} = useSelector(state => state.reports)
 
 	const params = {
@@ -42,6 +46,13 @@ export const PRODUCTS = (props) => {
 			title: 'Gambar',
 			dataIndex: 'imageUrl',
 			key: 'imageUrl',
+			render: (imageUrl) => (
+				<img
+					src={imageUrl}
+					alt="Gambar"
+					style={{ width: '100px', height: 'auto' }}
+				/>
+			),
 		},
 		{
 			title: 'Nama',
@@ -61,47 +72,54 @@ export const PRODUCTS = (props) => {
 		},
 	];
 
+	const customizeRenderEmpty = () => (
+		<div style={ { marginTop: 20, textAlign: 'center' } }>
+			<CloseCircleTwoTone twoToneColor="red" style={ { fontSize: 30 } }/>
+			<p style={ { marginTop: 20 } }>{ msgResponse }</p>
+		</div>
+	);
+
+	const onCLickAdd = () => {
+		history.push({ pathname: strings.navigation.path.reports.add , isAddNew: true })
+	}
+
 	return (
 		<>
-			<Row gutter={24}>
-				{props.noTitle ? (
-					<div></div>
-				) : (
-					(
-					<Col xs={24} sm={24} md={24} lg={24}>
-						<h2>Daftar Laporan</h2>
-						<Row gutter={24}>
-							<Col xs={12} sm={12} md={12} lg={12}>
-								<p>Daftar semua data laporan</p>
-							</Col>
-						</Row>
-					</Col>
-					)
-				)}
-			</Row>
-			<Row gutter={24}>
-				<Col xs={24} sm={24} md={24} lg={24}>
-					<Card title="Daftar Semua Laporan" >
-						<Table
-							className="no-border-last"
-							columns={tableColumns}
-							dataSource={hasData ? listReports : []}
-							rowKey='id'
-							pagination={{
-								pageSize:10
-							  }}
-						/>
+			<Row gutter={ 24 }>
+				<Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
+					<Card title="Daftar Laporan Kerusakan">
+						<Flex alignItems="center" justifyContent="between" mobileFlex={ false }>
+							<Flex className="mb-1" mobileFlex={ false }>
+								<div className="mr-md-3 mb-4">
+									<Input
+										placeholder="Search"
+										prefix={ <SearchOutlined/> }
+										// onChange={ e => onSearch(e) }
+									/>
+								</div>
+							</Flex>
+							<div>
+								<Button
+									onClick={ onCLickAdd }
+									type="primary"
+									icon={ <PlusCircleOutlined/> }
+									block>
+									Tambah
+								</Button>
+							</div>
+						</Flex>
+						<ConfigProvider renderEmpty={ customizeRenderEmpty }>
+							<Table
+								className="no-border-last"
+								columns={tableColumns}
+								dataSource={hasData ? listReports : []}
+								rowKey='id'
+								pagination={{
+									pageSize:10
+								}}
+							/>
+						</ConfigProvider>
 					</Card>
-				</Col>
-			</Row>
-			<Row gutter={24}>
-				<Col xs={24} sm={24} md={24} lg={24}>
-				<Button type="primary" style={{width:"100%"}} onClick={()=>{
-						history.push({
-							pathname: '/app/detail-product',
-							isAddNew:true
-						})
-					}}>Tambah Produk</Button>
 				</Col>
 			</Row>
 		</>
@@ -109,4 +127,4 @@ export const PRODUCTS = (props) => {
 }
 
 
-export default withRouter(PRODUCTS);
+export default withRouter(REPORTS);

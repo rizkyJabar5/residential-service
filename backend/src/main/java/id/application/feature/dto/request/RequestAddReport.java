@@ -8,8 +8,8 @@ import java.io.Serializable;
 
 @Builder
 public record RequestAddReport(
-        String title,
+        String name,
         String location,
-        TypeFacility typeFacility,
-        MultipartFile image) implements Serializable {
+        TypeFacility typeFacility
+) implements Serializable {
 }
