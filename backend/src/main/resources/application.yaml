@@ -4,7 +4,11 @@ server:
 
 spring:
   thymeleaf:
-    check-template-location: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
   mustache:
     check-template-location: false
   application:
