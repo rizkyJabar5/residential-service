@@ -4,7 +4,6 @@ import request from 'redux/utils/request'
 import { apiRequest } from 'redux/utils/api';
 import {message} from "antd";
 
-
 export const getReports = async (params) =>
 	apiRequest({
 		path: `${URLS.REPORTS}`,
@@ -12,18 +11,38 @@ export const getReports = async (params) =>
 		params
 	});
 
+export const addNewReport = async (data) =>
+	apiRequest({
+		path: `${URLS.REPORTS}`,
+		method: "POST",
+		data
+	})
+
+
 export const fetchAllReports = createAsyncThunk(
 	'Report/fetchAllReports',
 	async (params, { rejectWithValue }) => {
 		return await getReports(params)
 			.then((res) => {
-				console.log("ini data : ", res.data.data.content)
 				message.success(res.data.message)
 				return res.data;
 			})
 			.catch((error) => {
 				return rejectWithValue(error)
 			});
+	}
+)
+
+export const createReport = createAsyncThunk(
+	'Report/createReport',
+	async (data, { rejectWithValue }) => {
+		return await addNewReport(data)
+			.then((res) => {
+				return res.data
+			})
+			.catch(err => {
+				return rejectWithValue(err.response.data)
+			})
 	}
 )
 
@@ -104,20 +123,21 @@ export const ReportSlice = createSlice({
 				state.isLoading = false
 			})
 
-
-		// builder
-		// 	.addCase(updateReport.pending, startLoadingQuery)
-		// 	.addCase(updateReport.rejected, stopLoadingQuery)
-		// 	.addCase(updateReport.fulfilled, (state, action) => {
-		// 		state.loading.query = false
-		// 		state.selected = action.payload
-		// 		state.message = "Success"
-		// 	})
-		//
-		// builder
-		// 	.addCase(deleteReport.pending, startLoadingMutation)
-		// 	.addCase(deleteReport.fulfilled, stopLoadingMutation)
-		// 	.addCase(deleteReport.rejected, stopLoadingMutation)
+		builder
+			.addCase(createReport.pending, startLoadingQuery)
+			.addCase(createReport.rejected, (state, action) => {
+				if(action.payload.code === '500') {
+					message.error('Terjadi kesalahan pada server')
+				}
+				state.error = action.payload;
+				state.message = action.payload.message
+				state.isLoading = false
+			})
+			.addCase(createReport.fulfilled, (state, action) => {
+				state.isLoading = false
+				state.selected = action.payload
+				state.message = action.payload.message
+			})
 	}
 });
 

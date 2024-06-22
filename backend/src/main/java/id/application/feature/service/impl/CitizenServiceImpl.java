@@ -35,7 +35,7 @@ public class CitizenServiceImpl implements CitizenService {
 
     @Override
     public Page<Citizen> findAllCitizen(RequestPagination request) {
-        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
         return citizenRepository.findAll(pageable);
     }
