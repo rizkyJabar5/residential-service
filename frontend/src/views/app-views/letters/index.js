@@ -56,7 +56,6 @@ const ContentReview = ({
 	return (
 		<>
 			<p
-				// className="primary"
 				style={ { fontWeight: 'bold', fontSize: 14, marginBottom: 24 } }
 			>
 				{ type }
@@ -121,6 +120,8 @@ export const Letters = () => {
 		message: msgResponse,
 		hasData,
 	} = useSelector(state => state.letters)
+	const [ disabled, setDisabled ] = useState(false)
+	const user = JSON.parse(localStorage.getItem('user'))
 
 	const getData = useCallback(async () => {
 		const params = {
@@ -148,7 +149,8 @@ export const Letters = () => {
 			console.log(msgResponse)
 			message
 				.loading('Mengupdate pengajuan...', 2)
-				.then(() => message.success(msgResponse))
+				.then(() => message.success('Anda telah menyetujui pengajuan'))
+				.then(() => getData())
 		} catch (error) {
 			console.log(error)
 			message.error(error?.message || 'Failed to delete data')
@@ -209,7 +211,7 @@ export const Letters = () => {
 					"Pengajuan Ditolak": "red",
 					"Menunggu Review Sekretaris RT": "orange",
 					"Sedang direview Sekretaris RT": "orange",
-					"Sedang direview oleh Sekretaris RT": "orange",
+					"Sedang direview oleh RT": "orange",
 					"Pengajuan Disetujui RT": "blue",
 					"Sedang direview oleh Sekretaris RW": "orange",
 					"Sedang direview oleh RW": "blue",
@@ -217,10 +219,10 @@ export const Letters = () => {
 				}
 				return (
 					<span>
-							<Tag color={ enums[record.status] } key={ record.status }>
-								{ record.status }
-							</Tag>
-						</span>
+						<Tag color={ enums[record.status] } key={ record.status }>
+							{ record.status }
+						</Tag>
+					</span>
 				)
 			},
 		},
@@ -269,7 +271,6 @@ export const Letters = () => {
 			colSpan: 0,
 			dataIndex: 'actions',
 			render: (_, elm) => {
-				const role = 'ADMIN'; // TODO: WILL be replace from local storage
 				const approved = elm.status === 'Pengajuan Telah Disetujui';
 				return (
 					<div className="text-right">
@@ -284,7 +285,7 @@ export const Letters = () => {
 								{
 									approved
 										? null
-										: role === 'ADMIN' &&
+										: user.role === 'ADMIN' &&
 										<Menu.Item onClick={ () => approvedLetter(elm.id) }>
 											<Flex alignItems="center">
 												{ isLoading
@@ -314,17 +315,82 @@ export const Letters = () => {
 		</div>
 	);
 
-	const showModal = (record) => {
+	const showModal = async (record) => {
+		if (user.role === 'SECRETARY_RT') {
+			if (record.status === 'Menunggu Review Sekretaris RT') {
+				await dispatch(updateLetter({
+					"letterId": record.id,
+					"status": 2,
+				})).unwrap()
+				getData()
+			}
+			const isStatusScrectaryRT = record.status !== 'Sedang direview Sekretaris RT' 
+			console.log(isStatusScrectaryRT)
+			setDisabled(isStatusScrectaryRT)
+		} else if (user.role === 'RT') {
+			const isStatusRT = record.status !== 'Sedang direview oleh RT'
+			setDisabled(isStatusRT)
+		} else if (user.role === 'SECRETARY_RW') {
+			if (record.status === 'Pengajuan Disetujui RT') {
+				await dispatch(updateLetter({
+					"letterId": record.id,
+					"status": 5,
+				})).unwrap()
+				getData()
+			}
+			
+			const isStatusScrectaryRW = record.status !== 'Sedang direview oleh Sekretaris RW'
+			setDisabled(isStatusScrectaryRW)
+			if (record.status === 'Pengajuan Disetujui RT') {
+				setDisabled(false)
+			}
+		} else if (user.role === 'RW') {
+			const isStatusApproved = record.status === 'Pengajuan Telah Disetujui'
+			setDisabled(isStatusApproved)
+		} else if (user.role === 'ADMIN') {
+			const isStatusApproved = record.status === 'Pengajuan Telah Disetujui'
+			setDisabled(isStatusApproved)
+		}
+
 		setLetter(record);
 		setVisible(true);
 	};
 
-	const handleOk = () => {
+	const handleOk = async (record) => {
+		let status = 1;
 
-		setTimeout(() => {
-			setVisible(false);
-			setLetter({})
-		}, 2000);
+		switch(user.role) {
+			case 'SECRETARY_RT':
+				status += 2;
+				break;
+			case 'RT':
+				status += 3;
+				break;
+			case 'SECRETARY_RW':
+				status += 5;
+				break;
+			case 'RW':
+				status += 6;
+				break;
+			case 'ADMIN':
+				status += 6;
+				break;
+			default:
+				status -= 1
+		}
+
+		await dispatch(updateLetter({
+			"letterId": record.id,
+			"status": status,
+		})).unwrap()
+		message
+			.loading('Sedang update data...', 2)
+			.then(() => {
+				message.success('Anda telah menyetujui pengajuan!')
+				setVisible(false)
+				setLetter({})
+			})
+			.then(() => getData())
 	};
 
 	const handleCancel = () => {
@@ -346,9 +412,10 @@ export const Letters = () => {
 					</Button>,
 					<Button key="submit" type="primary"
 					        loading={ isLoading }
-					        onClick={ handleOk }
-					        style={ { backgroundColor: 'green' } }>
-						Setujui
+					        onClick={ () => handleOk(letter) }
+					        disabled={ disabled }
+					        style={ disabled ? { backgroundColor: '#6dab5e', color: '#babdb9' } : { backgroundColor: 'green' } }>
+						{ disabled ? 'Telah disejutui' : 'Setujui' }
 					</Button>,
 				] }
 			>

@@ -180,7 +180,7 @@ export const LetterSlice = createSlice({
 				state.error = null
 				state.message = action.payload.message
 				state.isLoading = false
-				message.info(state.message)
+				message.success(state.message)
 			})
 			.addCase(fetchAllLetter.rejected, (state, action) => {
 				state.hasData = false
