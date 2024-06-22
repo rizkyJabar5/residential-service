@@ -8,6 +8,7 @@ import id.application.feature.model.entity.Report;
 import id.application.feature.model.repositories.ReportRepository;
 import id.application.feature.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,14 @@ import static id.application.util.FilterableUtil.pageable;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ReportServiceImpl implements ReportService {
     private final ReportRepository reportRepository;
     private final CloudinaryConfig cloudinaryConfig;
 
     @Override
     public Page<Report> findAll(RequestPagination request) {
-        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
         return reportRepository.findAll(pageable);
     }
@@ -43,14 +45,18 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public Report persistNew(RequestAddReport request) {
+    public Report persistNew(RequestAddReport request, MultipartFile image) {
         var authenticatedUser = getUserLoggedIn();
 
         var entity = new Report();
-        entity.setName(request.title());
+        entity.setName(request.name());
         entity.setLocation(request.location());
-        var urlImage = getUrlAndUploadImage(request.image());
-        entity.setImageUrl(urlImage);
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = getUrlAndUploadImage(image);
+            entity.setImageUrl(imageUrl);
+        } else {
+            entity.setImageUrl(null);
+        }
         entity.setTypeFacility(request.typeFacility());
         assert authenticatedUser != null;
         entity.setCitizenId(authenticatedUser.getUserInfo().getCitizenId());

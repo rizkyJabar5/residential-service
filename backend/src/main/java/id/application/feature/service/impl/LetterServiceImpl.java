@@ -42,7 +42,7 @@ public class LetterServiceImpl implements LetterService {
     public Page<LetterRequest> findAll(RequestPagination request) {
         getUserLoggedIn();
 
-        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
         return repository.findAll(pageable);
     }

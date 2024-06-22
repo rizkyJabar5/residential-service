@@ -28,6 +28,12 @@ export const bloodType = [
 	{ value: "NONE", label: "-" },
 ];
 
+export const typeFacility = [
+	{ value: "0", label: "Fasilitas Umum" },
+	{ value: "1", label: "Fasilitas Khusus" },
+]
+
+
 export const gender = [
 	{ value: "MALE", label: "Laki-laki" },
 	{ value: "FEMALE", label: "Wanita" },

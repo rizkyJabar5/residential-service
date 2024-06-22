@@ -1,21 +1,23 @@
-package id.application.feature.dto.request;
+package id.application.feature.dto.response;
 
-import id.application.feature.dto.response.LetterRequestDto;
 import id.application.feature.model.entity.Report;
 import lombok.Builder;
 
 import java.io.Serializable;
 
 @Builder
-public record ReportRequestDto(
+public record ReportResponseDto(
+        String id,
         String name,
         String citizenId,
         String location,
         String imageUrl,
-        String typeFacility) implements Serializable {
+        String typeFacility
+) implements Serializable {
 
-    public static ReportRequestDto reportRequestDto(Report report) {
-        return ReportRequestDto.builder()
+    public static ReportResponseDto reportRequestDto(Report report) {
+        return ReportResponseDto.builder()
+                .id(report.getId())
                 .name(report.getName())
                 .citizenId(report.getCitizenId())
                 .location(report.getLocation())

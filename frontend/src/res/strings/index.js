@@ -62,7 +62,8 @@ export const strings = {
       } ,
 
       reports: {
-        list : "/app/reports"
+        list : "/app/reports",
+        add : "/app/reports/add",
       },
 
 

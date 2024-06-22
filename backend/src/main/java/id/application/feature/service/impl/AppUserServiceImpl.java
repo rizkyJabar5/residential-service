@@ -17,7 +17,7 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Override
     public Page<AppUser> findAll(RequestPagination request) {
-        var sortByCreatedTime = Sort.by(Sort.Order.asc("createdTime"));
+        var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
         return userRepository.findAll(pageable);
     }
