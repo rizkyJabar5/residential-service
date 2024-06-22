@@ -95,7 +95,7 @@ public class LetterServiceImpl implements LetterService {
         entity.setNik(request.nik());
         entity.setMarriageStatus(request.marriageStatus());
         entity.setJobType(request.jobType());
-        entity.setAddress(request.jobType());
+        entity.setAddress(request.address());
         entity.setType(typeLetter);
         entity.setStatus(StatusLetter.WAITING);
         persistUtil(entity, userLoggedIn);

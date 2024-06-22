@@ -180,7 +180,7 @@ export const LetterSlice = createSlice({
 				state.error = null
 				state.message = action.payload.message
 				state.isLoading = false
-				message.info(state.message)
+				message.success(state.message)
 			})
 			.addCase(fetchAllLetter.rejected, (state, action) => {
 				state.hasData = false
@@ -212,8 +212,9 @@ export const LetterSlice = createSlice({
 			.addCase(updateLetter.fulfilled, (state, action) => {
 				state.isLoading = false
 				state.selected = action.payload
-				state.message = action.payload.message
+				state.message = "Anda telah menyetujui pengajuan!"
 				state.error = null
+				console.log(state.message)
 			})
 		builder
 			.addCase(createLetter.pending, startLoading)

@@ -17,7 +17,8 @@ import {
 import Utils from "../../../../utils";
 import { strings } from "../../../../res";
 import { rules } from "../../../../res/rules";
-import moment from "moment";
+import Flex from "../../../../components/shared-components/Flex";
+import { PageHeaderAlt } from "../../../../components/layout-components/PageHeaderAlt";
 
 const edit = Utils.ACTION_TYPE.EDIT
 
@@ -33,7 +34,6 @@ export const FormLetter = ({ type = Utils.ACTION_TYPE.ADD, param }) => {
 	const dispatch = useDispatch();
 	const {
 		selected: letter,
-		error,
 		isLoading,
 		message: msgResponse,
 	} = useSelector(state => state.letters)
@@ -70,12 +70,12 @@ export const FormLetter = ({ type = Utils.ACTION_TYPE.ADD, param }) => {
 		console.log(request)
 
 		await dispatch(createLetter(request)).unwrap()
-			.then(res => {
-				if(letter) {
-					history.push(strings.navigation.path.letters.list);
-					message.success(msgResponse)
-				}
-			})
+			// .then(res => {
+			// 	if(letter) {
+			// 	}
+			// })
+		history.push(strings.navigation.path.letters.list);
+		message.success(msgResponse)
 		// }
 	};
 
@@ -93,13 +93,22 @@ export const FormLetter = ({ type = Utils.ACTION_TYPE.ADD, param }) => {
 		? 'Detail Informasi Surat Pengajuan'
 		: 'Surat Pengajuan Baru'
 
+	const onCancel = (e) => {
+		history.push(strings.navigation.path.letters.list)
+	};
+
 	return (
 		<>
-			<Row gutter={ 24 }>
-				<Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
-					<h2>{ title }</h2>
-				</Col>
-			</Row>
+			<PageHeaderAlt className="bg-white border-bottom">
+				<div className="container">
+					<Flex className="py-2" mobileFlex={ false } justifyContent="between" alignItems="center">
+						<h2 className="mb-3">{ title } </h2>
+						<div className="mb-3">
+							<Button type="primary" danger onClick={ onCancel }>Batal</Button>
+						</div>
+					</Flex>
+				</div>
+			</PageHeaderAlt>
 			<Row>
 				<Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
 					<Card title={ letter?.letterId }>
@@ -151,7 +160,6 @@ export const FormLetter = ({ type = Utils.ACTION_TYPE.ADD, param }) => {
 							<Form.Item
 								rules={ rules.citizen.field.religion }
 								name="religion"
-
 								label="Agama">
 								<Select
 									options={ religions }
