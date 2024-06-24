@@ -11,6 +11,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -59,6 +60,11 @@ public class ConverterDateTime {
 
     public static String localDateToString(LocalDate date) {
         var formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+        return date.format(formatter);
+    }
+
+    public static String localDateToLocale(LocalDate date) {
+        var formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy",  Locale.forLanguageTag("id-ID"));
         return date.format(formatter);
     }
 

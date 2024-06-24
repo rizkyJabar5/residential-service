@@ -1,7 +1,6 @@
 package id.application.config.pdf;
 
-import id.application.feature.dto.request.LetterAddRequest;
-import id.application.util.enums.TypeLetter;
+import id.application.feature.dto.request.TemplateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
@@ -16,7 +15,7 @@ import java.util.Map;
 public class TemplateConfig {
     private final SpringTemplateEngine templateEngine;
 
-    public String ruEnrichProcessor(LetterAddRequest request) {
+    public String ruEnrichProcessor(TemplateRequest request) {
         var arg = this.mappingArgument(request);
         var context = new Context();
         context.setLocale(Locale.ENGLISH);
@@ -25,19 +24,19 @@ public class TemplateConfig {
         return this.templateEngine.process("template-letter", context);
     }
 
-    private Map<String, Object> mappingArgument(LetterAddRequest request) {
+    private Map<String, Object> mappingArgument(TemplateRequest request) {
         var argument = new HashMap<String, Object>();
         argument.put("fullName", request.fullName());
-        argument.put("pob", request.pob());
-        argument.put("dob", request.dob());
-        argument.put("gender", request.gender());
-        argument.put("nationality", request.nationality());
-        argument.put("religion", request.religion());
+        argument.put("pobAndDob", String.format("%s/%s",request.pob(), request.dob()));
+        argument.put("gender", request.gender().getName());
+        argument.put("nationalityAndReligion", String.format("%s / %s", request.nationality(), request.religion().getName()));
         argument.put("nik", request.nik());
-        argument.put("marriageStatus", request.marriageStatus());
+        argument.put("marriageStatus", request.marriageStatus().getStatus());
         argument.put("jobType", request.jobType());
         argument.put("address", request.address());
-        argument.put("type", TypeLetter.valueOf(request.type()));
+        argument.put("type", request.typeLetter());
+        argument.put("letterId", request.letterId());
+        argument.put("datePublished", request.datePublished());
         return argument;
     }
 }

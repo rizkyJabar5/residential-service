@@ -5,6 +5,7 @@ import id.application.exception.AppConflictException;
 import id.application.exception.ResourceNotFoundException;
 import id.application.feature.dto.request.LetterAddRequest;
 import id.application.feature.dto.request.RequestPagination;
+import id.application.feature.dto.request.TemplateRequest;
 import id.application.feature.dto.request.UpdateLetterStatusRequest;
 import id.application.feature.model.entity.LetterRequest;
 import id.application.feature.model.repositories.LetterRequestRepository;
@@ -15,8 +16,6 @@ import id.application.util.enums.StatusLetter;
 import id.application.util.enums.TypeLetter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,11 +23,13 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDate;
 import java.util.Date;
 
 import static id.application.config.pdf.PdfConfig.writePdfFile;
 import static id.application.security.SecurityUtils.getUserLoggedIn;
 import static id.application.util.ConverterDateTime.convertToLocalDateDefaultPattern;
+import static id.application.util.ConverterDateTime.localDateToLocale;
 import static id.application.util.ConverterDateTime.localDateToString;
 import static id.application.util.EntityUtil.persistUtil;
 import static id.application.util.FilterableUtil.pageable;
@@ -122,7 +123,7 @@ public class LetterServiceImpl implements LetterService {
         var existSubmission = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(MSG_LETTER_NOT_FOUND));
 
-        var templateHtml = templateConfig.ruEnrichProcessor(LetterAddRequest.builder()
+        var templateHtml = templateConfig.ruEnrichProcessor(TemplateRequest.builder()
                 .fullName(existSubmission.getFullName())
                 .pob(existSubmission.getPlaceBirth())
                 .dob(localDateToString(existSubmission.getDateOfBirth()))
@@ -133,7 +134,9 @@ public class LetterServiceImpl implements LetterService {
                 .marriageStatus(existSubmission.getMarriageStatus())
                 .jobType(existSubmission.getJobType())
                 .address(existSubmission.getAddress())
-                .type(existSubmission.getType().getId())
+                .typeLetter(existSubmission.getType().getType())
+                .letterId(existSubmission.getLetterId())
+                .datePublished(localDateToLocale(LocalDate.now()))
                 .build());
         var template = writePdfFile(templateHtml, getFirstName(existSubmission.getFullName()));
         return getContent(template);

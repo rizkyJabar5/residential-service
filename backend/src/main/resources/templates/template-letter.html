@@ -14,20 +14,47 @@
         }
 
         .container {
-            max-width: 900px;
             margin: auto;
-            padding: 20px;
-            border: 1px solid #000;
-            border-radius: 8px;
+            padding: 25px;
         }
 
-        .header, .footer {
+        .flex-wrapper {
+            display: flex;
+        }
+
+        .first-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .img-container {
+            position: relative; /* Enable positioning for the pseudo-element */
+            width: 120px;
+            height: 150px;
+            overflow: hidden; /* Hide overflow if image is larger */
+        }
+
+        .img-container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /*background-image: url("/resources/templates/logo.jpg");*/
+            background-size: cover;
+            background-position: center;
+        }
+
+        .second-column {
+            display: flex;
+            flex-direction: column;
             text-align: center;
         }
 
-        .kop {
+        .header, .footer p {
             text-align: center;
-            margin-bottom: 20px;
+            font-size: 13px;
         }
 
         .kop h1, .kop h2, .kop p {
@@ -35,33 +62,32 @@
         }
 
         .kop h1 {
-            font-size: 24px;
+            font-size: 14px;
             font-weight: bold;
         }
 
-        .kop h2 {
-            font-size: 20px;
-        }
-
         .kop p {
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .line {
-            border-bottom: 2px solid #000;
-            margin: 20px 0;
+            border-top: 2px solid black; /* Adjust style as needed (color, thickness) */
+            margin: 15px 0; /* Adjust spacing around the line */
         }
 
-        .header {
+        .header h2 {
             margin-bottom: 20px;
+            font-size: 14px;
         }
 
         .footer {
+            width: 100%;
             margin-top: 40px;
         }
 
-        .content {
+        .content p {
             margin-bottom: 20px;
+            font-size: 12px;
         }
 
         .signature-container {
@@ -71,83 +97,98 @@
         }
 
         .signature {
-            width: 45%;
             text-align: center;
+            font-size: 12px;
+        }
+
+        tr {
+            font-size: 12px;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <div class="kop">
-        <h3>RUKUN TETANGGA 011 RW.20</h3>
-        <h3>DESA KEDUNG JAYA KECAMATAN BABELAN</h3>
-        <h1>KABUPATEN BEKASI</h1>
-    </div>
-    <div class="line"></div>
-    <div class="header">
-        <h2>SURAT PENGANTAR</h2>
-        <p>No : ...../Ket. RT. 011-20/ ...../20.....</p>
-    </div>
-    <div class="content">
-        <p>Yang bertanda tangan di bawah ini Ketua Rukun Tetangga 011 RW 020 Desa Kedung Jaya Kecamatan Babelan
-            Kabupaten Bekasi menerangkan:</p>
-        <table>
-            <tr>
-                <td>Nama</td>
-                <td>: ....................................</td>
-            </tr>
-            <tr>
-                <td>Tempat/Tanggal Lahir</td>
-                <td>: ....................................</td>
-            </tr>
-            <tr>
-                <td>Jenis Kelamin</td>
-                <td>: ....................................</td>
-            </tr>
-            <tr>
-                <td>Bangsa / Agama</td>
-                <td>: ....................................</td>
-            </tr>
-            <tr>
-                <td>No. KTP</td>
-                <td>: ....................................</td>
-            </tr>
-            <tr>
-                <td>Status Perkawinan</td>
-                <td>: ....................................</td>
-            </tr>
-            <tr>
-                <td>Pekerjaan</td>
-                <td>: ....................................</td>
-            </tr>
-            <tr>
-                <td>Alamat</td>
-                <td>: ....................................</td>
-            </tr>
-        </table>
-
-        <p>Adalah benar warga kami, telah memohon Surat Pengantar untuk keperluan :</p>
-
-        <p th:text="${type}"></p>
-
-        <p>Demikian surat pengantar ini dibuat agar dapat dipergunakan sebagaimana mestinya.</p>
-    </div>
-    <div class="signature-container">
-        <div class="signature">
-            <p>Kedung Jaya, ..... ..... 20......</p>
-            <p>Ketua RT 011</p>
-            <br><br>
-            <p>AHMAD ZUBAIR</p>
+    <div class="flex-wrapper">
+        <div class="first-column">
+            <div class="img-container">
+                <img th:src="@{logo.jpg}"/>
+            </div>
         </div>
-        <div class="signature">
-            <p>Kedung Jaya, ..... ..... 20......</p>
-            <p>Ketua RW 020</p>
-            <br><br>
-            <p>JUMAIL, M.Sc</p>
+        <div class="second-column kop">
+            <h2>RUKUN TETANGGA 011 RW.20</h2>
+            <h2>DESA KEDUNG JAYA KECAMATAN BABELAN</h2>
+            <div class="row6">
+                <h2>KABUPATEN BEKASI</h2>
+            </div>
         </div>
     </div>
-    <div class="footer">
-        <p>Ket: "Surat pengantar ini harus ditandatangani dan distempel oleh Ketua RT dan Ketua RW setempat"</p>
+    <hr class="line"/>
+    <div class="container">
+        <div class="header">
+            <h2>SURAT PENGANTAR</h2>
+            <p>No : <label th:text="${letterId}"></label>/Ket. RT. 011-20/ ...../20.....</p>
+        </div>
+        <div class="content">
+            <p>Yang bertanda tangan di bawah ini Ketua Rukun Tetangga 011 RW 020 Desa Kedung Jaya Kecamatan Babelan
+                Kabupaten Bekasi menerangkan:</p>
+            <table>
+                <tr>
+                    <td>Nama</td>
+                    <td>: <label th:text="${fullName}"></label></td>
+                </tr>
+                <tr>
+                    <td>Tempat/Tanggal Lahir</td>
+                    <td>: <label th:text="${pobAndDob}"></label></td>
+                </tr>
+                <tr>
+                    <td>Jenis Kelamin</td>
+                    <td>: <label th:text="${gender}"></label></td>
+                </tr>
+                <tr>
+                    <td>Bangsa / Agama</td>
+                    <td>: <label th:text="${nationalityAndReligion}"></label></td>
+                </tr>
+                <tr>
+                    <td>No. KTP</td>
+                    <td>: <label th:text="${nik}"></label></td>
+                </tr>
+                <tr>
+                    <td>Status Perkawinan</td>
+                    <td>: <label th:text="${marriageStatus}"></label></td>
+                </tr>
+                <tr>
+                    <td>Pekerjaan</td>
+                    <td>: <label th:text="${jobType}"></label></td>
+                </tr>
+                <tr>
+                    <td>Alamat</td>
+                    <td>: <label th:text="${address}"></label></td>
+                </tr>
+            </table>
+
+            <p>Adalah benar warga kami, telah memohon Surat Pengantar untuk keperluan :</p>
+
+            <b><p th:text="${type}"></p></b>
+
+            <p>Demikian surat pengantar ini dibuat agar dapat dipergunakan sebagaimana mestinya.</p>
+        </div>
+        <div class="signature-container">
+            <div class="signature">
+                <p>Kedung Jaya, <label th:text="${datePublished}"></label></p>
+                <p>Ketua RT 011</p>
+                <br><br>
+                <p>AHMAD ZUBAIR</p>
+            </div>
+            <div class="signature">
+                <p>Kedung Jaya, <label th:text="${datePublished}"></label></p>
+                <p>Ketua RW 020</p>
+                <br><br>
+                <p>JUMAIL, M.Sc</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Ket: "Surat pengantar ini harus ditandatangani dan distempel oleh Ketua RT dan Ketua RW setempat"</p>
+        </div>
     </div>
 </div>
 </body>
