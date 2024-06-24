@@ -115,6 +115,7 @@ public class LetterEndpoint {
     @GetMapping("/download/{id}")
     public byte[] downloadSubmissionLetter(@PathVariable String id){
         var content = service.downloadLetter(id);
+
         return content;
     }
 }

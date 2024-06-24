@@ -4,7 +4,11 @@ server:
 
 spring:
   thymeleaf:
-    check-template-location: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    cache: false
   mustache:
     check-template-location: false
   application:
@@ -15,7 +19,7 @@ spring:
 logging:
   level:
     root: INFO
-    asia.lunchbox: DEBUG
+    id.application: DEBUG
     org.hibernate.SQL: DEBUG
     com.zaxxer.hikari.HikariConfig: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
@@ -25,6 +29,15 @@ logging:
     org.atmosphere: WARN
   pattern:
     level: "%5p [appName=${spring.application.name:},traceId=%X{traceId},spanId=%X{spanId}]"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      enabled: true
 
 jwt:
   secretKey: WHO8SCGSXPK8VFBO2LH5N5HOMH65L5X6OR74AX0N02E82R0CGHK5KGCIDUU4YQM2K4WP3

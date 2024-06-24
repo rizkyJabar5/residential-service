@@ -1,11 +1,10 @@
 FROM gradle:jdk17-alpine AS build-gradle
 ENV APP_HOME=/opt/application
 WORKDIR $APP_HOME
-COPY backend/ .
+COPY . .
 RUN gradle bootJar
 
 FROM openjdk:17-jdk-alpine
-RUN apk add --no-cache nodejs npm
 
 ENV JAR_FILE=residential-management-0.0.1-SNAPSHOT.jar
 WORKDIR /srv/app
