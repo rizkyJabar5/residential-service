@@ -67,6 +67,7 @@ networks:
     driver: bridge
     external: true
   residential-fe-network:
+    driver: bridge
     external: true
   residential-db-network:
     driver: bridge
