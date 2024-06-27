@@ -117,7 +117,7 @@ const newsTree = [{
     },
     {
       key: "Finance",
-      path: strings.navigation.path.finance,
+      path: strings.navigation.path.finances.list,
       title: "Keuangan",
       icon: CashHandoverIcon,
       breadcrumb: false,

@@ -2,7 +2,6 @@ import {Button, Card, Col, Row, Table, message, Input, Space, ConfigProvider} fr
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory, withRouter } from 'react-router-dom';
-import { fetchAllProduct, deleteProduct } from 'redux/features/products';
 import {fetchAllReports} from "../../../redux/features/reports";
 import Flex from "../../../components/shared-components/Flex";
 import {CloseCircleTwoTone, PlusCircleOutlined, SearchOutlined} from "@ant-design/icons";

@@ -29,6 +29,8 @@ import { EditAccountCitizen, EditAccountStaff } from "./users/edit-user";
 import AddLetter from "./letters/add-letter";
 import Reports from "./reports";
 import AddReport from "./reports/add-report";
+import Finance from "./finance";
+import AddFinance from "./finance/add-finance";
 
 export const AppViews = ({ match }) => {
 
@@ -56,7 +58,11 @@ export const AppViews = ({ match }) => {
 				<PrivateRoute path={ `${ strings.navigation.path.reports.add }` } component={ AddReport }/>
 
 				<PrivateRoute path={ `${ strings.navigation.path.news }` } component={ CUSTOMERS }/>
-				<PrivateRoute path={ `${ strings.navigation.path.finance }` } component={ PURCHASE }/>
+
+				{/* Finance */}
+				<PrivateRoute exact path={ `${ strings.navigation.path.finances.list }` } component={ Finance }/>
+				<PrivateRoute path={ `${ strings.navigation.path.finances.add }` } component={ AddFinance }/>
+
 				<PrivateRoute path={ `${ strings.navigation.path.suppliers }` } component={ SUPPLIERS }/>
 				<PrivateRoute path={ `${ strings.navigation.path.settings }` } component={ SETTINGS }/>
 
