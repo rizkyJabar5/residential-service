@@ -160,9 +160,30 @@ export const Letters = () => {
 	const download = async (id) => {
 		try {
 			await dispatch(downloadLetter(id)).unwrap()
+				.then((res) => {
+					const filename = res.headers['content-disposition']
+						.split(';')
+						.find(n => n.includes('filename='))
+						.replace('filename=', '')
+						.trim();
+					return {
+						data: res.data,
+						filename: filename,
+					}
+				})
+				.then((content) => {
+					const url = URL.createObjectURL(content.data);
+					const a = document.createElement("a");
+					a.href = url;
+					a.download = content.filename;
+					document.body.appendChild(a);
+					a.click();
+					document.body.removeChild(a);
+					URL.revokeObjectURL(url);
+				})
 		} catch (error) {
 			console.log(error)
-			message.error(error?.message || 'Failed to delete data')
+			message.error(error?.message || 'Failed to download data')
 		}
 	}
 
