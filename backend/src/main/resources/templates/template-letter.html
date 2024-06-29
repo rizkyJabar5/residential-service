@@ -15,7 +15,7 @@
 
         .container {
             margin: auto;
-            padding: 25px;
+            padding: 8px 25px;
         }
 
         .flex-wrapper {
@@ -28,20 +28,19 @@
         }
 
         .img-container {
-            position: relative; /* Enable positioning for the pseudo-element */
+            position: relative;
             width: 120px;
             height: 150px;
-            overflow: hidden; /* Hide overflow if image is larger */
+            overflow: hidden;
+            text-align: center;
         }
 
-        .img-container::after {
-            content: "";
+        .logo-container {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            /*background-image: url("/resources/templates/logo.jpg");*/
             background-size: cover;
             background-position: center;
         }
@@ -50,6 +49,12 @@
             display: flex;
             flex-direction: column;
             text-align: center;
+        }
+
+        .title {
+            font-size: 12px;
+            margin: auto;
+            padding-left: 25px;
         }
 
         .header, .footer p {
@@ -71,8 +76,9 @@
         }
 
         .line {
-            border-top: 2px solid black; /* Adjust style as needed (color, thickness) */
-            margin: 15px 0; /* Adjust spacing around the line */
+            border-style: double;
+            border-top: 5px solid black;
+            margin: 5px 0;
         }
 
         .header h2 {
@@ -82,7 +88,7 @@
 
         .footer {
             width: 100%;
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .content p {
@@ -92,11 +98,15 @@
 
         .signature-container {
             display: flex;
-            justify-content: space-between;
-            margin-top: 40px;
+            flex-direction: row;
+            margin-top: 20px;
+            width: 100%;
         }
 
-        .signature {
+        .flex-column-item{
+            flex-grow: 1;
+            flex-shrink: 0;
+            flex-basis:  40%;
             text-align: center;
             font-size: 12px;
         }
@@ -111,14 +121,16 @@
     <div class="flex-wrapper">
         <div class="first-column">
             <div class="img-container">
-                <img th:src="@{logo.jpg}"/>
+                <div class="logo-container" style="background-image: url('logo.jpg');"></div>
             </div>
         </div>
-        <div class="second-column kop">
-            <h2>RUKUN TETANGGA 011 RW.20</h2>
-            <h2>DESA KEDUNG JAYA KECAMATAN BABELAN</h2>
-            <div class="row6">
-                <h2>KABUPATEN BEKASI</h2>
+        <div class="second-column">
+            <div class="title">
+                <h2>RUKUN TETANGGA 011 RW.20</h2>
+                <h2  style="margin-top: -20px">DESA KEDUNG JAYA KECAMATAN BABELAN</h2>
+                <div style="margin-top: -20px">
+                    <h2 style="font-size: 20px">KABUPATEN BEKASI</h2>
+                </div>
             </div>
         </div>
     </div>
@@ -126,7 +138,7 @@
     <div class="container">
         <div class="header">
             <h2>SURAT PENGANTAR</h2>
-            <p>No : <label th:text="${letterId}"></label>/Ket. RT. 011-20/ ...../20.....</p>
+            <p>No : <label th:text="${letterId}"></label>/Ket. RT. 011-20/<label th:text="${monthPublished}"></label></p>
         </div>
         <div class="content">
             <p>Yang bertanda tangan di bawah ini Ketua Rukun Tetangga 011 RW 020 Desa Kedung Jaya Kecamatan Babelan
@@ -173,16 +185,16 @@
             <p>Demikian surat pengantar ini dibuat agar dapat dipergunakan sebagaimana mestinya.</p>
         </div>
         <div class="signature-container">
-            <div class="signature">
+            <div class="flex-column-item" style="float: left">
                 <p>Kedung Jaya, <label th:text="${datePublished}"></label></p>
-                <p>Ketua RT 011</p>
-                <br><br>
+                <p style="margin-top: -10px">Ketua RT 011</p>
+                <img th:src="${signRT}" width="80" height="80"/>
                 <p>AHMAD ZUBAIR</p>
             </div>
-            <div class="signature">
+            <div class="flex-column-item" style="float: right">
                 <p>Kedung Jaya, <label th:text="${datePublished}"></label></p>
-                <p>Ketua RW 020</p>
-                <br><br>
+                <p style="margin-top: -10px">Ketua RW 020</p>
+                <img th:src="${signRW}" width="80" height="80"/>
                 <p>JUMAIL, M.Sc</p>
             </div>
         </div>

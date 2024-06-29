@@ -18,6 +18,8 @@ import java.util.Objects;
 public class ConverterDateTime {
     public static final String DD_MM_YYYY = "dd/MM/yyyy";
     public static final String DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss z";
+    public static final String DATE_FORMAT = "dd MMMM yyyy";
+    public static final String MONTH_PUBLISH_FORMAT = "mm/yyyy";
 
     public static LocalDate convertToLocalDateDefaultPattern(String date) {
         if (Objects.isNull(date)) {
@@ -58,13 +60,14 @@ public class ConverterDateTime {
         return cal.getTime();
     }
 
-    public static String localDateToString(LocalDate date) {
-        var formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
-        return date.format(formatter);
+    public static String localDateToString(LocalDate date, String format) {
+        var formatter = new SimpleDateFormat(format);
+        var thisMonth = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return formatter.format(thisMonth);
     }
 
-    public static String localDateToLocale(LocalDate date) {
-        var formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy",  Locale.forLanguageTag("id-ID"));
+    public static String localDateToLocale(LocalDate date, String format) {
+        var formatter = DateTimeFormatter.ofPattern(format,  Locale.forLanguageTag("id-ID"));
         return date.format(formatter);
     }
 

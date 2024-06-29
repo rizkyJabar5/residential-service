@@ -3,6 +3,7 @@ package id.application.feature.service;
 import id.application.feature.dto.request.LetterAddRequest;
 import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.dto.request.UpdateLetterStatusRequest;
+import id.application.feature.dto.response.DownloadResponse;
 import id.application.feature.model.entity.LetterRequest;
 import id.application.util.enums.StatusLetter;
 import jakarta.transaction.Transactional;
@@ -22,5 +23,5 @@ public interface LetterService {
 
     void updateStatusLetter(UpdateLetterStatusRequest request);
 
-    byte[] downloadLetter(String letterId);
+    DownloadResponse downloadLetter(String letterId);
 }

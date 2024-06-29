@@ -19,5 +19,6 @@ public record TemplateRequest(
         String address,
         String typeLetter,
         String letterId,
+        String monthPublished,
         String datePublished) {
 }
