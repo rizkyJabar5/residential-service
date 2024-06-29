@@ -11,18 +11,18 @@ import {rules} from "../../../../res/rules";
 import {PageHeaderAlt} from "../../../../components/layout-components/PageHeaderAlt";
 import Flex from "../../../../components/shared-components/Flex";
 import {UploadOutlined} from '@ant-design/icons';
-import {createReport} from "../../../../redux/features/reports";
+import {createFinance} from "../../../../redux/features/finances";
 
 const edit = Utils.ACTION_TYPE.EDIT
 
-export const FormReport = ({type = Utils.ACTION_TYPE.ADD, param}) => {
+export const FormFinance = ({type = Utils.ACTION_TYPE.ADD, param}) => {
     const history = useHistory();
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
     const {
-        selected: reports,
-    } = useSelector(state => state.reports)
+        selected: finances,
+    } = useSelector(state => state.finances)
 
     const ADD = 'ADD'
 
@@ -30,26 +30,19 @@ export const FormReport = ({type = Utils.ACTION_TYPE.ADD, param}) => {
         setLoading(true);
         const formData = new FormData();
 
-        const requestBlob = new Blob([JSON.stringify({
-            name: values.name,
-            location: values.location,
-            typeFacility: type === edit ? valueOfTypeLetter(values.typeFacility) : values.typeFacility,
-        })], {type: 'application/json'});
-
-        formData.append('request', requestBlob);
         const imageFile = values.imageUrl[0]?.originFileObj;
 
         if (imageFile) {
             formData.append('image', imageFile);
         }
 
-        await dispatch(createReport(formData)).unwrap()
+        await dispatch(createFinance(formData)).unwrap()
             .then(res => {
-                history.push(strings.navigation.path.reports.list);
-                message.success("Sukses menambah laporan");
+                history.push(strings.navigation.path.finances.list);
+                message.success("Sukses menambah data");
             })
             .catch(error => {
-                console.error('Error creating report:', error);
+                console.error('Error creating finance:', error);
                 message.error('Gagal membuat laporan. Silakan coba lagi.');
             });
     };
@@ -59,14 +52,15 @@ export const FormReport = ({type = Utils.ACTION_TYPE.ADD, param}) => {
     };
 
     const onCancel = (e) => {
-        history.push('/app/reports')
+        history.push('/app/finances')
     };
 
     const title = type === edit
-        ? 'Edit Laporan Kerusakan'
-        : 'Tambah Laporan Kerusakan'
+        ? 'Edit Data'
+        : 'Tambah Data'
 
     const normFile = (e) => {
+        console.log('Upload event:', e);
         if (Array.isArray(e)) {
             return e;
         }
@@ -91,37 +85,17 @@ export const FormReport = ({type = Utils.ACTION_TYPE.ADD, param}) => {
                             <div className="mb-3">
                                 <Button className="mr-2" onClick={onCancel}>Batal</Button>
                                 <Button type="primary" htmlType="submit" loading={loading}>
-                                    {type === Utils.ACTION_TYPE.ADD ? 'Tambah Laporan' : 'Simpan'}
+                                    {type === Utils.ACTION_TYPE.ADD ? 'Tambah' : 'Simpan'}
                                 </Button>
                             </div>
                         </Flex>
                     </div>
                 </PageHeaderAlt>
                 <Card>
-                    <Row gutter={8}>
-                        <Col span={12}>
-                            <Form.Item
-                                name="name"
-                                label="Nama Laporan"
-                                rules={rules.report.field.nameReports}
-                            >
-                                <Input placeholder="Nama Laporan"/>
-                            </Form.Item>
-                        </Col>
-                        <Col span={12}>
-                            <Form.Item
-                                name="location"
-                                label="Lokasi"
-                                rules={rules.report.field.location}
-                            >
-                                <Input placeholder="Masukkan alamat lokasi kerusakan!"/>
-                            </Form.Item>
-                        </Col>
-                    </Row>
                     <Form.Item
                         name="imageUrl"
                         label="Gambar"
-                        rules={rules.report.field.imageUrl}
+                        rules={rules.finance.field.imageUrl}
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
                     >
@@ -129,23 +103,10 @@ export const FormReport = ({type = Utils.ACTION_TYPE.ADD, param}) => {
                             <Button icon={<UploadOutlined/>}>Pilih Gambar</Button>
                         </Upload>
                     </Form.Item>
-
-
-                    <Form.Item
-                        name="typeFacility"
-                        label="Jenis Fasilitas"
-                        rules={rules.report.field.typeFacility}
-                    >
-                        <Select
-                            options={typeFacility}
-                            placeholder="Pilih Salah Satu"
-                        />
-                    </Form.Item>
-
                 </Card>
             </Form>
         </>
     );
 }
 
-export default FormReport
+export default FormFinance
