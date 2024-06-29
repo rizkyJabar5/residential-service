@@ -11,12 +11,15 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConverterDateTime {
     public static final String DD_MM_YYYY = "dd/MM/yyyy";
     public static final String DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss z";
+    public static final String DATE_FORMAT = "dd MMMM yyyy";
+    public static final String MONTH_PUBLISH_FORMAT = "mm/yyyy";
 
     public static LocalDate convertToLocalDateDefaultPattern(String date) {
         if (Objects.isNull(date)) {
@@ -57,8 +60,14 @@ public class ConverterDateTime {
         return cal.getTime();
     }
 
-    public static String localDateToString(LocalDate date) {
-        var formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+    public static String localDateToString(LocalDate date, String format) {
+        var formatter = new SimpleDateFormat(format);
+        var thisMonth = Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return formatter.format(thisMonth);
+    }
+
+    public static String localDateToLocale(LocalDate date, String format) {
+        var formatter = DateTimeFormatter.ofPattern(format,  Locale.forLanguageTag("id-ID"));
         return date.format(formatter);
     }
 

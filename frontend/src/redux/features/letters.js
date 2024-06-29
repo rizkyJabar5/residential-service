@@ -47,6 +47,7 @@ const getDownloadLetterById = async (id) =>
 	apiRequest({
 		path: `${ URLS.LETTERS }/download/${ id }`,
 		method: "GET",
+		responseType: 'blob',
 	});
 
 export const fetchAllLetter = createAsyncThunk(
@@ -261,8 +262,7 @@ export const LetterSlice = createSlice({
 			.addCase(downloadLetter.pending, startLoading)
 			.addCase(downloadLetter.fulfilled, (state, action) => {
 				state.isLoading = false
-				state.selected = action.payload
-				state.message = action.payload.message
+				state.selected = action.payload.data
 				state.error = null
 			})
 			.addCase(downloadLetter.rejected, (state, action) => {

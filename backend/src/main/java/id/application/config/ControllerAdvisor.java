@@ -6,7 +6,6 @@ import id.application.exception.InternalServerException;
 import id.application.exception.ResourceNotFoundException;
 import id.application.feature.dto.response.BaseResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
