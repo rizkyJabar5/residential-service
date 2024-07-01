@@ -7,13 +7,7 @@ import id.application.util.enums.Gender;
 import id.application.util.enums.LatestEducation;
 import id.application.util.enums.MarriageStatus;
 import id.application.util.enums.Religion;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,4 +56,5 @@ public class Citizen extends BaseEntity {
 
     @Column(length = 10)
     private Integer familyNumber;
+
 }
