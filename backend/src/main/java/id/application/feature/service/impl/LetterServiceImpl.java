@@ -2,10 +2,13 @@ package id.application.feature.service.impl;
 
 import id.application.config.pdf.TemplateConfig;
 import id.application.exception.AppConflictException;
+import id.application.exception.AppRuntimeException;
 import id.application.exception.ResourceNotFoundException;
 import id.application.feature.dto.request.LetterAddRequest;
 import id.application.feature.dto.request.RequestPagination;
+import id.application.feature.dto.request.TemplateRequest;
 import id.application.feature.dto.request.UpdateLetterStatusRequest;
+import id.application.feature.dto.response.DownloadResponse;
 import id.application.feature.model.entity.LetterRequest;
 import id.application.feature.model.repositories.LetterRequestRepository;
 import id.application.feature.service.LetterService;
@@ -15,8 +18,6 @@ import id.application.util.enums.StatusLetter;
 import id.application.util.enums.TypeLetter;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,15 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDate;
 import java.util.Date;
 
 import static id.application.config.pdf.PdfConfig.writePdfFile;
 import static id.application.security.SecurityUtils.getUserLoggedIn;
+import static id.application.util.ConverterDateTime.DATE_FORMAT;
+import static id.application.util.ConverterDateTime.MONTH_PUBLISH_FORMAT;
 import static id.application.util.ConverterDateTime.convertToLocalDateDefaultPattern;
+import static id.application.util.ConverterDateTime.localDateToLocale;
 import static id.application.util.ConverterDateTime.localDateToString;
 import static id.application.util.EntityUtil.persistUtil;
 import static id.application.util.FilterableUtil.pageable;
@@ -37,6 +42,8 @@ import static id.application.util.FilterableUtil.pageable;
 @Service
 public class LetterServiceImpl implements LetterService {
     public static final String MSG_LETTER_NOT_FOUND = "Surat pengajuan tidak ditemukan";
+    public static final String OR = " atau ";
+    public static final String PATH = "/";
     private final LetterRequestRepository repository;
     private final TemplateConfig templateConfig;
 
@@ -118,14 +125,17 @@ public class LetterServiceImpl implements LetterService {
     }
 
     @Override
-    public byte[] downloadLetter(String id) {
+    public DownloadResponse downloadLetter(String id) {
         var existSubmission = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(MSG_LETTER_NOT_FOUND));
 
-        var templateHtml = templateConfig.ruEnrichProcessor(LetterAddRequest.builder()
+        var letterType = getLetterType(existSubmission.getType().getType());
+
+        var dateNow = LocalDate.now() ;
+        var templateHtml = templateConfig.ruEnrichProcessor(TemplateRequest.builder()
                 .fullName(existSubmission.getFullName())
                 .pob(existSubmission.getPlaceBirth())
-                .dob(localDateToString(existSubmission.getDateOfBirth()))
+                .dob(localDateToLocale(existSubmission.getDateOfBirth(), DATE_FORMAT))
                 .gender(existSubmission.getGender())
                 .nationality(existSubmission.getNationality())
                 .religion(existSubmission.getReligion())
@@ -133,10 +143,38 @@ public class LetterServiceImpl implements LetterService {
                 .marriageStatus(existSubmission.getMarriageStatus())
                 .jobType(existSubmission.getJobType())
                 .address(existSubmission.getAddress())
-                .type(existSubmission.getType().getId())
+                .typeLetter(letterType)
+                .letterId(existSubmission.getLetterId())
+                .monthPublished(localDateToString(dateNow, MONTH_PUBLISH_FORMAT))
+                .datePublished(localDateToLocale(dateNow, DATE_FORMAT))
                 .build());
-        var template = writePdfFile(templateHtml, getFirstName(existSubmission.getFullName()));
-        return getContent(template);
+        String firstName = getFirstName(existSubmission.getFullName());
+        var template = writePdfFile(letterType, templateHtml, firstName);
+        var content = getContent(template);
+        var fileName = template.getName();
+        cleanUpFile(template);
+        return DownloadResponse.builder()
+                .content(content)
+                .fileName(fileName)
+                .build();
+    }
+
+    private String getLetterType(String letterType) {
+        var contains = StringUtils.contains(letterType, PATH);
+
+        if (contains) {
+            letterType = StringUtils.replace(letterType, PATH, OR);
+        }
+
+        return letterType;
+    }
+
+    private void cleanUpFile(File result) {
+        try {
+            Files.deleteIfExists(result.toPath());
+        } catch (IOException e) {
+            throw new AppRuntimeException(e);
+        }
     }
 
     private String getFirstName(String fullName) {

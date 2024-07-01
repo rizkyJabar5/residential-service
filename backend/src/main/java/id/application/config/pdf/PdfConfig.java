@@ -2,6 +2,7 @@ package id.application.config.pdf;
 
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
+import com.itextpdf.html2pdf.css.apply.impl.DefaultCssApplierFactory;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.DocumentProperties;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -27,9 +28,12 @@ import static id.application.config.pdf.PDFComponentUtil.fileName;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PdfConfig {
 
-    public static File writePdfFile(String headerHtml,
+    public static final String RESOURCES_TEMPLATES = "backend/src/main/resources/templates/";
+
+    public static File writePdfFile(String letterType,
+                                    String headerHtml,
                                     String name) {
-        var fileName = fileName(name);
+        var fileName = fileName(letterType, name);
         var file = new File(fileName);
 
         try (var fileOutputStream = new FileOutputStream(file);
@@ -53,7 +57,10 @@ public class PdfConfig {
         var cell = new Cell();
         cell.setBorder(Border.NO_BORDER);
 
-        var properties = new ConverterProperties();
+        var properties = new ConverterProperties()
+                .setBaseUri(RESOURCES_TEMPLATES)
+                .setCharset("UTF-8");
+        properties.setCssApplierFactory(new DefaultCssApplierFactory());
         var elements = HtmlConverter.convertToElements(headerHtml, properties);
 
         elements.forEach(element -> cell.add((IBlockElement) element));

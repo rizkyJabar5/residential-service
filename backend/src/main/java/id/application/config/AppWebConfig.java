@@ -11,6 +11,7 @@ public class AppWebConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("*")
                 .allowedHeaders("*")
-                .allowedMethods("*");
+                .allowedMethods("*")
+                .exposedHeaders("*");
     }
 }

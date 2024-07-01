@@ -11,6 +11,9 @@ import id.application.feature.service.LetterService;
 import id.application.util.enums.StatusLetter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +35,7 @@ import static id.application.util.constant.StatusCodeConstant.CODE_CONTENT_FOUND
 @RequestMapping("/api/v1/letters")
 @Validated
 public class LetterEndpoint {
+    public static final String DATA_TIDAK_DITEMUKAN = "Data tidak ditemukan";
     private final LetterService service;
 
     @GetMapping
@@ -45,7 +49,7 @@ public class LetterEndpoint {
 
         return BaseResponse.<PageResponse<LetterRequestDto>>builder()
                 .code(letterRequest.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(letterRequest.isEmpty() ? "Data tidak ditemukan" : "Data ditemukan")
+                .message(letterRequest.isEmpty() ? DATA_TIDAK_DITEMUKAN : "Data ditemukan")
                 .data(PageResponse.<LetterRequestDto>builder()
                         .size(letterRequest.getSize())
                         .totalElements(letterRequest.getTotalElements())
@@ -64,7 +68,7 @@ public class LetterEndpoint {
         Page<LetterRequest> contents = service.findLetterByStatus(statusLetter);
         return BaseResponse.<PageResponse<LetterRequestDto>>builder()
                 .code(contents.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(contents.isEmpty() ? "Data tidak ditemukan" : "Data Pengajuan ditemukan")
+                .message(contents.isEmpty() ? DATA_TIDAK_DITEMUKAN : "Data Pengajuan ditemukan")
                 .data(PageResponse.<LetterRequestDto>builder()
                         .size(contents.getSize())
                         .totalElements(contents.getTotalElements())
@@ -82,7 +86,7 @@ public class LetterEndpoint {
         var content = service.findById(id);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
-                .message(Objects.isNull(content) ? "Data tidak ditemukan" : "Data Pengajuan ditemukan")
+                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : "Data Pengajuan ditemukan")
                 .data(LetterRequestDto.letterRequestDto(content))
                 .build();
     }
@@ -92,7 +96,7 @@ public class LetterEndpoint {
         var content = service.findByLetterId(nik);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
-                .message(Objects.isNull(content) ? "Data tidak ditemukan" : "Data Pengajuan ditemukan")
+                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : "Data Pengajuan ditemukan")
                 .data(LetterRequestDto.letterRequestDto(content))
                 .build();
     }
@@ -112,10 +116,19 @@ public class LetterEndpoint {
         service.updateStatusLetter(request);
     }
 
-    @GetMapping("/download/{id}")
-    public byte[] downloadSubmissionLetter(@PathVariable String id){
-        var content = service.downloadLetter(id);
+    @GetMapping(value = "/download/{id}")
+    public ResponseEntity<byte[]> downloadSubmissionLetter(@PathVariable String id){
+        var response = service.downloadLetter(id);
+        var header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.fileName());
+        header.add(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
+        header.add(HttpHeaders.PRAGMA, "no-cache");
+        header.add(HttpHeaders.EXPIRES, "0");
 
-        return content;
+        return ResponseEntity.ok()
+                .headers(header)
+//                .contentLength(response.contentLength())
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(response.content());
     }
 }

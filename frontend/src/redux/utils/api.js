@@ -10,6 +10,7 @@ export const apiRequest = async ({
     params,
     path,
     apiVersion = "v1",
+	  responseType = "json"
 }) => {
     const baseUrl = url
         ? `${url}/${apiVersion}`
@@ -29,6 +30,7 @@ export const apiRequest = async ({
             "Access-Control-Allow-Methods": "*",
             Authorization: token ? 'Bearer ' + token : "",
         },
+	      responseType,
     };
 
     if (headers) {
