@@ -144,6 +144,53 @@ export const rules = {
             ]
         }
     },
+
+		news: {
+			title: [
+				{
+					required: true,
+					message: 'Masukkan judul berita!',
+				},
+			],
+			content: [
+				{
+					required: true,
+					message: 'Masukkan isi berita!',
+				},
+			],
+			event: [
+				{
+					required: true,
+					message: 'Masukkan agenda acara!',
+				},
+			],
+			location: [
+				{
+					required: true,
+					message: 'Masukkan lokasi acara!',
+				},
+			],
+			eventDate: [
+				{
+					required: true,
+					message: 'Masukkan tanggal acara!',
+				},
+			],
+			startTime: [
+				{
+					required: true,
+					message: 'Masukkan waktu mulai acara!',
+				},
+			],
+			endTime: [
+				{
+					required: true,
+					message: 'Masukkan waktu akhir acara!',
+				},
+			],
+
+		},
+
     auth: {
         confirm: [
             {

@@ -6,11 +6,8 @@ import Loading from 'components/shared-components/Loading';
 
 // Pages
 import DASHBOARD from "./dashboard"
-import PRODUCTS from "./all-products"
 import Letters from "./letters"
-import CUSTOMERS from "./all-customers"
 import SUPPLIERS from "./all-suppliers"
-import PURCHASE from "./all-purchase"
 import Citizens from "./citizens"
 import SETTINGS from "./settings"
 import USERS from "./users"
@@ -31,6 +28,9 @@ import Reports from "./reports";
 import AddReport from "./reports/add-report";
 import Finance from "./finance";
 import AddFinance from "./finance/add-finance";
+import News from "./news";
+import AddNews from "./news/add-news";
+import EditNews from "./news/edit-news";
 
 export const AppViews = ({ match }) => {
 
@@ -57,7 +57,10 @@ export const AppViews = ({ match }) => {
 				<PrivateRoute exact path={ `${ strings.navigation.path.reports.list }` } component={ Reports }/>
 				<PrivateRoute path={ `${ strings.navigation.path.reports.add }` } component={ AddReport }/>
 
-				<PrivateRoute path={ `${ strings.navigation.path.news }` } component={ CUSTOMERS }/>
+				{/* News*/}
+				<PrivateRoute path={ `${ strings.navigation.path.news.list }` } component={ News }/>
+				<PrivateRoute path={ `${ strings.navigation.path.news.add }` } component={ AddNews }/>
+				<PrivateRoute path={ `${ strings.navigation.path.news.edit }/:id` } component={ EditNews }/>
 
 				{/* Finance */}
 				<PrivateRoute exact path={ `${ strings.navigation.path.finances.list }` } component={ Finance }/>
