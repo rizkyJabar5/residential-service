@@ -96,20 +96,20 @@ const userManagementTree = [{
     //   icon: DeliveryIcon,
     //   breadcrumb: false,
     //   submenu: []
-    // }, 
+    // },
   ]
 }]
 
 
 const newsTree = [{
   key: "Information",
-  path: strings.navigation.path.news,
+  path: strings.navigation.path.informations,
   title: "Informasi",
   breadcrumb: false,
   submenu: [
     {
       key: "News",
-      path: strings.navigation.path.news,
+      path: strings.navigation.path.news.list,
       title: "Berita",
       icon: SLAIcon,
       breadcrumb: false,

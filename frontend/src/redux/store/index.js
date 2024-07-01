@@ -8,7 +8,7 @@ import reportReducer from 'redux/features/reports'
 import customerReducer from 'redux/features/customers'
 import letterReducer from 'redux/features/letters'
 import citizensReducer from 'redux/features/citizens'
-import purchaseReducer from 'redux/features/purchase'
+import newsReducer from 'redux/features/news'
 import userReducer from 'redux/features/user'
 import financeReducer from 'redux/features/finances'
 
@@ -19,7 +19,7 @@ const store = configureStore({
         products: productsReducer,
         letters: letterReducer,
         customers: customerReducer,
-        purchases: purchaseReducer,
+        news: newsReducer,
         reports: reportReducer,
         suppliers: supplierReducer,
         expenses: expenseReducer,
