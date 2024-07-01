@@ -18,7 +18,6 @@ import java.util.List;
 
 @Builder
 public record RequestAddFamilyMember(
-        String fullName,
         List<FamilyMember> familyMembers) implements Serializable {
 
     @Builder

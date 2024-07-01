@@ -14,5 +14,6 @@ public record JwtResponse(
         String userId,
         String name,
         String username,
-        String role) implements Serializable {
+        String role,
+        String status) implements Serializable {
 }

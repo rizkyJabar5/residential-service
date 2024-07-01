@@ -43,7 +43,7 @@ public class FinanceServiceImpl implements FinanceService {
     public Page<ResponseFinanceDTO> getAllFinances(RequestPagination requestPagination) {
         var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(requestPagination.page(), requestPagination.limitContent(), sortByCreatedTime);
-        Page<Finance> payments =  financeRepository.findAll(pageable);
+        Page<Finance> payments = financeRepository.findAll(pageable);
         return payments.map(this::converToPaymentResponseDTO);
     }
 
@@ -51,12 +51,12 @@ public class FinanceServiceImpl implements FinanceService {
     public Finance persistNewFinance(MultipartFile image) {
         var authenticationUser = getUserLoggedIn();
 
-        Citizen citizen = citizenRepository.findById(authenticationUser.getId())
+        Citizen citizen = citizenRepository.findById(authenticationUser.getUserInfo().getCitizenId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Citizen not found"));
-
+        log.info("id citizen (CITIZEN) : {}", authenticationUser.getUserInfo().getCitizenId());
         UserInfo userInfo = userInfoRepository.findById(authenticationUser.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "UserInfo not found"));
-
+        log.info("id user info : {}", authenticationUser.getId());
         Finance entity = new Finance();
         entity.setCitizenId(citizen.getId());
         entity.setUserInfoId(userInfo.getId());
@@ -64,7 +64,7 @@ public class FinanceServiceImpl implements FinanceService {
         if (image != null && !image.isEmpty()) {
             String imageUrl = getUrlAndUploadImage(image);
             entity.setImageUrl(imageUrl);
-        }else {
+        } else {
             entity.setImageUrl(null);
         }
 

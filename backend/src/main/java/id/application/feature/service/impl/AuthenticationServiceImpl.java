@@ -110,7 +110,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         appUser.setPassword(passwordEncoder.encode(request.password()));
         appUser.setName(request.fullName());
 
-        userInfo.setStatusRegistered(StatusRegistered.REGISTERED);
+        userInfo.setStatusRegistered(StatusRegistered.VERIFIED);
 
         userInfoRepository.save(userInfo);
 

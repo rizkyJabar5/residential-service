@@ -45,7 +45,7 @@ export const FINANCES = (props) => {
 
     const params = {
         page: 0,
-        limit: 30
+        limit: 10
     }
 
     const getData = useCallback(async () => {

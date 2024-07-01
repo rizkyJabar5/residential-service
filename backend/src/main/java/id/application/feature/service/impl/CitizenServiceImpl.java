@@ -8,9 +8,11 @@ import id.application.feature.dto.request.RequestCitizenUpdate;
 import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.dto.response.BaseResponse;
 import id.application.feature.model.entity.Citizen;
+import id.application.feature.model.entity.UserInfo;
 import id.application.feature.model.repositories.CitizenRepository;
 import id.application.feature.model.repositories.UserInfoRepository;
 import id.application.feature.service.CitizenService;
+import id.application.util.enums.ERole;
 import id.application.util.enums.StatusRegistered;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -62,18 +64,38 @@ public class CitizenServiceImpl implements CitizenService {
 
 //        validateCitizenIsAlReadyRegistered(request.fullName(), request.nik());
 
+        if (userLoggedIn.getRole() != ERole.ADMIN) {
+            if (userLoggedIn.getUserInfo().getStatusRegistered().equals(StatusRegistered.VERIFIED)) {
+                if (!request.kkId().equals(userLoggedIn.getUserInfo().getKkId())) {
+                    throw new AppConflictException("KK id berbeda");
+                }
+            }
+        }
+
         var entity = this.buildCitizen(request);
         persistUtil(entity, userLoggedIn.getName());
+        Citizen citizen = citizenRepository.save(entity);
 
-        return citizenRepository.save(entity);
+        if (userLoggedIn.getRole() != ERole.ADMIN) {
+            UserInfo userInfo = userInfoRepository.findByAppUserId(userLoggedIn.getId())
+                    .orElseThrow(() -> new AppConflictException(String.format("User %s not found", userLoggedIn.getId())));
+
+            if (userInfo.getStatusRegistered().equals(StatusRegistered.VERIFIED)) {
+                userInfo.setCitizenId(entity.getId());
+                userInfo.setStatusRegistered(StatusRegistered.REGISTERED);
+                userInfoRepository.save(userInfo);
+            }
+        }
+
+        return citizen;
     }
 
     @Override
     public BaseResponse<Void> addFamilyMembers(RequestAddFamilyMember request) {
         var userLoggedIn = getUserLoggedIn();
 
-        var existCitizen = citizenRepository.findCitizenByFullName(request.fullName())
-                .orElseThrow();
+        var existCitizen = citizenRepository.findById(userLoggedIn.getUserInfo().getCitizenId())
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Citizen with name not found")));
 
         var familyMembers = new ArrayList<Citizen>();
         for (var familyMember : request.familyMembers()) {

@@ -86,8 +86,12 @@ const DetailCitizen = ({ type = ADD, param }) => {
 							history.push('/app/citizens')
 						})
 						.catch((err) => {
-							console.log(`ERROR:MESSAGE = ${ err }`)
-							message.error(err.message)
+							if (err.response && err.response.status === 409) {
+								message.error("No KK harus sama dengan No KK waktu pembuatan akun");
+							} else {
+								console.log(`ERROR:MESSAGE = ${err}`)
+								message.error(err.message)
+							}
 						})
 						.finally(() => setSubmitLoading(false))
 				}
