@@ -1,9 +1,6 @@
 package id.application.endpoints;
 
-import id.application.feature.dto.request.RequestAddFamilyMember;
-import id.application.feature.dto.request.CitizenInfoRequest;
-import id.application.feature.dto.request.RequestCitizenUpdate;
-import id.application.feature.dto.request.RequestPagination;
+import id.application.feature.dto.request.*;
 import id.application.feature.dto.response.BaseResponse;
 import id.application.feature.dto.response.CitizenDto;
 import id.application.feature.dto.response.PageResponse;
@@ -81,14 +78,19 @@ public class CitizenEndpoint {
         Citizen citizen = citizenService.persistNew(request);
         return BaseResponse.<CitizenDto>builder()
                 .code("200")
-                .message("Anda berhasil mendaftar. Silahkan login!")
+                .message("Berhasil manambahkan data !")
                 .data(CitizenDto.entityToDto(citizen))
                 .build();
     }
 
     @PostMapping("/families")
-    public BaseResponse<Void> addFamilyMember(@RequestBody RequestAddFamilyMember request) {
-        return citizenService.addFamilyMembers(request);
+    public BaseResponse<CitizenDto> addFamilyMember(@RequestBody CitizenAddFamilyRequest request) {
+        Citizen citizen = citizenService.addFamilyMembers(request);
+        return BaseResponse.<CitizenDto>builder()
+                .code("200")
+                .message("Berhasil manambahkan data !")
+                .data(CitizenDto.entityToDto(citizen))
+                .build();
     }
 
     @PutMapping

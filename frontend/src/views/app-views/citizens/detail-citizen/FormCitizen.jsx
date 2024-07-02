@@ -59,12 +59,16 @@ const FormCitizen = ({
 
     const location = useLocation();
     const [notification, setNotification] = useState(null);
-
-    // useEffect(() => {
-    // }, []);
-
+    const [role, setRole] = useState(null)
+    const [statusAccount, setStatusAccount] = useState(null)
 
     useEffect(() => {
+        const userRole = localStorage.getItem('role');
+        setRole(userRole)
+
+        const statusAccountUser = localStorage.getItem('status');
+        setStatusAccount(statusAccountUser)
+
         if (location.state && location.state.message) {
             setNotification(location.state.message);
         }
@@ -93,25 +97,15 @@ const FormCitizen = ({
             autoComplete="off"
             scrollToFirstError
         >
-            <Modal
-                title="Notification"
-                visible={notification !== null}
-                onOk={handleOk}
-                onCancel={handleOk}
-                footer={[
-                    <Button key="submit" type="primary" onClick={handleOk}>
-                        OK
-                    </Button>,
-                ]}
-            >
-                <p>{notification}</p>
-            </Modal>
+
             <PageHeaderAlt className="bg-white border-bottom">
                 <div className="container">
                     <Flex className="py-2" mobileFlex={false} justifyContent="between" alignItems="center">
                         <h2 className="mb-3">{header} </h2>
                         <div className="mb-3">
-                            <Button className="mr-2" onClick={onCancel}>Batal</Button>
+                            {statusAccount !== 'VERIFIED' && (
+                                <Button className="mr-2" onClick={onCancel}>Batal</Button>
+                            )}
                             <Button type="primary" htmlType="submit" loading={submitLoading}>
                                 {type === ADD ? 'Tambah Warga' : `Simpan`}
                             </Button>
@@ -121,14 +115,17 @@ const FormCitizen = ({
             </PageHeaderAlt>
             <Card title={title}>
                 <Row gutter={8}>
-                    <Col span={12}>
-                        <Form.Item
-                            name="kkId"
-                            label="No. KK"
-                            rules={rules.citizen.field.kkId}>
-                            <Input placeholder="Nomor Kartu Keluarga"/>
-                        </Form.Item>
-                    </Col>
+                    {((role === 'CITIZEN' && statusAccount === 'VERIFIED') || role === 'ADMIN') && (
+                        <Col span={12}>
+                            <Form.Item
+                                name="kkId"
+                                label="No. KK"
+                                rules={rules.citizen.field.kkId}>
+                                <Input placeholder="Nomor Kartu Keluarga"/>
+                            </Form.Item>
+                        </Col>
+                    )}
+
                     <Col span={12}>
                         <Form.Item
                             name="nik"
@@ -269,6 +266,20 @@ const FormCitizen = ({
                     <Input/>
                 </Form.Item>
             </Card>
+
+            <Modal
+                title="Notification"
+                visible={notification !== null}
+                onOk={handleOk}
+                onCancel={handleOk}
+                footer={[
+                    <Button key="submit" type="primary" onClick={handleOk}>
+                        OK
+                    </Button>,
+                ]}
+            >
+                <p>{notification}</p>
+            </Modal>
         </Form>
     );
 }
