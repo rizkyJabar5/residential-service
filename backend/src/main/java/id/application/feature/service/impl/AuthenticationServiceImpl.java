@@ -2,11 +2,8 @@ package id.application.feature.service.impl;
 
 import id.application.exception.AppRuntimeException;
 import id.application.exception.ResourceNotFoundException;
-import id.application.feature.dto.request.CitizenRegisterRequest;
-import id.application.feature.dto.request.RequestValidateRegistration;
+import id.application.feature.dto.request.*;
 import id.application.feature.model.entity.AppUser;
-import id.application.feature.dto.request.PasswordRequest;
-import id.application.feature.dto.request.UserRequest;
 import id.application.feature.dto.response.BaseResponse;
 import id.application.feature.model.entity.UserInfo;
 import id.application.feature.model.repositories.AppUserRepository;
@@ -34,6 +31,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserInfoRepository userInfoRepository;
     private final AppUserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AppUserRepository appUserRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -75,6 +73,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    public AppUser getOneAccountCitizen(String id) {
+        return appUserRepository.findById(id)
+                .orElseThrow(() -> new AppRuntimeException(USER_NOT_FOUND_MSG));
+    }
+
+    @Override
     public BaseResponse<Void> registerCitizen(CitizenRegisterRequest request) {
         var userLoggedIn = getUserLoggedIn();
         var existsAccount = this.userInfoRepository.existsByKkId(request.kkId(), request.phoneNumber());
@@ -97,6 +101,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return BaseResponse.<Void>builder()
                 .code(String.valueOf(HttpStatus.OK.value()))
                 .message("Berhasil mendaftarkan akun warga")
+                .build();
+    }
+
+    @Override
+    public BaseResponse<Void> updateAccountCitizen(CitizenAccountUpdateRequest request) {
+        var userLoggedIn = getUserLoggedIn();
+
+        var accountCitizen = userRepository.findById(request.id())
+                        .orElseThrow(() -> new AppRuntimeException(USER_NOT_FOUND_MSG));
+
+        accountCitizen.setRole(ERole.CITIZEN);
+        accountCitizen.setAccountNonLocked(true);
+        accountCitizen.setAccountNonExpired(true);
+        accountCitizen.setEnabled(true);
+        accountCitizen.setCredentialsNonExpired(true);
+        persistUtil(accountCitizen, userLoggedIn.getName());
+        AppUser appUser = userRepository.saveAndFlush(accountCitizen);
+
+        persistedUserInfo(request.phoneNumber(), request.kkId(), appUser);
+
+        return BaseResponse.<Void>builder()
+                .code(String.valueOf(HttpStatus.OK.value()))
+                .message("Berhasil update akun warga")
                 .build();
     }
 
@@ -159,9 +186,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void persistedUserInfo(String phoneNumber, String kkId, AppUser appUser) {
-        var userInfo = new UserInfo();
+        UserInfo userInfo = userInfoRepository.findByAppUser(appUser);
+        if (userInfo == null) {
+            userInfo = new UserInfo();
+            userInfo.setAppUser(appUser);
+        }
         userInfo.setPhoneNumber(phoneNumber);
-        userInfo.setAppUser(appUser);
         userInfo.setKkId(kkId);
         userInfo.setStatusRegistered(StatusRegistered.NOT_REGISTERED);
         userInfoRepository.saveAndFlush(userInfo);

@@ -1,5 +1,6 @@
 package id.application.feature.model.repositories;
 
+import id.application.feature.model.entity.AppUser;
 import id.application.feature.model.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,5 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
 
     Optional<UserInfo> findByAppUserId(String appUserId);
 
+    UserInfo findByAppUser(AppUser appUser);
 }

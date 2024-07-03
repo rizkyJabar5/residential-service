@@ -164,8 +164,15 @@ const DetailCitizen = ({type = ADD, param}) => {
     }, [getData, param]);
 
     const title = type === EDIT
-        ? 'Detail Informasi Warga'
-        : 'Tambah Warga Baru'
+        ? role === 'ADMIN'
+            ? 'Detail Informasi Warga'
+            : 'Tambah Warga Baru'
+        : role === 'CITIZEN'
+            ? statusAccount === 'REGISTERED'
+                ? 'Tambah Anggota Keluarga'
+                : 'Silahkan lengkapi data anda'
+            : 'Tambah Warga Baru'
+
 
     const titleCard = type === EDIT
         ? selected?.fullName
@@ -181,7 +188,7 @@ const DetailCitizen = ({type = ADD, param}) => {
                     type={type}
                     onCancel={onCancel}
                     form={form}
-                    title={titleCard}
+                    // title={titleCard}
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                 />
