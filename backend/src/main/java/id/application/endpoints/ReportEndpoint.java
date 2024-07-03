@@ -39,7 +39,7 @@ public class ReportEndpoint {
 
         return BaseResponse.<PageResponse<ReportResponseDto>>builder()
                 .code(report.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(report.isEmpty() ? "Data tidak ditemukan" : "Data ditemukan")
+                .message(report.isEmpty() ? "Data laporan tidak ditemukan" : "Data ditemukan")
                 .data(PageResponse.<ReportResponseDto>builder()
                         .size(report.getSize())
                         .totalElements(report.getTotalElements())
@@ -55,8 +55,7 @@ public class ReportEndpoint {
     @PostMapping("/date")
     Page<Report> getReportByDate(@RequestParam String date,
                                  @RequestBody RequestPagination pagination) {
-        var contents = reportService.findReportByDate(date, pagination);
-        return contents;
+        return reportService.findReportByDate(date, pagination);
     }
 
     @PostMapping(
@@ -69,8 +68,6 @@ public class ReportEndpoint {
     ) {
         log.info("ini image di endpoint : {}", image.getOriginalFilename());
 
-        Report newContent = reportService.persistNew(request, image);
-
-        return newContent;
+        return reportService.persistNew(request, image);
     }
 }

@@ -31,8 +31,7 @@ public class FinanceEndpoint {
     Finance persistNew(
             @RequestPart("image") MultipartFile image
     ) {
-        Finance addFinance = financeService.persistNewFinance(image);
-        return addFinance;
+        return financeService.persistNewFinance(image);
     }
 
     @GetMapping
@@ -47,7 +46,7 @@ public class FinanceEndpoint {
 
         return BaseResponse.<PageResponse<ResponseFinanceDTO>>builder()
                 .code(finances.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(finances.isEmpty() ? "Data tidak ditemukan" : "Data ditemukan")
+                .message(finances.isEmpty() ? "Data pembayaran tidak ditemukan" : "Data ditemukan")
                 .data(PageResponse.<ResponseFinanceDTO>builder()
                         .size(finances.getSize())
                         .totalElements(finances.getTotalElements())

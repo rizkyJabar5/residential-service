@@ -7,6 +7,7 @@ import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.model.entity.Report;
 import id.application.feature.model.repositories.ReportRepository;
 import id.application.feature.service.ReportService;
+import id.application.util.enums.ERole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,8 +32,15 @@ public class ReportServiceImpl implements ReportService {
 
     @Override
     public Page<Report> findAll(RequestPagination request) {
+        var userLoggedIn = getUserLoggedIn();
+
         var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
+
+        if (userLoggedIn.getRole().equals(ERole.CITIZEN)) {
+            return reportRepository.findReportsByCitizenId(userLoggedIn.getUserInfo().getCitizenId(), pageable);
+        }
+
         return reportRepository.findAll(pageable);
     }
 

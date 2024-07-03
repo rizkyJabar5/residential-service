@@ -49,10 +49,15 @@ public class LetterServiceImpl implements LetterService {
 
     @Override
     public Page<LetterRequest> findAll(RequestPagination request) {
-        getUserLoggedIn();
+        var userLoggedIn = getUserLoggedIn();
 
         var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
+
+        if (userLoggedIn.getRole().equals(ERole.CITIZEN)) {
+            return repository.findLetterRequestByCitizenId(userLoggedIn.getUserInfo().getCitizenId(), pageable);
+        }
+
         return repository.findAll(pageable);
     }
 

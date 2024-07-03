@@ -7,7 +7,6 @@ import id.application.feature.dto.request.CitizenInfoRequest;
 import id.application.feature.dto.request.RequestCitizenUpdate;
 import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.model.entity.Citizen;
-import id.application.feature.model.entity.UserInfo;
 import id.application.feature.model.repositories.CitizenRepository;
 import id.application.feature.model.repositories.UserInfoRepository;
 import id.application.feature.service.CitizenService;
@@ -34,8 +33,14 @@ public class CitizenServiceImpl implements CitizenService {
 
     @Override
     public Page<Citizen> findAllCitizen(RequestPagination request) {
+        var userLoggedIn = getUserLoggedIn();
         var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
+
+        if (userLoggedIn.getRole().equals(ERole.CITIZEN)) {
+            return citizenRepository.findAllFamilies(userLoggedIn.getUserInfo().getKkId(), pageable);
+        }
+
         return citizenRepository.findAll(pageable);
     }
 
@@ -59,29 +64,21 @@ public class CitizenServiceImpl implements CitizenService {
             throw new AppConflictException(String.format("Data %s telah terdaftar", request.fullName()));
         }
 
-//        validateCitizenIsAlReadyRegistered(request.fullName(), request.nik());
-
-        if (userLoggedIn.getRole() != ERole.ADMIN) {
-            if (userLoggedIn.getUserInfo().getStatusRegistered().equals(StatusRegistered.VERIFIED)) {
-                if (!request.kkId().equals(userLoggedIn.getUserInfo().getKkId())) {
-                    throw new AppConflictException("KK id berbeda");
-                }
-            }
+        var userInfo = userLoggedIn.getUserInfo();
+        if (userLoggedIn.getRole() != ERole.ADMIN
+                && userInfo.getStatusRegistered().equals(StatusRegistered.VERIFIED)
+                && !request.kkId().equals(userInfo.getKkId())) {
+            throw new AppConflictException("KK id berbeda");
         }
 
         var entity = this.buildCitizen(request);
         persistUtil(entity, userLoggedIn.getName());
-        Citizen citizen = citizenRepository.save(entity);
+        var citizen = citizenRepository.save(entity);
 
-        if (userLoggedIn.getRole() != ERole.ADMIN) {
-            UserInfo userInfo = userInfoRepository.findByAppUserId(userLoggedIn.getId())
-                    .orElseThrow(() -> new AppConflictException(String.format("User %s not found", userLoggedIn.getId())));
-
-            if (userInfo.getStatusRegistered().equals(StatusRegistered.VERIFIED)) {
-                userInfo.setCitizenId(entity.getId());
-                userInfo.setStatusRegistered(StatusRegistered.REGISTERED);
-                userInfoRepository.save(userInfo);
-            }
+        if (userInfo.getStatusRegistered().equals(StatusRegistered.VERIFIED)) {
+            userInfo.setCitizenId(entity.getId());
+            userInfo.setStatusRegistered(StatusRegistered.REGISTERED);
+            userInfoRepository.save(userInfo);
         }
 
         return citizen;
@@ -97,7 +94,7 @@ public class CitizenServiceImpl implements CitizenService {
         var userLoggedIn = getUserLoggedIn();
 
         var existCitizen = citizenRepository.findById(userLoggedIn.getUserInfo().getCitizenId())
-                .orElseThrow(() -> new ResourceNotFoundException(String.format("Citizen with name not found")));
+                .orElseThrow(() -> new ResourceNotFoundException("Citizen with name not found"));
 
         var entity = new Citizen();
         entity.setKkId(existCitizen.getKkId());
@@ -165,14 +162,5 @@ public class CitizenServiceImpl implements CitizenService {
 
     private boolean isCitizenRegistered(String nik) {
         return citizenRepository.existsByNik(nik);
-    }
-
-    private void validateCitizenIsAlReadyRegistered(String fullName, String kkId) {
-        var optionalUserInfo = userInfoRepository.findUserInfoByNameAndKkId(fullName, kkId)
-                .filter(user -> user.getStatusRegistered() == StatusRegistered.NOT_REGISTERED);
-
-        if (optionalUserInfo.isEmpty()) {
-            throw new AppConflictException("Silahkan registrasi terlebih dahulu.");
-        }
     }
 }
