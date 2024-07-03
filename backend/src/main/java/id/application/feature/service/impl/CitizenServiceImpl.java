@@ -2,11 +2,10 @@ package id.application.feature.service.impl;
 
 import id.application.exception.AppConflictException;
 import id.application.exception.ResourceNotFoundException;
-import id.application.feature.dto.request.RequestAddFamilyMember;
+import id.application.feature.dto.request.CitizenAddFamilyRequest;
 import id.application.feature.dto.request.CitizenInfoRequest;
 import id.application.feature.dto.request.RequestCitizenUpdate;
 import id.application.feature.dto.request.RequestPagination;
-import id.application.feature.dto.response.BaseResponse;
 import id.application.feature.model.entity.Citizen;
 import id.application.feature.model.entity.UserInfo;
 import id.application.feature.model.repositories.CitizenRepository;
@@ -17,10 +16,8 @@ import id.application.util.enums.StatusRegistered;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -91,38 +88,35 @@ public class CitizenServiceImpl implements CitizenService {
     }
 
     @Override
-    public BaseResponse<Void> addFamilyMembers(RequestAddFamilyMember request) {
+    public Citizen addFamilyMembers(CitizenAddFamilyRequest request) {
+        var entity = this.buildAddFamily(request);
+        return citizenRepository.save(entity);
+    }
+
+    private Citizen buildAddFamily(CitizenAddFamilyRequest request) {
         var userLoggedIn = getUserLoggedIn();
 
         var existCitizen = citizenRepository.findById(userLoggedIn.getUserInfo().getCitizenId())
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Citizen with name not found")));
 
-        var familyMembers = new ArrayList<Citizen>();
-        for (var familyMember : request.familyMembers()) {
-            var family = this.buildCitizen(CitizenInfoRequest.builder()
-                    .kkId(existCitizen.getKkId())
-                    .fullName(familyMember.fullName())
-                    .nik(familyMember.nik())
-                    .gender(familyMember.gender())
-                    .placeOfBirth(familyMember.placeOfBirth())
-                    .dateOfBirth(familyMember.dateOfBirth())
-                    .religion(familyMember.religion())
-                    .latestEducation(familyMember.latestEducation())
-                    .familyStatus(familyMember.familyStatus())
-                    .jobType(familyMember.jobType())
-                    .bloodType(familyMember.bloodType())
-                    .marriageStatus(familyMember.marriageStatus())
-                    .address(existCitizen.getAddress())
-                    .build());
-            persistUtil(family, userLoggedIn.getName());
-            familyMembers.add(family);
-        }
-        citizenRepository.saveAllAndFlush(familyMembers);
+        var entity = new Citizen();
+        entity.setKkId(existCitizen.getKkId());
+        entity.setFullName(request.fullName());
+        entity.setNik(request.nik());
+        entity.setGender(request.gender());
+        entity.setPlaceOfBirth(request.placeOfBirth());
+        entity.setDateOfBirth(convertToLocalDateDefaultPattern(request.dateOfBirth()));
+        entity.setReligion(request.religion());
+        entity.setLatestEducation(request.latestEducation());
+        entity.setFamilyStatus(request.familyStatus());
+        entity.setJobType(request.jobType());
+        entity.setBloodType(request.bloodType());
+        entity.setMarriageStatus(request.marriageStatus());
+        entity.setAddress(existCitizen.getAddress());
 
-        return BaseResponse.<Void>builder()
-                .code(String.valueOf(HttpStatus.OK.value()))
-                .message("Berhasil menambahkan anggota keluarga")
-                .build();
+        persistUtil(entity, userLoggedIn.getName());
+
+        return entity;
     }
 
     @Override
