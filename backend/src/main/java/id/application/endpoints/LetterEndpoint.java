@@ -35,7 +35,8 @@ import static id.application.util.constant.StatusCodeConstant.CODE_CONTENT_FOUND
 @RequestMapping("/api/v1/letters")
 @Validated
 public class LetterEndpoint {
-    public static final String DATA_TIDAK_DITEMUKAN = "Data tidak ditemukan";
+    public static final String DATA_TIDAK_DITEMUKAN = "Data surat pengajuan tidak ditemukan";
+    public static final String DATA_FOUND = "Data surat pengajuan ditemukan";
     private final LetterService service;
 
     @GetMapping
@@ -62,39 +63,13 @@ public class LetterEndpoint {
                 .build();
     }
 
-    @GetMapping("/citizen/{id}")
-    public BaseResponse<PageResponse<LetterRequestDto>> getAllLetters(@PathVariable(name="id") String citizenId,
-                                                                      @RequestParam(defaultValue = "0") Integer page,
-                                                                      @RequestParam(defaultValue = "10") Integer limitContent) {
-        var result = service.findLetterRequestByCitizenId(
-                citizenId,
-                RequestPagination.builder()
-                        .page(page)
-                        .limitContent(limitContent)
-                        .build()
-        );
-
-        return BaseResponse.<PageResponse<LetterRequestDto>>builder()
-                .code(result.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .data(PageResponse.<LetterRequestDto>builder()
-                        .size(result.getSize())
-                        .totalElements(result.getTotalElements())
-                        .totalPages(result.getTotalPages())
-                        .numberOfElements(result.getNumberOfElements())
-                        .pageOf(result.getPageable().getPageNumber())
-                        .page(result.getPageable().getPageSize())
-                        .content(mappingContentPage(result, LetterRequestDto::letterRequestDto))
-                        .build())
-                .build();
-    }
-
     @GetMapping("/status")
     public BaseResponse<PageResponse<LetterRequestDto>> getLetterByStatus(@RequestParam int status) {
         var statusLetter = StatusLetter.valueOf(status);
         Page<LetterRequest> contents = service.findLetterByStatus(statusLetter);
         return BaseResponse.<PageResponse<LetterRequestDto>>builder()
                 .code(contents.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(contents.isEmpty() ? DATA_TIDAK_DITEMUKAN : "Data Pengajuan ditemukan")
+                .message(contents.isEmpty() ? DATA_TIDAK_DITEMUKAN : DATA_FOUND)
                 .data(PageResponse.<LetterRequestDto>builder()
                         .size(contents.getSize())
                         .totalElements(contents.getTotalElements())
@@ -112,7 +87,7 @@ public class LetterEndpoint {
         var content = service.findById(id);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
-                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : "Data Pengajuan ditemukan")
+                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : DATA_FOUND)
                 .data(LetterRequestDto.letterRequestDto(content))
                 .build();
     }
@@ -122,7 +97,7 @@ public class LetterEndpoint {
         var content = service.findByLetterId(nik);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
-                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : "Data Pengajuan ditemukan")
+                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : DATA_FOUND)
                 .data(LetterRequestDto.letterRequestDto(content))
                 .build();
     }

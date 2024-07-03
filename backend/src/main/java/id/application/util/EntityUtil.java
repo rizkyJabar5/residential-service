@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.Date;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,6 +15,5 @@ public class EntityUtil {
         entity.setCreatedTime(dateNow);
         entity.setUpdatedBy(userLoggedIn);
         entity.setUpdatedTime(dateNow);
-        System.out.println(dateNow);
     }
 }

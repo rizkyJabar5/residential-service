@@ -39,34 +39,7 @@ public class ReportEndpoint {
 
         return BaseResponse.<PageResponse<ReportResponseDto>>builder()
                 .code(report.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(report.isEmpty() ? "Data tidak ditemukan" : "Data ditemukan")
-                .data(PageResponse.<ReportResponseDto>builder()
-                        .size(report.getSize())
-                        .totalElements(report.getTotalElements())
-                        .totalPages(report.getTotalPages())
-                        .numberOfElements(report.getNumberOfElements())
-                        .pageOf(report.getPageable().getPageNumber())
-                        .page(report.getPageable().getPageSize())
-                        .content(mappingContentPage(report, ReportResponseDto::reportRequestDto))
-                        .build())
-                .build();
-    }
-
-    @GetMapping("/citizen/{id}")
-    public BaseResponse<PageResponse<ReportResponseDto>> getReportsByCitizenId(@PathVariable("id") String citizenId,
-                                                                               @RequestParam(defaultValue = "0") Integer page,
-                                                                               @RequestParam(defaultValue = "10") Integer limitedContent) {
-        var report = reportService.findReportsByCitizenId(
-                citizenId,
-                RequestPagination.builder()
-                        .page(page)
-                        .limitContent(limitedContent)
-                        .build()
-        );
-
-        return BaseResponse.<PageResponse<ReportResponseDto>>builder()
-                .code(report.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(report.isEmpty() ? "Belum ada laporan" : "Data ditemukan")
+                .message(report.isEmpty() ? "Data laporan tidak ditemukan" : "Data ditemukan")
                 .data(PageResponse.<ReportResponseDto>builder()
                         .size(report.getSize())
                         .totalElements(report.getTotalElements())
@@ -82,8 +55,7 @@ public class ReportEndpoint {
     @PostMapping("/date")
     Page<Report> getReportByDate(@RequestParam String date,
                                  @RequestBody RequestPagination pagination) {
-        var contents = reportService.findReportByDate(date, pagination);
-        return contents;
+        return reportService.findReportByDate(date, pagination);
     }
 
     @PostMapping(
@@ -96,8 +68,6 @@ public class ReportEndpoint {
     ) {
         log.info("ini image di endpoint : {}", image.getOriginalFilename());
 
-        Report newContent = reportService.persistNew(request, image);
-
-        return newContent;
+        return reportService.persistNew(request, image);
     }
 }

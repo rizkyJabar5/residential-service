@@ -12,8 +12,6 @@ import org.springframework.data.domain.Page;
 public interface LetterService {
     Page<LetterRequest> findAll(RequestPagination pageRequest);
 
-    Page<LetterRequest> findLetterRequestByCitizenId(String citizenId, RequestPagination pageRequest);
-
     Page<LetterRequest> findLetterByStatus(StatusLetter status);
 
     LetterRequest findById(String id);

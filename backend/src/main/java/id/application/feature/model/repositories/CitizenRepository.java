@@ -13,9 +13,9 @@ public interface CitizenRepository extends JpaRepository<Citizen, String> {
     @Query("""
             select c
             from Citizen c
-            where c.id = ?1
+            where c.kkId = ?1
             """)
-    Page<Citizen> findAllFamilies(String id, Pageable pageable);
+    Page<Citizen> findAllFamilies(String kkId, Pageable pageable);
 
     Optional<Citizen> findByKkId(String kkId);
 

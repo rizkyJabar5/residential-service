@@ -31,8 +31,7 @@ public class FinanceEndpoint {
     Finance persistNew(
             @RequestPart("image") MultipartFile image
     ) {
-        Finance addFinance = financeService.persistNewFinance(image);
-        return addFinance;
+        return financeService.persistNewFinance(image);
     }
 
     @GetMapping
@@ -47,7 +46,7 @@ public class FinanceEndpoint {
 
         return BaseResponse.<PageResponse<ResponseFinanceDTO>>builder()
                 .code(finances.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(finances.isEmpty() ? "Data tidak ditemukan" : "Data ditemukan")
+                .message(finances.isEmpty() ? "Data pembayaran tidak ditemukan" : "Data ditemukan")
                 .data(PageResponse.<ResponseFinanceDTO>builder()
                         .size(finances.getSize())
                         .totalElements(finances.getTotalElements())
@@ -56,32 +55,6 @@ public class FinanceEndpoint {
                         .pageOf(finances.getPageable().getPageNumber())
                         .page(finances.getPageable().getPageSize())
                         .content(finances.getContent())
-                        .build())
-                .build();
-    }
-
-    @GetMapping("/citizen/{id}")
-    public BaseResponse<PageResponse<ResponseFinanceDTO>> getFinancesByCitizenId(
-            @PathVariable("id") String citizenId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limitContent) {
-
-        var result = financeService.findFinancesByCitizenId(citizenId, RequestPagination.builder()
-                .page(page)
-                .limitContent(limitContent)
-                .build());
-
-        return BaseResponse.<PageResponse<ResponseFinanceDTO>>builder()
-                .code(result.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(result.isEmpty() ? "Data pembayaran tidak ditemukan" : "Data ditemukan")
-                .data(PageResponse.<ResponseFinanceDTO>builder()
-                        .size(result.getSize())
-                        .totalElements(result.getTotalElements())
-                        .totalPages(result.getTotalPages())
-                        .numberOfElements(result.getNumberOfElements())
-                        .pageOf(result.getPageable().getPageNumber())
-                        .page(result.getPageable().getPageSize())
-                        .content(result.getContent())
                         .build())
                 .build();
     }

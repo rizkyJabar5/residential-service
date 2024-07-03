@@ -10,8 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ReportService {
     Page<Report> findAll(RequestPagination request);
 
-    Page<Report> findReportsByCitizenId(String citizenId, RequestPagination request);
-
     Page<Report> findReportByDate(String date, RequestPagination request);
 
     @Transactional

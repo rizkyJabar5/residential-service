@@ -15,6 +15,7 @@ import id.application.feature.model.repositories.CitizenRepository;
 import id.application.feature.model.repositories.FinanceRepository;
 import id.application.feature.model.repositories.UserInfoRepository;
 import id.application.feature.service.FinanceService;
+import id.application.util.enums.ERole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -41,18 +42,17 @@ public class FinanceServiceImpl implements FinanceService {
 
     @Override
     public Page<ResponseFinanceDTO> getAllFinances(RequestPagination requestPagination) {
+        var userLoggedIn = getUserLoggedIn();
         var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(requestPagination.page(), requestPagination.limitContent(), sortByCreatedTime);
+
+        if (userLoggedIn.getRole().equals(ERole.CITIZEN)) {
+            Page<Finance> finance = financeRepository.findFinancesByCitizenId(userLoggedIn.getUserInfo().getCitizenId(), pageable);
+            return finance.map(this::converToPaymentResponseDTO);
+        }
+        
         Page<Finance> payments = financeRepository.findAll(pageable);
         return payments.map(this::converToPaymentResponseDTO);
-    }
-
-    @Override
-    public Page<ResponseFinanceDTO> findFinancesByCitizenId(String citizenId, RequestPagination request) {
-        var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
-        var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
-        var page = financeRepository.findFinancesByCitizenId(citizenId, pageable);
-        return page.map(this::converToPaymentResponseDTO);
     }
 
     @Override
