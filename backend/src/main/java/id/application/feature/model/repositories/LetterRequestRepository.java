@@ -23,10 +23,9 @@ public interface LetterRequestRepository extends JpaRepository<LetterRequest, St
     @Query("""
             select l
             from LetterRequest l
-            where l.nik = ?1
-            and l.status = 1
+            where l.citizenId = ?1
             """)
-    Optional<LetterRequest> findByNik(String nik);
+    Page<LetterRequest> findLetterRequestByCitizenId(String citizenId, Pageable pageable);
 
     @Query("""
             select l

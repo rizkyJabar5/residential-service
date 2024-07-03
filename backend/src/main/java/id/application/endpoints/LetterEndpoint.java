@@ -40,7 +40,7 @@ public class LetterEndpoint {
 
     @GetMapping
     public BaseResponse<PageResponse<LetterRequestDto>> getAllLetters(@RequestParam(defaultValue = "0") Integer page,
-                                                                      @RequestParam(defaultValue = "10") Integer limitContent){
+                                                                      @RequestParam(defaultValue = "10") Integer limitContent) {
         var letterRequest = service.findAll(RequestPagination.builder()
                 .page(page)
                 .limitContent(limitContent)
@@ -62,8 +62,34 @@ public class LetterEndpoint {
                 .build();
     }
 
+    @GetMapping("/citizen/{id}")
+    public BaseResponse<PageResponse<LetterRequestDto>> getAllLetters(@PathVariable(name="id") String citizenId,
+                                                                      @RequestParam(defaultValue = "0") Integer page,
+                                                                      @RequestParam(defaultValue = "10") Integer limitContent) {
+        var result = service.findLetterRequestByCitizenId(
+                citizenId,
+                RequestPagination.builder()
+                        .page(page)
+                        .limitContent(limitContent)
+                        .build()
+        );
+
+        return BaseResponse.<PageResponse<LetterRequestDto>>builder()
+                .code(result.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
+                .data(PageResponse.<LetterRequestDto>builder()
+                        .size(result.getSize())
+                        .totalElements(result.getTotalElements())
+                        .totalPages(result.getTotalPages())
+                        .numberOfElements(result.getNumberOfElements())
+                        .pageOf(result.getPageable().getPageNumber())
+                        .page(result.getPageable().getPageSize())
+                        .content(mappingContentPage(result, LetterRequestDto::letterRequestDto))
+                        .build())
+                .build();
+    }
+
     @GetMapping("/status")
-    public BaseResponse<PageResponse<LetterRequestDto>> getLetterByStatus(@RequestParam int status){
+    public BaseResponse<PageResponse<LetterRequestDto>> getLetterByStatus(@RequestParam int status) {
         var statusLetter = StatusLetter.valueOf(status);
         Page<LetterRequest> contents = service.findLetterByStatus(statusLetter);
         return BaseResponse.<PageResponse<LetterRequestDto>>builder()
@@ -82,7 +108,7 @@ public class LetterEndpoint {
     }
 
     @GetMapping("/{id}")
-    public BaseResponse<LetterRequestDto> getLetterById(@PathVariable String id){
+    public BaseResponse<LetterRequestDto> getLetterById(@PathVariable String id) {
         var content = service.findById(id);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
@@ -92,7 +118,7 @@ public class LetterEndpoint {
     }
 
     @GetMapping("/letter/{nik}")
-    public BaseResponse<LetterRequestDto> getLetterByLetterId(@PathVariable String nik){
+    public BaseResponse<LetterRequestDto> getLetterByLetterId(@PathVariable String nik) {
         var content = service.findByLetterId(nik);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
@@ -102,7 +128,7 @@ public class LetterEndpoint {
     }
 
     @PostMapping
-    public BaseResponse<LetterRequestDto> createLetter(@RequestBody LetterAddRequest request){
+    public BaseResponse<LetterRequestDto> createLetter(@RequestBody LetterAddRequest request) {
         var content = service.persistNew(request);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
@@ -112,12 +138,12 @@ public class LetterEndpoint {
     }
 
     @PutMapping
-    public void updateStatusLetter(@RequestBody UpdateLetterStatusRequest request){
+    public void updateStatusLetter(@RequestBody UpdateLetterStatusRequest request) {
         service.updateStatusLetter(request);
     }
 
     @GetMapping(value = "/download/{id}")
-    public ResponseEntity<byte[]> downloadSubmissionLetter(@PathVariable String id){
+    public ResponseEntity<byte[]> downloadSubmissionLetter(@PathVariable String id) {
         var response = service.downloadLetter(id);
         var header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.fileName());

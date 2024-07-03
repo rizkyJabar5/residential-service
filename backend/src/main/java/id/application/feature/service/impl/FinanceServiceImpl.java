@@ -48,6 +48,14 @@ public class FinanceServiceImpl implements FinanceService {
     }
 
     @Override
+    public Page<ResponseFinanceDTO> findFinancesByCitizenId(String citizenId, RequestPagination request) {
+        var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
+        var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
+        var page = financeRepository.findFinancesByCitizenId(citizenId, pageable);
+        return page.map(this::converToPaymentResponseDTO);
+    }
+
+    @Override
     public Finance persistNewFinance(MultipartFile image) {
         var authenticationUser = getUserLoggedIn();
 

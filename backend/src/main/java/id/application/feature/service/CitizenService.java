@@ -24,5 +24,8 @@ public interface CitizenService {
     Citizen addFamilyMembers(CitizenAddFamilyRequest request);
 
     @Transactional
+    Page<Citizen> findFamilyMembers(String citizenId, RequestPagination request);
+
+    @Transactional
     Citizen updateById(RequestCitizenUpdate request);
 }

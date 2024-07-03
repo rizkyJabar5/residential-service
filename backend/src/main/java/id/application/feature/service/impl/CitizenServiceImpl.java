@@ -93,6 +93,13 @@ public class CitizenServiceImpl implements CitizenService {
         return citizenRepository.save(entity);
     }
 
+    @Override
+    public Page<Citizen> findFamilyMembers(String citizenId, RequestPagination request) {
+        var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
+        var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
+        return citizenRepository.findAllFamilies(citizenId, pageable);
+    }
+
     private Citizen buildAddFamily(CitizenAddFamilyRequest request) {
         var userLoggedIn = getUserLoggedIn();
 

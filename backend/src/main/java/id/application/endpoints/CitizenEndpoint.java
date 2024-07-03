@@ -93,6 +93,28 @@ public class CitizenEndpoint {
                 .build();
     }
 
+    @GetMapping("/{id}/families")
+    public BaseResponse<PageResponse<CitizenDto>> getFamilies(@PathVariable(name = "id") String id,
+                                                              @RequestParam(defaultValue = "0") Integer page,
+                                                              @RequestParam(defaultValue = "50") Integer limitContent) {
+        var result = citizenService.findFamilyMembers(id, RequestPagination.builder()
+                .page(page)
+                .limitContent(limitContent)
+                .build());
+        return BaseResponse.<PageResponse<CitizenDto>>builder()
+                .code(result.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
+                .data(PageResponse.<CitizenDto>builder()
+                        .size(result.getSize())
+                        .totalElements(result.getTotalElements())
+                        .totalPages(result.getTotalPages())
+                        .numberOfElements(result.getNumberOfElements())
+                        .pageOf(result.getPageable().getPageNumber())
+                        .page(result.getPageable().getPageSize())
+                        .content(mappingContentPage(result, CitizenDto::entityToDto))
+                        .build())
+                .build();
+    }
+
     @PutMapping
     public BaseResponse<CitizenDto> updateCitizen(@RequestBody RequestCitizenUpdate request) {
         var citizen = citizenService.updateById(request);

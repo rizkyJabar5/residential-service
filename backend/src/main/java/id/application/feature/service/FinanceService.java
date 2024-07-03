@@ -11,6 +11,8 @@ public interface FinanceService {
 
     Page<ResponseFinanceDTO> getAllFinances(RequestPagination requestPagination);
 
+    Page<ResponseFinanceDTO> findFinancesByCitizenId(String citizenId, RequestPagination request);
+
     @Transactional
     Finance persistNewFinance(MultipartFile image);
 }

@@ -52,6 +52,33 @@ public class ReportEndpoint {
                 .build();
     }
 
+    @GetMapping("/citizen/{id}")
+    public BaseResponse<PageResponse<ReportResponseDto>> getReportsByCitizenId(@PathVariable("id") String citizenId,
+                                                                               @RequestParam(defaultValue = "0") Integer page,
+                                                                               @RequestParam(defaultValue = "10") Integer limitedContent) {
+        var report = reportService.findReportsByCitizenId(
+                citizenId,
+                RequestPagination.builder()
+                        .page(page)
+                        .limitContent(limitedContent)
+                        .build()
+        );
+
+        return BaseResponse.<PageResponse<ReportResponseDto>>builder()
+                .code(report.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
+                .message(report.isEmpty() ? "Belum ada laporan" : "Data ditemukan")
+                .data(PageResponse.<ReportResponseDto>builder()
+                        .size(report.getSize())
+                        .totalElements(report.getTotalElements())
+                        .totalPages(report.getTotalPages())
+                        .numberOfElements(report.getNumberOfElements())
+                        .pageOf(report.getPageable().getPageNumber())
+                        .page(report.getPageable().getPageSize())
+                        .content(mappingContentPage(report, ReportResponseDto::reportRequestDto))
+                        .build())
+                .build();
+    }
+
     @PostMapping("/date")
     Page<Report> getReportByDate(@RequestParam String date,
                                  @RequestBody RequestPagination pagination) {
