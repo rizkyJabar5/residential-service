@@ -1,12 +1,11 @@
 package id.application.endpoints;
 
-import id.application.feature.dto.request.CitizenRegisterRequest;
-import id.application.feature.dto.request.LoginRequest;
-import id.application.feature.dto.request.PasswordRequest;
-import id.application.feature.dto.request.RequestValidateRegistration;
-import id.application.feature.dto.request.UserRequest;
+import id.application.feature.dto.request.*;
+import id.application.feature.dto.response.AppUserDto;
 import id.application.feature.dto.response.BaseResponse;
+import id.application.feature.dto.response.CitizenDto;
 import id.application.feature.dto.response.JwtResponse;
+import id.application.feature.model.entity.AppUser;
 import id.application.feature.service.AuthenticationService;
 import id.application.security.SecurityUtils;
 import id.application.security.jwt.JwtUtils;
@@ -15,14 +14,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static id.application.security.SecurityUtils.authenticateUserCredentials;
 import static id.application.security.SecurityUtils.authenticateUserWithoutCredentials;
+import static id.application.util.constant.StatusCodeConstant.CODE_CONTENT_FOUND;
 
 @RequiredArgsConstructor
 @RestController
@@ -51,9 +47,24 @@ public class AuthenticationEndpoint {
         return userService.createNewUser(request);
     }
 
+    @GetMapping("/citizen/{id}")
+    public BaseResponse<AppUserDto> getAccountCitizenById(@PathVariable String id) {
+        AppUser appUser = userService.getOneAccountCitizen(id);
+        return BaseResponse.<AppUserDto>builder()
+                .code(CODE_CONTENT_FOUND)
+                .message("Data akun warga ditemukan")
+                .data(AppUserDto.entityToDto(appUser))
+                .build();
+    }
+
     @PostMapping("/citizen/register")
     public BaseResponse<Void> registerCitizen(@Valid @RequestBody CitizenRegisterRequest request) {
         return userService.registerCitizen(request);
+    }
+
+    @PutMapping("/update-account-citizen")
+    public BaseResponse<Void> updateAccount(@Valid @RequestBody CitizenAccountUpdateRequest request) {
+        return userService.updateAccountCitizen(request);
     }
 
     @PostMapping("/validate-citizen")
