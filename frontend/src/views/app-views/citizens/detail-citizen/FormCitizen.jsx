@@ -87,12 +87,12 @@ const FormCitizen = ({
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
             initialValues={{
-                latestEducation: "",
-                familyStatus: "",
-                bloodType: "",
-                marriageStatus: "",
-                gender: "",
-                religion: "",
+                latestEducation: null,
+                familyStatus: null,
+                bloodType: null,
+                marriageStatus: null,
+                gender: null,
+                religion: null,
             }}
             autoComplete="off"
             scrollToFirstError
@@ -107,7 +107,7 @@ const FormCitizen = ({
                                 <Button className="mr-2" onClick={onCancel}>Batal</Button>
                             )}
                             <Button type="primary" htmlType="submit" loading={submitLoading}>
-                                {type === ADD ? 'Tambah Warga' : `Simpan`}
+                                {type === ADD ? 'Tambah' : `Simpan`}
                             </Button>
                         </div>
                     </Flex>
@@ -121,7 +121,7 @@ const FormCitizen = ({
                                 name="kkId"
                                 label="No. KK"
                                 rules={rules.citizen.field.kkId}>
-                                <Input placeholder="Nomor Kartu Keluarga"/>
+                                <Input placeholder="Masukkan Nomor Kartu Keluarga anda"/>
                             </Form.Item>
                         </Col>
                     )}
@@ -131,7 +131,7 @@ const FormCitizen = ({
                             name="nik"
                             label="NIK"
                             rules={rules.citizen.field.nik}>
-                            <Input placeholder="Nomor Induk Kependudukan"/>
+                            <Input placeholder="Masukkan Nomor Induk Kependudukan anda"/>
                         </Form.Item>
                     </Col>
                 </Row>
@@ -140,7 +140,7 @@ const FormCitizen = ({
                     name="fullName"
                     label="Nama Lengkap"
                     rules={rules.citizen.field.fullName}>
-                    <Input/>
+                    <Input placeholder="Masukkan Nama Lengkap Anda"/>
                 </Form.Item>
 
                 <Form.Item
@@ -163,7 +163,7 @@ const FormCitizen = ({
                             label="Tempat Lahir"
                             rules={rules.citizen.field.placeOfBirth}
                         >
-                            <Input/>
+                            <Input placeholder="Masukkan tempat lahir anda"/>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
@@ -255,16 +255,18 @@ const FormCitizen = ({
                     label="Pekerjaan"
                     rules={rules.citizen.field.jobType}
                 >
-                    <Input/>
+                    <Input placeholder="Masukkan pekerjaan anda"/>
                 </Form.Item>
 
-                <Form.Item
-                    name="address"
-                    label="Alamat Rumah"
-                    rules={rules.citizen.field.address}
-                >
-                    <Input/>
-                </Form.Item>
+                {((role === 'CITIZEN' && statusAccount === 'VERIFIED') || role === 'ADMIN') && (
+                    <Form.Item
+                        name="address"
+                        label="Alamat Rumah"
+                        rules={rules.citizen.field.address}
+                    >
+                        <Input placeholder="Masukkan alamat rumah anda"/>
+                    </Form.Item>
+                )}
             </Card>
 
             <Modal
