@@ -17,7 +17,6 @@ public interface CitizenService {
 
     List<Citizen> findCitizenByNameLike(String name);
 
-    @Transactional
     Citizen persistNew(CitizenInfoRequest request);
 
     @Transactional

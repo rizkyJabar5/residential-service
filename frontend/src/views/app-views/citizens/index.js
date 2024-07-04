@@ -25,10 +25,8 @@ export const Citizens = (props) => {
             query: loadingQuery,
             mutation: loadingMutation,
         },
-        message
     } = useSelector(state => state.citizens)
 
-    console.log(`Message: ${message}`)
     const getData = useCallback(async () => {
         try {
             await dispatch(fetchAllCitizens()).unwrap()
@@ -116,7 +114,7 @@ export const Citizens = (props) => {
             title: 'Nama Lengkap',
             dataIndex: 'fullName',
             key: 'fullName',
-            sorter: (a, b) => a.nameCategory.length - b.nameCategory.length,
+            sorter: (a, b) => a.fullName.length - b.fullName.length,
         },
         {
             title: 'Alamat',

@@ -4,38 +4,14 @@ import {
   UserOutlined,
   LogoutOutlined
 } from '@ant-design/icons';
-import Icon from 'components/util-components/Icon';
 import { sendLogout } from "../../redux/features/auth";
 import { useDispatch } from "react-redux";
 import { labelOfRoles } from "views/app-views/components/enums";
 
-const menuItem = [
-  // {
-  // 	title: "Edit Profile",
-  // 	icon: EditOutlined ,
-  // 	path: "/"
-  //   },
-  //   {
-  // 	title: "Account Settings",
-  // 	icon: SettingOutlined,
-  // 	path: "/"
-  //   },
-  //   {
-  // 	title: "Billing",
-  // 	icon: ShopOutlined ,
-  // 	path: "/"
-  // },
-  //   {
-  // 	title: "Help Center",
-  // 	icon: QuestionCircleOutlined,
-  // 	path: "/"
-  // }
-]
-
 export const NavProfile = ({ }) => {
 	const dispatch = useDispatch();
 	const user = JSON.parse(localStorage.getItem('user'))
-  const userName = String(user.name).replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
+  const userName = String(user.name).replace(/(^\w)|(\s+\w)/g, letter => letter.toUpperCase());
 
   const profileMenu = (
     <div className="nav-profile nav-dropdown">
@@ -49,17 +25,7 @@ export const NavProfile = ({ }) => {
       </div>
       <div className="nav-profile-body">
         <Menu>
-          {menuItem.map((el, i) => {
-            return (
-              <Menu.Item key={i}>
-                <a href={el.path}>
-                  <Icon className="mr-3" type={el.icon} />
-                  <span className="font-weight-normal">{el.title}</span>
-                </a>
-              </Menu.Item>
-            );
-          })}
-          <Menu.Item key={menuItem.length + 1} onClick={ async () => {
+          <Menu.Item key="logout" onClick={ async () => {
 	          const res = await dispatch(sendLogout()).unwrap()
 	          if(res.code === '200') {
 		          localStorage.clear();
@@ -78,7 +44,7 @@ export const NavProfile = ({ }) => {
   return (
     <Dropdown placement="bottomRight" overlay={profileMenu} trigger={["click"]}>
       <Menu className="d-flex align-item-center" mode="horizontal">
-        <Menu.Item>
+        <Menu.Item key="user">
           <UserOutlined style={{ color: "#FFF" }}></UserOutlined>
         </Menu.Item>
       </Menu>

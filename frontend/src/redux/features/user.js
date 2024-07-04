@@ -3,7 +3,6 @@ import URLS from 'redux/urls'
 import {apiRequest} from 'redux/utils/api'
 import request from 'redux/utils/request'
 import {message} from "antd";
-import {getOneCitizens, updateCitizen} from "./citizens";
 
 const url = URLS.USER
 const url_register = URLS.REGISTER

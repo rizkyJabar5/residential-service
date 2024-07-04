@@ -12,6 +12,7 @@ import id.application.feature.model.repositories.UserInfoRepository;
 import id.application.feature.service.CitizenService;
 import id.application.util.enums.ERole;
 import id.application.util.enums.StatusRegistered;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -55,6 +56,7 @@ public class CitizenServiceImpl implements CitizenService {
         return citizenRepository.findCitizenByNameLike(name);
     }
 
+    @Transactional
     @Override
     public Citizen persistNew(CitizenInfoRequest request) {
         var userLoggedIn = getUserLoggedIn();
@@ -75,7 +77,7 @@ public class CitizenServiceImpl implements CitizenService {
         persistUtil(entity, userLoggedIn.getName());
         var citizen = citizenRepository.save(entity);
 
-        if (userInfo.getStatusRegistered().equals(StatusRegistered.VERIFIED)) {
+        if (userInfo != null && userInfo.getStatusRegistered().equals(StatusRegistered.VERIFIED)) {
             userInfo.setCitizenId(entity.getId());
             userInfo.setStatusRegistered(StatusRegistered.REGISTERED);
             userInfoRepository.save(userInfo);

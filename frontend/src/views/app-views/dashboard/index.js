@@ -1,11 +1,7 @@
 import { Col, Row, message } from 'antd';
-import StatisticWidget from 'components/shared-components/StatisticWidget';
 import React, { useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import PRODUCTS from '../all-products';
-import { fetchSumStore, fetchSumLedger } from 'redux/features/reports';
-
 
 const formatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -15,18 +11,6 @@ const formatter = new Intl.NumberFormat('en-US', {
 
 
 export const DefaultDashboard = () => {
-
-  const dispatch = useDispatch();
-  // const { store, ledger } = useSelector(state => state.reports)
-
-  // const getData = useCallback(async () => {
-  //   try {
-  //     await dispatch(fetchSumStore()).unwrap()
-  //     await dispatch(fetchSumLedger()).unwrap()
-  //   } catch (error) {
-  //     message.error(error?.message || 'Failed to fetch data')
-  //   }
-  // }, [dispatch])
 
   useEffect(() => {
     // getData()
