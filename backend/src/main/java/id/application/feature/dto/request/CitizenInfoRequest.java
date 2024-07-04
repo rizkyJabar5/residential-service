@@ -21,8 +21,7 @@ import java.io.Serializable;
 
 @Builder
 public record CitizenInfoRequest(
-        @NotBlank
-        @NotNull
+
         String kkId,
         @NotNull @NotEmpty String fullName,
         String nik,

@@ -115,7 +115,7 @@ const FormCitizen = ({
             </PageHeaderAlt>
             <Card title={title}>
                 <Row gutter={8}>
-                    {((role === 'CITIZEN' && statusAccount === 'VERIFIED') || role === 'ADMIN') && (
+                    {(role === 'ADMIN') && (
                         <Col span={12}>
                             <Form.Item
                                 name="kkId"

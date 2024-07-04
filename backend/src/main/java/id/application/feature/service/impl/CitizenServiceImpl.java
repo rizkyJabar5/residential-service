@@ -67,13 +67,10 @@ public class CitizenServiceImpl implements CitizenService {
         }
 
         var userInfo = userLoggedIn.getUserInfo();
-        if (userLoggedIn.getRole() != ERole.ADMIN
-                && userInfo.getStatusRegistered().equals(StatusRegistered.VERIFIED)
-                && !request.kkId().equals(userInfo.getKkId())) {
-            throw new AppConflictException("KK id berbeda");
-        }
 
-        var entity = this.buildCitizen(request);
+        String userLoggedInKkId = userInfo != null ? userLoggedIn.getUserInfo().getKkId() : null;
+
+        var entity = this.buildCitizen(request, userLoggedInKkId);
         persistUtil(entity, userLoggedIn.getName());
         var citizen = citizenRepository.save(entity);
 
@@ -143,9 +140,15 @@ public class CitizenServiceImpl implements CitizenService {
         return citizenRepository.save(existingCitizen);
     }
 
-    private Citizen buildCitizen(CitizenInfoRequest request) {
+    private Citizen buildCitizen(CitizenInfoRequest request, String userLoggedInKkId) {
         var entity = new Citizen();
-        entity.setKkId(request.kkId());
+
+        if (userLoggedInKkId != null) {
+            entity.setKkId(userLoggedInKkId);
+        }else {
+            entity.setKkId(request.kkId());
+        }
+
         entity.setFullName(request.fullName());
         entity.setNik(request.nik());
         entity.setGender(request.gender());
@@ -158,6 +161,8 @@ public class CitizenServiceImpl implements CitizenService {
         entity.setBloodType(request.bloodType());
         entity.setMarriageStatus(request.marriageStatus());
         entity.setAddress(request.address());
+
+
 
         return entity;
     }
