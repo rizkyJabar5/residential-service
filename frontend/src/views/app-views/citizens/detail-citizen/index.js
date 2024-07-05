@@ -101,7 +101,6 @@ const DetailCitizen = ({type = ADD, param}) => {
                                     message.error(err.message)
                                 }
                             })
-                            .finally(() => setSubmitLoading(false))
                     } else if (role === 'CITIZEN' && statusAccount == 'REGISTERED') {
                         await dispatch(addCitizenFamilies(request)).unwrap()
                             .then(async (res) => {

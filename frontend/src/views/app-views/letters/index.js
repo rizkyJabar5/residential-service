@@ -114,6 +114,9 @@ export const Letters = () => {
 	const [ letter, setLetter ] = useState({})
 	const history = useHistory()
 	const dispatch = useDispatch();
+	const [role, setRole] = useState(null)
+	const [statusAccount, setStatusAccount] = useState(null)
+
 	const {
 		lettersData,
 		isLoading,
@@ -137,6 +140,12 @@ export const Letters = () => {
 	}, [ dispatch ])
 
 	useEffect(() => {
+		const userRole = localStorage.getItem('role');
+		setRole(userRole)
+
+		const statusAccountUser = localStorage.getItem('status');
+		setStatusAccount(statusAccountUser)
+
 		getData()
 	}, [])
 
