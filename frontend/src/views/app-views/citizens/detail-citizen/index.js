@@ -82,20 +82,15 @@ const DetailCitizen = ({type = ADD, param}) => {
                         .finally(() => setSubmitLoading(false))
                 } else {
                     if (role === 'CITIZEN' && statusAccount === 'VERIFIED') {
-                        request.kkId = values.kkId;
+                        // request.kkId = values.kkId;
                         request.address = values.address;
 
                         await dispatch(addCitizen(request)).unwrap()
                             .then(async (res) => {
                                 setSubmitLoading(true)
-                                message.success("Berhasil melengkapi data, Silahkan login lagi");
-                                setTimeout(async () => {
-                                    const logoutResponse = await dispatch(sendLogout()).unwrap();
-                                    if (logoutResponse.code === '200') {
-                                        localStorage.clear();
-                                        window.location.href = "/auth";
-                                    }
-                                }, 3000);
+                                localStorage.setItem('status', 'REGISTERED')
+                                history.push("/app/dashboard/");
+                                window.location.reload();
 
                             })
                             .catch((err) => {
