@@ -10,15 +10,18 @@ import {strings} from "../../../res";
 import citizenTableColumn from "../components/citizen/table";
 import {DeleteOutlined} from "@material-ui/icons";
 import EllipsisDropdown from "../../../components/shared-components/EllipsisDropdown";
+import {debounce} from "lodash";
 
 export const Citizens = (props) => {
     const history = useHistory()
     const dispatch = useDispatch();
     const [role, setRole] = useState(null)
     const [statusAccount, setStatusAccount] = useState(null)
+    const [originalList, setOriginalList] = useState([])
+    const [list, setList] = useState([])
 
     const {
-        list,
+        // list,
         selectedRows,
         filter: {q: searchTerm},
         loading: {
@@ -29,7 +32,12 @@ export const Citizens = (props) => {
 
     const getData = useCallback(async () => {
         try {
-            await dispatch(fetchAllCitizens()).unwrap()
+            const response = await dispatch(fetchAllCitizens()).unwrap()
+            const data = Array.isArray(response.content) ? response.content : [];
+
+            setOriginalList(data)
+            setList(data)
+
         } catch (error) {
             console.log(error)
             Message.error(error?.message || 'Failed to fetch data')
@@ -54,19 +62,36 @@ export const Citizens = (props) => {
         setStatusAccount(statusAccountUser)
 
         getData()
+
     }, [getData])
 
     const addCitizen = () => {
         history.push(`${strings.navigation.path.citizen.add}`)
     }
 
-    const onSearch = e => {
-        const value = e.currentTarget.value
-        const searchArray = e.currentTarget.value ? list : []
-        const data = utils.wildCardSearch(searchArray, value)
-        // setList(data)
-        // setSelectedRows([])
-    }
+    const onSearch = useCallback(debounce((value) => {
+        if (!Array.isArray(originalList)) {
+            console.error("originalList is not an array");
+            return;
+        }
+
+        if (value === "") {
+            setList(originalList);
+        } else {
+            const lowercasedValue = value.toLowerCase();
+            const filteredData = originalList.filter(item =>
+                (item.fullName && item.fullName.toLowerCase().includes(lowercasedValue)) ||
+                (item.kkId && item.kkId.toLowerCase().includes(lowercasedValue)) ||
+                (item.nik && item.nik.toLowerCase().includes(lowercasedValue))
+            );
+            setList(filteredData);
+        }
+    }, 300), [originalList]);
+
+    const handleSearch = e => {
+        const value = e.currentTarget.value.trim().toLowerCase();
+        onSearch(value);
+    };
 
     const viewDetails = row => {
         history.push(`${strings.navigation.path.citizen.list}/${row.id}`)
@@ -180,7 +205,7 @@ export const Citizens = (props) => {
                         <Flex alignItems="center" justifyContent="between" mobileFlex={false}>
                             <Flex className="mb-1" mobileFlex={false}>
                                 <div className="mr-md-3 mb-4">
-                                    <Input placeholder="Search" prefix={<SearchOutlined/>} onChange={e => onSearch(e)}/>
+                                    <Input placeholder="Nama Lengkap/No. KK/NIK" prefix={<SearchOutlined/>} onChange={handleSearch}/>
                                 </div>
                             </Flex>
                             <div>
@@ -197,7 +222,7 @@ export const Citizens = (props) => {
                             className="no-border-last"
                             columns={tableColumn}
                             dataSource={list}
-                            rowKey="kkId"
+                            rowKey="id"
                             pagination={{
                                 pageSize: 8,
                             }}
