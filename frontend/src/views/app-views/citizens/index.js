@@ -205,17 +205,20 @@ export const Citizens = (props) => {
                         <Flex alignItems="center" justifyContent="between" mobileFlex={false}>
                             <Flex className="mb-1" mobileFlex={false}>
                                 <div className="mr-md-3 mb-4">
-                                    <Input placeholder="Nama Lengkap/No. KK/NIK" prefix={<SearchOutlined/>} onChange={handleSearch}/>
+                                    <Input placeholder="Nama Lengkap/No. KK/NIK" prefix={<SearchOutlined/>}
+                                           onChange={handleSearch}/>
                                 </div>
                             </Flex>
                             <div>
-                                <Button
-                                    onClick={addCitizen}
-                                    type="primary"
-                                    icon={<PlusCircleOutlined/>}
-                                    block>
-                                    Tambah
-                                </Button>
+                                {role === 'ADMIN' || role === 'CITIZEN' && (
+                                    <Button
+                                        onClick={addCitizen}
+                                        type="primary"
+                                        icon={<PlusCircleOutlined/>}
+                                        block>
+                                        Tambah
+                                    </Button>
+                                )}
                             </div>
                         </Flex>
                         <Table

@@ -105,6 +105,7 @@ export const News = () => {
     const [news, setNews] = useState({})
     const history = useHistory()
     const dispatch = useDispatch();
+    const [role, setRole] = useState(null)
     const {
         newsData,
         isLoading,
@@ -133,6 +134,9 @@ export const News = () => {
     }, [dispatch])
 
     useEffect(() => {
+        const userRole = localStorage.getItem('role');
+        setRole(userRole)
+
         getData()
     }, [getData])
 
@@ -305,13 +309,15 @@ export const News = () => {
                                 </div>
                             </Flex>
                             <div>
-                                <Button
-                                    onClick={onCLickAdd}
-                                    type="primary"
-                                    icon={<PlusCircleOutlined/>}
-                                    block>
-                                    Tambah Berita
-                                </Button>
+                                {role !== 'CITIZEN' && (
+                                    <Button
+                                        onClick={onCLickAdd}
+                                        type="primary"
+                                        icon={<PlusCircleOutlined/>}
+                                        block>
+                                        Tambah Berita
+                                    </Button>
+                                )}
                             </div>
                         </Flex>
                         <ConfigProvider renderEmpty={customizeRenderEmpty}>
