@@ -13,6 +13,7 @@ export const REPORTS = (props) => {
 	const dispatch = useDispatch();
 	const [originalList, setOriginalList] = useState([])
 	const [list, setList] = useState([])
+	const [role, setRole] = useState(null)
 
 	const {
 		listReports,
@@ -46,6 +47,9 @@ export const REPORTS = (props) => {
 	}, [dispatch])
 
 	useEffect(() => {
+		const userRole = localStorage.getItem('role');
+		setRole(userRole)
+
 		getData()
 	}, [getData])
 
@@ -129,13 +133,15 @@ export const REPORTS = (props) => {
 								</div>
 							</Flex>
 							<div>
-								<Button
-									onClick={ onCLickAdd }
-									type="primary"
-									icon={ <PlusCircleOutlined/> }
-									block>
-									Tambah
-								</Button>
+								{role === 'ADMIN' || role === 'CITIZEN' && (
+									<Button
+										onClick={onCLickAdd}
+										type="primary"
+										icon={<PlusCircleOutlined/>}
+										block>
+										Tambah
+									</Button>
+								)}
 							</div>
 						</Flex>
 						<ConfigProvider renderEmpty={ customizeRenderEmpty }>

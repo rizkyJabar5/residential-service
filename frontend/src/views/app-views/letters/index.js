@@ -512,13 +512,15 @@ export const Letters = () => {
                                 </div>
                             </Flex>
                             <div>
-                                <Button
-                                    onClick={onCLickAdd}
-                                    type="primary"
-                                    icon={<PlusCircleOutlined/>}
-                                    block>
-                                    Tambah
-                                </Button>
+                                {role === 'ADMIN' || role === 'CITIZEN' && (
+                                    <Button
+                                        onClick={onCLickAdd}
+                                        type="primary"
+                                        icon={<PlusCircleOutlined/>}
+                                        block>
+                                        Tambah
+                                    </Button>
+                                )}
                             </div>
                         </Flex>
                         <ConfigProvider renderEmpty={customizeRenderEmpty}>
