@@ -6,10 +6,14 @@ import {fetchAllReports} from "../../../redux/features/reports";
 import Flex from "../../../components/shared-components/Flex";
 import {CloseCircleTwoTone, PlusCircleOutlined, SearchOutlined} from "@ant-design/icons";
 import {strings} from "../../../res";
+import {debounce} from "lodash";
 
 export const REPORTS = (props) => {
 	const history = useHistory()
 	const dispatch = useDispatch();
+	const [originalList, setOriginalList] = useState([])
+	const [list, setList] = useState([])
+
 	const {
 		listReports,
 		hasData,
@@ -29,7 +33,12 @@ export const REPORTS = (props) => {
 	const getData = useCallback(async () => {
 
 		try {
-			await dispatch(fetchAllReports(params)).unwrap()
+			const response = await dispatch(fetchAllReports(params)).unwrap()
+			const data = Array.isArray(response.data.content) ? response.data.content : []
+			console.log("ini log : ", data)
+			setOriginalList(data)
+			setList(data)
+
 		} catch (error) {
 			console.log(error)
 			message.error(error?.message || 'Failed to fetch data')
@@ -38,7 +47,30 @@ export const REPORTS = (props) => {
 
 	useEffect(() => {
 		getData()
-	}, [])
+	}, [getData])
+
+	const onSearch = useCallback(debounce((value) => {
+		if (!Array.isArray(originalList)) {
+			console.error("originalList is not an array");
+			return;
+		}
+
+		if (value === "") {
+			setList(originalList);
+		} else {
+			const lowercasedValue = value.toLowerCase();
+			const filteredData = originalList.filter(item =>
+				(item.name && item.name.toLowerCase().includes(lowercasedValue)) ||
+				(item.typeFacility && item.typeFacility.toLowerCase().includes(lowercasedValue))
+			);
+			setList(filteredData);
+		}
+	}, 300), [originalList]);
+
+	const handleSearch = e => {
+		const value = e.currentTarget.value.trim().toLowerCase();
+		onSearch(value);
+	};
 
 	const tableColumns = [
 		{
@@ -91,10 +123,9 @@ export const REPORTS = (props) => {
 							<Flex className="mb-1" mobileFlex={ false }>
 								<div className="mr-md-3 mb-4">
 									<Input
-										placeholder="Search"
-										prefix={ <SearchOutlined/> }
-										// onChange={ e => onSearch(e) }
-									/>
+										placeholder="Nama/Jenis Fasilitas"
+										prefix={<SearchOutlined/>}
+										onChange={handleSearch}/>
 								</div>
 							</Flex>
 							<div>
@@ -111,7 +142,7 @@ export const REPORTS = (props) => {
 							<Table
 								className="no-border-last"
 								columns={tableColumns}
-								dataSource={hasData ? listReports : []}
+								dataSource={list}
 								rowKey='id'
 								pagination={{
 									pageSize:10

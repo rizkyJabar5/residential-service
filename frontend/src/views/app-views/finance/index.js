@@ -12,7 +12,7 @@ import {
     Modal,
     Upload,
     Tag,
-    Menu
+    Menu, DatePicker
 } from 'antd';
 import React, {useEffect, useState, useCallback, useRef} from "react";
 import {useDispatch, useSelector} from 'react-redux';
@@ -22,6 +22,7 @@ import {CloseCircleTwoTone, EyeOutlined, PlusCircleOutlined, SearchOutlined, Upl
 import {createFinance, fetchAllFinances} from "../../../redux/features/finances";
 import {rules} from "../../../res/rules";
 import EllipsisDropdown from "../../../components/shared-components/EllipsisDropdown";
+import moment from "moment/moment";
 
 export const FINANCES = (props) => {
     const history = useHistory()
@@ -32,9 +33,12 @@ export const FINANCES = (props) => {
     const [form] = Form.useForm();
     const [selectedFinance, setSelectedFinance] = useState(null);
     const [modalType, setModalType] = useState(null);
+    const [filteredData, setFilteredData] = useState([]);
+    const [listFinances, setListFinances] = useState([]);
+
     const {
-        listFinances,
-        hasData,
+        // listFinances,
+        // hasData,
         filter: {q: searchTerm},
         loading: {
             query: loadingQuery,
@@ -45,13 +49,20 @@ export const FINANCES = (props) => {
 
     const params = {
         page: 0,
-        limit: 10
+        limit: 10,
     }
 
     const getData = useCallback(async () => {
 
         try {
-            await dispatch(fetchAllFinances(params)).unwrap()
+            const response = await dispatch(fetchAllFinances(params)).unwrap()
+            const data = Array.isArray(response.data.content) ? response.data.content : []
+
+            console.log("ini data : ", data)
+
+            setListFinances(data);
+            setFilteredData(data);
+
         } catch (error) {
             console.log(error)
             message.error(error?.message || 'Failed to fetch data')
@@ -60,7 +71,7 @@ export const FINANCES = (props) => {
 
     useEffect(() => {
         getData()
-    }, [])
+    }, [getData])
 
     const tableColumns = [
         {
@@ -167,6 +178,23 @@ export const FINANCES = (props) => {
 
     };
 
+    const onDateChange = (date, dateString) => {
+        if (!Array.isArray(listFinances)) {
+            console.error("originalList is not an array");
+            return;
+        }
+
+        if (dateString === "") {
+            setFilteredData(listFinances);
+        } else {
+            const filteredData = listFinances.filter(item =>
+                item.tglPembayaran && item.tglPembayaran === dateString
+            );
+
+            setFilteredData(filteredData);
+        }
+    };
+
     const normFile = (e) => {
         console.log('Upload event:', e);
         if (Array.isArray(e)) {
@@ -183,10 +211,10 @@ export const FINANCES = (props) => {
                         <Flex alignItems="center" justifyContent="between" mobileFlex={false}>
                             <Flex className="mb-1" mobileFlex={false}>
                                 <div className="mr-md-3 mb-4">
-                                    <Input
-                                        placeholder="Search"
-                                        prefix={<SearchOutlined/>}
-                                        // onChange={ e => onSearch(e) }
+                                    <DatePicker
+                                        placeholder="Tanggal Pembayaran"
+                                        format="DD/MM/YYYY"
+                                        onChange={onDateChange}
                                     />
                                 </div>
                             </Flex>
@@ -205,7 +233,7 @@ export const FINANCES = (props) => {
                             <Table
                                 className="no-border-last"
                                 columns={tableColumns}
-                                dataSource={hasData ? listFinances : []}
+                                dataSource={filteredData}
                                 rowKey='id'
                                 pagination={{
                                     pageSize: 10
@@ -233,7 +261,7 @@ export const FINANCES = (props) => {
                 {modalType === 'review' && selectedFinance && (
                     <div>
                         <p><strong>Gambar:</strong></p>
-                        <img src={selectedFinance.imageUrl} alt="Gambar" style={{ maxWidth: '100%' }} />
+                        <img src={selectedFinance.imageUrl} alt="Gambar" style={{maxWidth: '100%'}}/>
 
                         <p><strong>Tanggal Pembayaran:</strong> {selectedFinance.tglPembayaran}</p>
                         <p><strong>Nama:</strong> {selectedFinance.citizen.fullName}</p>
@@ -271,4 +299,4 @@ export const FINANCES = (props) => {
 }
 
 
-    export default withRouter(FINANCES);
+export default withRouter(FINANCES);
