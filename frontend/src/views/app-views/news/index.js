@@ -114,6 +114,7 @@ export const News = () => {
     const user = JSON.parse(localStorage.getItem('user'))
     const [originalList, setOriginalList] = useState([])
     const [list, setList] = useState([])
+    const [role, setRole] = useState(null)
 
     const getData = useCallback(async () => {
         const params = {
@@ -124,7 +125,7 @@ export const News = () => {
         try {
             const response = await dispatch(fetchAllNews(params)).unwrap()
             const data = Array.isArray(response.data.content) ? response.data.content : []
-            console.log("ini data ",response)
+            console.log("ini data ", response)
             setOriginalList(data)
             setList(data)
         } catch (error) {
@@ -133,6 +134,9 @@ export const News = () => {
     }, [dispatch])
 
     useEffect(() => {
+        const userRole = localStorage.getItem('role');
+        setRole(userRole)
+
         getData()
     }, [getData])
 
@@ -305,13 +309,15 @@ export const News = () => {
                                 </div>
                             </Flex>
                             <div>
-                                <Button
-                                    onClick={onCLickAdd}
-                                    type="primary"
-                                    icon={<PlusCircleOutlined/>}
-                                    block>
-                                    Tambah Berita
-                                </Button>
+                                {role !== 'CITIZEN' && (
+                                    <Button
+                                        onClick={onCLickAdd}
+                                        type="primary"
+                                        icon={<PlusCircleOutlined/>}
+                                        block>
+                                        Tambah Berita
+                                    </Button>
+                                )}
                             </div>
                         </Flex>
                         <ConfigProvider renderEmpty={customizeRenderEmpty}>

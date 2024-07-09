@@ -147,11 +147,23 @@ const getNavigationConfig = (role, statusAccount) => {
             ...newsTree,
             ...userManagementTree
         ];
+    } else if (role === 'RW' || role === 'SECRETARY_RW' || role === 'RT' || role === 'SECRETARY_RT' ) {
+        navigationConfig = [
+            ...dashBoardNavTree,
+            ...societyTree,
+            {
+                ...newsTree[0],
+                submenu: [
+                    newsTree[0].submenu.find(item => item.key === 'Reports'),
+                    newsTree[0].submenu.find(item => item.key === 'News')
+                ]
+            }
+        ];
     } else if (role === 'CITIZEN') {
         navigationConfig = [
             ...dashBoardNavTree,
             ...societyTree,
-            ...newsTree
+            ...newsTree,
         ];
     } else {
         navigationConfig = [];

@@ -137,7 +137,7 @@ export const Letters = () => {
 
         try {
             const response = await dispatch(fetchAllLetter(params)).unwrap()
-            const data = Array.isArray(response.data.content) ? response.data.content :[];
+            const data = Array.isArray(response.data.content) ? response.data.content : [];
             console.log("ini : ", data)
 
             setOriginalList(data)
@@ -512,13 +512,15 @@ export const Letters = () => {
                                 </div>
                             </Flex>
                             <div>
-                                <Button
-                                    onClick={onCLickAdd}
-                                    type="primary"
-                                    icon={<PlusCircleOutlined/>}
-                                    block>
-                                    Tambah
-                                </Button>
+                                {role === 'ADMIN' || role === 'CITIZEN' && (
+                                    <Button
+                                        onClick={onCLickAdd}
+                                        type="primary"
+                                        icon={<PlusCircleOutlined/>}
+                                        block>
+                                        Tambah
+                                    </Button>
+                                )}
                             </div>
                         </Flex>
                         <ConfigProvider renderEmpty={customizeRenderEmpty}>

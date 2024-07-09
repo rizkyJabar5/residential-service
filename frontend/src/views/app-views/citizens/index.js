@@ -209,13 +209,15 @@ export const Citizens = (props) => {
                                 </div>
                             </Flex>
                             <div>
-                                <Button
-                                    onClick={addCitizen}
-                                    type="primary"
-                                    icon={<PlusCircleOutlined/>}
-                                    block>
-                                    Tambah
-                                </Button>
+                                {role === 'ADMIN' || role === 'CITIZEN' && (
+                                    <Button
+                                        onClick={addCitizen}
+                                        type="primary"
+                                        icon={<PlusCircleOutlined/>}
+                                        block>
+                                        Tambah
+                                    </Button>
+                                )}
                             </div>
                         </Flex>
                         <Table
