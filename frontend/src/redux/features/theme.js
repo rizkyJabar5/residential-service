@@ -13,8 +13,8 @@ const initialState = {
 	authBackground: REACT_APP_AUTH_BACKGROUND || '/img/background.jpg',
 	mobileLogo: '/img/logo-colored.png',
 	companyLogo: REACT_APP_COMPANY_LOGO || '/img/logo-colored.png',
-	sidebarLogo: REACT_APP_SIDEBAR_LOGO || '/img/logo.png',
-	collapsedSidebarLogo: REACT_APP_COLLAPSED_SIDEBAR_LOGO || '/img/logo.png' 
+	sidebarLogo: REACT_APP_SIDEBAR_LOGO || '/img/logo.jpg',
+	collapsedSidebarLogo: REACT_APP_COLLAPSED_SIDEBAR_LOGO || '/img/logo.jpg'
 }
 
 export const themeSlice = createSlice({
