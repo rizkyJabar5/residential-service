@@ -9,7 +9,9 @@ import id.application.feature.dto.request.RequestPagination;
 import id.application.feature.dto.request.TemplateRequest;
 import id.application.feature.dto.request.UpdateLetterStatusRequest;
 import id.application.feature.dto.response.DownloadResponse;
+import id.application.feature.model.entity.Citizen;
 import id.application.feature.model.entity.LetterRequest;
+import id.application.feature.model.repositories.CitizenRepository;
 import id.application.feature.model.repositories.LetterRequestRepository;
 import id.application.feature.service.LetterService;
 import id.application.util.FilterableUtil;
@@ -17,6 +19,7 @@ import id.application.util.enums.ERole;
 import id.application.util.enums.StatusLetter;
 import id.application.util.enums.TypeLetter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -46,13 +49,19 @@ public class LetterServiceImpl implements LetterService {
     public static final String PATH = "/";
     private final LetterRequestRepository repository;
     private final TemplateConfig templateConfig;
+    private final CitizenRepository citizenRepository;
 
     @Override
     public Page<LetterRequest> findAll(RequestPagination request) {
-        getUserLoggedIn();
+        var userLoggedIn = getUserLoggedIn();
 
         var sortByCreatedTime = Sort.by(Sort.Order.desc("createdTime"));
         var pageable = pageable(request.page(), request.limitContent(), sortByCreatedTime);
+
+        if (userLoggedIn.getRole().equals(ERole.CITIZEN)) {
+            return repository.findLetterRequestByCitizenId(userLoggedIn.getUserInfo().getCitizenId(), pageable);
+        }
+
         return repository.findAll(pageable);
     }
 
@@ -82,27 +91,48 @@ public class LetterServiceImpl implements LetterService {
         var authenticatedUser = getUserLoggedIn();
         var userLoggedIn = authenticatedUser.getName();
 
-        var nik = request.nik();
         var typeLetter = TypeLetter.valueOf(request.type());
-        this.duplicateLetterRequest(nik, typeLetter);
-        var entity = repository.findLetterRejected(nik).orElse(new LetterRequest());
+
+        Citizen citizen = null;
+        if (authenticatedUser.getRole() == ERole.CITIZEN) {
+            var userInfoCitizen = authenticatedUser.getUserInfo().getCitizenId();
+            citizen = citizenRepository.findById(userInfoCitizen)
+                    .orElseThrow(() -> new ResourceNotFoundException("Citizen not found"));
+
+            var nik = citizen.getNik();
+            this.duplicateLetterRequest(nik, typeLetter);
+        }
+
+        var entity = repository.findLetterRejected(citizen != null ? citizen.getNik() : request.nik())
+                .orElse(new LetterRequest());
+
         entity.generateLetterId();
 
         if (authenticatedUser.getRole() == ERole.CITIZEN) {
-            var citizenId = authenticatedUser.getUserInfo().getCitizenId();
-            entity.setCitizenId(citizenId);
+            entity.setCitizenId(citizen.getId());
+            entity.setFullName(citizen.getFullName());
+            entity.setPlaceBirth(citizen.getPlaceOfBirth());
+            entity.setDateOfBirth((citizen.getDateOfBirth()));
+            entity.setGender(citizen.getGender());
+            entity.setNationality(request.nationality());
+            entity.setReligion(citizen.getReligion());
+            entity.setNik(citizen.getNik());
+            entity.setMarriageStatus(citizen.getMarriageStatus());
+            entity.setJobType(citizen.getJobType());
+            entity.setAddress(citizen.getAddress());
+        }else {
+            entity.setFullName(request.fullName());
+            entity.setPlaceBirth(request.pob());
+            entity.setDateOfBirth(convertToLocalDateDefaultPattern(request.dob()));
+            entity.setGender(request.gender());
+            entity.setNationality(request.nationality());
+            entity.setReligion(request.religion());
+            entity.setNik(request.nik());
+            entity.setMarriageStatus(request.marriageStatus());
+            entity.setJobType(request.jobType());
+            entity.setAddress(request.address());
         }
 
-        entity.setFullName(request.fullName());
-        entity.setPlaceBirth(request.pob());
-        entity.setDateOfBirth(convertToLocalDateDefaultPattern(request.dob()));
-        entity.setGender(request.gender());
-        entity.setNationality(request.nationality());
-        entity.setReligion(request.religion());
-        entity.setNik(request.nik());
-        entity.setMarriageStatus(request.marriageStatus());
-        entity.setJobType(request.jobType());
-        entity.setAddress(request.address());
         entity.setType(typeLetter);
         entity.setStatus(StatusLetter.WAITING);
         persistUtil(entity, userLoggedIn);

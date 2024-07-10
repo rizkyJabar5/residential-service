@@ -50,20 +50,9 @@ export const USERS = () => {
 			},
 		},
 		{
-			title: 'Nama Lengkap',
-			dataIndex: 'fullName',
-			key: 'fullName',
-			render: (_, elm) => {
-				return (
-					elm.fullName
-						? elm.email
-						: <span>
-              <Tag color="red" key="fullName">
-                -
-              </Tag>
-            </span>
-				);
-			},
+			title: 'Name',
+			dataIndex: 'name',
+			key: 'name',
 		},
 		{
 			title: 'Dibuat Pada',
@@ -92,7 +81,8 @@ export const USERS = () => {
 			key: 'statusRegistered',
 			render: (_, elm) => {
 				const tagsStatus = {
-					"Belum Mendaftar": "orange",
+					"Belum Mendaftar": "red",
+					"Verifikasi": "orange",
 					"Terdaftar": "green",
 					"-": "red",
 				}
@@ -101,7 +91,9 @@ export const USERS = () => {
 				if(elm.userInfo) {
 					if(elm.userInfo.statusRegistered === "NOT_REGISTERED") {
 						statusRegistered = "Belum Mendaftar"
-					} else if(elm.userInfo.statusRegistered === "REGISTERED") {
+					} else if(elm.userInfo.statusRegistered === "VERIFIED"){
+						statusRegistered = "Verifikasi"
+					}else if(elm.userInfo.statusRegistered === "REGISTERED") {
 						statusRegistered = "Terdaftar"
 					}
 				} else {

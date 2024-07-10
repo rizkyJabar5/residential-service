@@ -35,12 +35,13 @@ import static id.application.util.constant.StatusCodeConstant.CODE_CONTENT_FOUND
 @RequestMapping("/api/v1/letters")
 @Validated
 public class LetterEndpoint {
-    public static final String DATA_TIDAK_DITEMUKAN = "Data tidak ditemukan";
+    public static final String DATA_TIDAK_DITEMUKAN = "Data surat pengajuan tidak ditemukan";
+    public static final String DATA_FOUND = "Data surat pengajuan ditemukan";
     private final LetterService service;
 
     @GetMapping
     public BaseResponse<PageResponse<LetterRequestDto>> getAllLetters(@RequestParam(defaultValue = "0") Integer page,
-                                                                      @RequestParam(defaultValue = "10") Integer limitContent){
+                                                                      @RequestParam(defaultValue = "10") Integer limitContent) {
         var letterRequest = service.findAll(RequestPagination.builder()
                 .page(page)
                 .limitContent(limitContent)
@@ -63,12 +64,12 @@ public class LetterEndpoint {
     }
 
     @GetMapping("/status")
-    public BaseResponse<PageResponse<LetterRequestDto>> getLetterByStatus(@RequestParam int status){
+    public BaseResponse<PageResponse<LetterRequestDto>> getLetterByStatus(@RequestParam int status) {
         var statusLetter = StatusLetter.valueOf(status);
         Page<LetterRequest> contents = service.findLetterByStatus(statusLetter);
         return BaseResponse.<PageResponse<LetterRequestDto>>builder()
                 .code(contents.isEmpty() ? CODE_CONTENT_EMPTY : CODE_CONTENT_FOUND)
-                .message(contents.isEmpty() ? DATA_TIDAK_DITEMUKAN : "Data Pengajuan ditemukan")
+                .message(contents.isEmpty() ? DATA_TIDAK_DITEMUKAN : DATA_FOUND)
                 .data(PageResponse.<LetterRequestDto>builder()
                         .size(contents.getSize())
                         .totalElements(contents.getTotalElements())
@@ -82,27 +83,27 @@ public class LetterEndpoint {
     }
 
     @GetMapping("/{id}")
-    public BaseResponse<LetterRequestDto> getLetterById(@PathVariable String id){
+    public BaseResponse<LetterRequestDto> getLetterById(@PathVariable String id) {
         var content = service.findById(id);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
-                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : "Data Pengajuan ditemukan")
+                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : DATA_FOUND)
                 .data(LetterRequestDto.letterRequestDto(content))
                 .build();
     }
 
     @GetMapping("/letter/{nik}")
-    public BaseResponse<LetterRequestDto> getLetterByLetterId(@PathVariable String nik){
+    public BaseResponse<LetterRequestDto> getLetterByLetterId(@PathVariable String nik) {
         var content = service.findByLetterId(nik);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
-                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : "Data Pengajuan ditemukan")
+                .message(Objects.isNull(content) ? DATA_TIDAK_DITEMUKAN : DATA_FOUND)
                 .data(LetterRequestDto.letterRequestDto(content))
                 .build();
     }
 
     @PostMapping
-    public BaseResponse<LetterRequestDto> createLetter(@RequestBody LetterAddRequest request){
+    public BaseResponse<LetterRequestDto> createLetter(@RequestBody LetterAddRequest request) {
         var content = service.persistNew(request);
         return BaseResponse.<LetterRequestDto>builder()
                 .code(CODE_CONTENT_FOUND)
@@ -112,12 +113,12 @@ public class LetterEndpoint {
     }
 
     @PutMapping
-    public void updateStatusLetter(@RequestBody UpdateLetterStatusRequest request){
+    public void updateStatusLetter(@RequestBody UpdateLetterStatusRequest request) {
         service.updateStatusLetter(request);
     }
 
     @GetMapping(value = "/download/{id}")
-    public ResponseEntity<byte[]> downloadSubmissionLetter(@PathVariable String id){
+    public ResponseEntity<byte[]> downloadSubmissionLetter(@PathVariable String id) {
         var response = service.downloadLetter(id);
         var header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + response.fileName());

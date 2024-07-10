@@ -18,7 +18,14 @@ export const LoginForm = (props) => {
 			localStorage.setItem('user', JSON.stringify(user))
 			localStorage.setItem('token', user?.accessToken)
 			localStorage.setItem('refreshToken', user?.refreshToken)
-			history.push("/app/dashboard/");
+			localStorage.setItem('role', user?.role)
+			localStorage.setItem('status', user?.status)
+            if (user.status == "VERIFIED" && user.role == "CITIZEN"){
+				history.push("/app/citizens/add", { message: "Wajib lakukan kelengkapan data pribadi !!!"});
+            }else {
+                history.push("/app/dashboard/");
+            }
+			window.location.reload();
 		} catch {
 			localStorage.removeItem('token')
 			localStorage.removeItem('refreshToken')

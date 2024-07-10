@@ -1,5 +1,6 @@
 package id.application.feature.model.repositories;
 
+import id.application.feature.model.entity.AppUser;
 import id.application.feature.model.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +19,8 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, String> {
 
     @Query("select (count(u) > 0) from UserInfo u where u.kkId = ?1 and u.phoneNumber = ?2")
     boolean existsByKkId(String kkId, String phoneNumber);
+
+    Optional<UserInfo> findByAppUserId(String appUserId);
+
+    UserInfo findByAppUser(AppUser appUser);
 }

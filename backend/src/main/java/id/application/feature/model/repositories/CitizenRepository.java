@@ -1,6 +1,8 @@
 package id.application.feature.model.repositories;
 
 import id.application.feature.model.entity.Citizen;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -8,6 +10,12 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CitizenRepository extends JpaRepository<Citizen, String> {
+    @Query("""
+            select c
+            from Citizen c
+            where c.kkId = ?1
+            """)
+    Page<Citizen> findAllFamilies(String kkId, Pageable pageable);
 
     Optional<Citizen> findByKkId(String kkId);
 
@@ -20,4 +28,7 @@ public interface CitizenRepository extends JpaRepository<Citizen, String> {
     Integer countFamilyMember(String kkId);
 
     Boolean existsByNik(String nik);
+
+    @Query("select (count(c)) from Citizen c")
+    Integer countAllCitizen();
 }

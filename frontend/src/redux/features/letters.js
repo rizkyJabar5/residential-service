@@ -226,6 +226,7 @@ export const LetterSlice = createSlice({
 				state.error = action.payload;
 				state.message = action.payload.message
 				state.isLoading = false
+
 			})
 			.addCase(createLetter.fulfilled, (state, action) => {
 				state.isLoading = false

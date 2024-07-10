@@ -11,6 +11,17 @@ class Utils {
 			.replace(/(\d{2})\/(\d{2})\/(\d{4})/, '$2/$1/$3'); // Regex to swap month and day
 	}
 
+	static formatTimeToLocal(requestDate) {
+		let format = {
+			hour: '2-digit',
+			minute: '2-digit',
+			hour12: false,
+		};
+		const formatter = new Intl.DateTimeFormat('en-US', format)
+		return formatter.format(requestDate)
+			.replace(/(\d{2}):(\d{2})/, '$1:$2'); // Regex to swap month and day
+	}
+
 	static convertDateTimeToLocal(requestDate) {
 		const parsedDate = new Date(requestDate);
 

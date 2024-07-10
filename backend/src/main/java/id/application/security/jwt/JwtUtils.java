@@ -76,6 +76,7 @@ public class JwtUtils {
                 .refreshToken(refreshToken)
                 .expirationRefreshToken(durationExpiredRefreshToken)
                 .type(TOKEN_PREFIX.trim())
+                .status("ADMIN".equals(appUser.getRole().name()) ? null : appUser.getUserInfo().getStatusRegistered().name())
                 .build();
     }
 

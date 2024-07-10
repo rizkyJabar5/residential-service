@@ -3,7 +3,6 @@ import { Menu } from "antd";
 import Flex from "../../../components/shared-components/Flex";
 import { EyeOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@material-ui/icons";
-import { strings } from "../../../res";
 import { useHistory } from "react-router-dom";
 
 const MenuActionTable = (row, path,  selectedRows, hasDeleted) => {
@@ -15,7 +14,7 @@ const MenuActionTable = (row, path,  selectedRows, hasDeleted) => {
 
 	return (
 		<Menu>
-			<Menu.Item onClick={ () => viewDetails(row) }>
+			<Menu.Item key="detail" onClick={ () => viewDetails(row) }>
 				<Flex alignItems="center">
 					<EyeOutlined/>
 					<span className="ml-2">Detail</span>
@@ -23,7 +22,7 @@ const MenuActionTable = (row, path,  selectedRows, hasDeleted) => {
 			</Menu.Item>
 			{
 				hasDeleted &&
-        <Menu.Item onClick={ () => {} }>
+        <Menu.Item key="delete" onClick={ () => {} }>
           <Flex alignItems="center">
             <DeleteOutlined/>
             <span className="ml-2">Delete</span>

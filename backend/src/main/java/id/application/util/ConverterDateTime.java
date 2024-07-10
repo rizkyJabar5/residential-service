@@ -20,6 +20,7 @@ public class ConverterDateTime {
     public static final String DATETIME_FORMAT = "dd-MM-yyyy HH:mm:ss z";
     public static final String DATE_FORMAT = "dd MMMM yyyy";
     public static final String MONTH_PUBLISH_FORMAT = "mm/yyyy";
+    public static final String DDDD_DD_MM_YYYY = "EEEE, dd MMMM yyyy";
 
     public static LocalDate convertToLocalDateDefaultPattern(String date) {
         if (Objects.isNull(date)) {
@@ -74,5 +75,14 @@ public class ConverterDateTime {
     public static String dateToString(Date date) {
         var formatter = new SimpleDateFormat(DATETIME_FORMAT);
         return formatter.format(date);
+    }
+
+    public static LocalDate stringToLocalDate(String date, String format) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
+        try {
+             return LocalDate.parse(date, formatter);
+        } catch (Exception e) {
+            throw new AppRuntimeException(e.getMessage());
+        }
     }
 }
