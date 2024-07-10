@@ -17,4 +17,7 @@ public interface NewsRepository extends JpaRepository<News, String> {
             and n.eventDate = ?2
             """)
     Optional<News> findByTitle(String title, LocalDate publishedAt);
+
+    @Query("select (count(n)) from News n")
+    Integer countaAllNews();
 }

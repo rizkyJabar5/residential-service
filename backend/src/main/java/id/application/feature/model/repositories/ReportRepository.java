@@ -21,4 +21,7 @@ public interface ReportRepository extends JpaRepository<Report, String> {
         where cast(r.createdTime as date) = cast(?1 as date)
         """)
     Page<Report> findReportByDate(Date date, Pageable pageable);
+
+    @Query("select (count(r)) from Report r")
+    Integer countAllReport();
 }

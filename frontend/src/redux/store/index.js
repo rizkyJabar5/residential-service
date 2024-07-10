@@ -7,6 +7,7 @@ import citizensReducer from 'redux/features/citizens'
 import newsReducer from 'redux/features/news'
 import userReducer from 'redux/features/user'
 import financeReducer from 'redux/features/finances'
+import summaryReducer from 'redux/features/summaries'
 
 const store = configureStore({
     reducer: {
@@ -17,7 +18,8 @@ const store = configureStore({
         reports: reportReducer,
         citizens: citizensReducer,
         accounts: userReducer,
-        finances: financeReducer
+        finances: financeReducer,
+        summaries: summaryReducer
     }
 });
 

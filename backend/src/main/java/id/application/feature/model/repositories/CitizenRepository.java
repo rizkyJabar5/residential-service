@@ -28,4 +28,7 @@ public interface CitizenRepository extends JpaRepository<Citizen, String> {
     Integer countFamilyMember(String kkId);
 
     Boolean existsByNik(String nik);
+
+    @Query("select (count(c)) from Citizen c")
+    Integer countAllCitizen();
 }

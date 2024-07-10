@@ -43,4 +43,7 @@ public interface LetterRequestRepository extends JpaRepository<LetterRequest, St
             and l.status = 1
             """)
     boolean existByNikAndType(String nik, TypeLetter type);
+
+    @Query("select (count(l)) from LetterRequest l where l.status = 7")
+    Integer countLetterUnapproved();
 }
