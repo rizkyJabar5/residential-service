@@ -18,6 +18,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Random;
 
 @Getter
@@ -53,7 +54,7 @@ public class LetterRequest extends BaseEntity {
     private String address;
 
     @Enumerated(EnumType.STRING)
-    private TypeLetter type;
+    private List<TypeLetter> types;
 
     @Enumerated(EnumType.ORDINAL)
     private StatusLetter status;

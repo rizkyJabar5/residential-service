@@ -6,6 +6,7 @@ import id.application.util.enums.Religion;
 import lombok.Builder;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * DTO for {@link id.application.feature.model.entity.LetterRequest}
@@ -22,5 +23,5 @@ public record LetterAddRequest(
         MarriageStatus marriageStatus,
         String jobType,
         String address,
-        int type) implements Serializable {
+        List<Integer> types) implements Serializable {
 }

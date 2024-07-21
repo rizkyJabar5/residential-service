@@ -27,7 +27,6 @@ const formItemLayout = {
         xs: {span: 24, offset: 0},
     },
 }
-
 export const FormLetter = ({type = Utils.ACTION_TYPE.ADD, param}) => {
     const history = useHistory();
     const [form] = Form.useForm();
@@ -68,7 +67,7 @@ export const FormLetter = ({type = Utils.ACTION_TYPE.ADD, param}) => {
             marriageStatus: type === edit ? valueOfMarriageStatus(values.marriageStatus) : values.marriageStatus,
             jobType: values.jobType,
             address: values.address,
-            type: type === edit ? valueOfTypeLetter(values.type) : values.type,
+            types: type === edit ? valueOfTypeLetter(values.types) : values.types,
         };
         console.log(request)
 
@@ -240,9 +239,12 @@ export const FormLetter = ({type = Utils.ACTION_TYPE.ADD, param}) => {
                                     </Form.Item>
                                     <Form.Item
                                         rules={rules.citizen.field.letterType}
-                                        name="type"
+                                        name="types"
                                         label="Jenis Pengajuan">
-                                        <Select options={typeLetter} placeholder="Pilih salah satu"/>
+	                                    <Select
+		                                    options={typeLetter}
+		                                    mode="multiple"
+		                                    placeholder="Pilih jenis pengajuan (Bisa lebih dari 1)"/>
                                     </Form.Item>
                                 </>
 

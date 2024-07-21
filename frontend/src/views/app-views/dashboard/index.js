@@ -19,6 +19,7 @@ export const DefaultDashboard = () => {
 			message.error(error?.message || 'Failed to data')
 		}
 	}, [ dispatch ])
+	const user = JSON.parse(localStorage.getItem('user'))
 
 	useEffect(() => {
 		getData()
@@ -34,11 +35,36 @@ export const DefaultDashboard = () => {
 			</Row>
 			<Row gutter={ 24 }>
 				<Col xs={ 24 } sm={ 24 } md={ 24 } lg={ 24 }>
+					{ user.role !== 'CITIZEN' &&
+						<Row gutter={ 24 }>
+							<Col xs={ 8 } sm={ 8 } md={ 8 } lg={ 8 } xl={ 8 }>
+								<StatisticWidget
+									style={ { textAlign: "center" } }
+									title={ 'Jumlah Pria' }
+									value={ `${ summary.male }` }
+								/>
+							</Col>
+							<Col xs={ 8 } sm={ 8 } md={ 8 } lg={ 8 } xl={ 8 }>
+								<StatisticWidget
+									style={ { textAlign: "center" } }
+									title={ 'Jumlah Wanita' }
+									value={ `${ summary.female }` }
+								/>
+							</Col>
+							<Col xs={ 8 } sm={ 8 } md={ 8 } lg={ 8 } xl={ 8 }>
+								<StatisticWidget
+									style={ { textAlign: "center" } }
+									title={ 'Jumlah Balita' }
+									value={ `${ summary.underAge }` }
+								/>
+							</Col>
+						</Row>
+					}
 					<Row gutter={ 24 }>
 						<Col xs={ 12 } sm={ 12 } md={ 12 } lg={ 12 } xl={ 12 }>
 							<StatisticWidget
 								style={ { textAlign: "center" } }
-								title={ 'Jumlah Warga' }
+								title={ user.role === 'CITIZEN' ? 'Jumlah Keluarga' :'Jumlah Warga' }
 								value={ `${ summary.citizen }` }
 							/>
 						</Col>
