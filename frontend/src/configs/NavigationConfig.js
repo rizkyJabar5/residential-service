@@ -151,13 +151,14 @@ const getNavigationConfig = (role, statusAccount) => {
         navigationConfig = [
             ...dashBoardNavTree,
             ...societyTree,
-            {
-                ...newsTree[0],
-                submenu: [
-                    newsTree[0].submenu.find(item => item.key === 'Reports'),
-                    newsTree[0].submenu.find(item => item.key === 'News')
-                ]
-            }
+            ...newsTree
+            // {
+            //     ...newsTree[0],
+            //     submenu: [
+            //         newsTree[0].submenu.find(item => item.key === 'Reports'),
+            //         newsTree[0].submenu.find(item => item.key === 'News')
+            //     ]
+            // }
         ];
     } else if (role === 'CITIZEN') {
         navigationConfig = [
