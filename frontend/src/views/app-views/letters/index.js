@@ -138,11 +138,9 @@ export const Letters = () => {
         try {
             const response = await dispatch(fetchAllLetter(params)).unwrap()
             const data = Array.isArray(response.data.content) ? response.data.content :[];
-            console.log("ini : ", data)
 
             setOriginalList(data)
             setList(data)
-
         } catch (error) {
             message.error(error?.message || 'Data gagal dimuat')
         }
@@ -262,8 +260,13 @@ export const Letters = () => {
         },
         {
             title: 'Jenis Permohonan',
-            dataIndex: 'type',
-            key: 'type',
+            dataIndex: 'types',
+            key: 'types',
+	        render: (_, record) => (
+                <div className="text-left">
+	                <b>{record.types!== "NaN" && record.types.join(", ")}</b>
+                </div>
+            ),
         },
         {
             title: 'Status Pengajuan',
@@ -289,18 +292,6 @@ export const Letters = () => {
                 )
             },
         },
-        // {
-        // 	title: () => <div className="text-center">Pelunasan</div>,
-        // 	key: 'pelunasan',
-        // 	render: (_, record) => (
-        // 		<div className="text-center">
-        // 			<a type="primary" style={{ width: "70%" }} onClick={() => {
-        // 				setSelectedPaymentId(record.orderId)
-        // 				setIsOpen(true)
-        // 			}} >Lunasi</a>
-        // 		</div>
-        // 	),
-        // },
         {
             title: '',
             colSpan: 2,
@@ -379,6 +370,9 @@ export const Letters = () => {
     );
 
     const showModal = async (record) => {
+			  if(user.role === 'CITIZEN') {
+					setDisabled(true)
+			  }
         if (user.role === 'SECRETARY_RT') {
             if (record.status === 'Menunggu Review Sekretaris RT') {
                 await dispatch(updateLetter({
@@ -481,7 +475,7 @@ export const Letters = () => {
                                 backgroundColor: '#6dab5e',
                                 color: '#babdb9'
                             } : {backgroundColor: 'green'}}>
-                        {disabled ? 'Telah disejutui' : 'Setujui'}
+	                    { disabled ? (user.role === 'CITIZEN' && letter.status !== 'Pengajuan Telah Disetujui' ? 'Menunggu direview' : 'Telah disejutui') : 'Setujui' }
                     </Button>,
                 ]}
             >

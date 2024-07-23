@@ -52,7 +52,7 @@ public class TemplateConfig {
         argument.put("marriageStatus", request.marriageStatus().getStatus());
         argument.put("jobType", request.jobType());
         argument.put("address", request.address());
-        argument.put("type", request.typeLetter());
+        argument.put("types", request.typeLetters());
         argument.put("letterId", request.letterId());
         argument.put("monthPublished", request.monthPublished());
         argument.put("datePublished", request.datePublished());

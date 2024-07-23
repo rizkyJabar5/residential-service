@@ -106,6 +106,52 @@ export const rules = {
             ],
         }, // field
     },
+	  house: {
+			field: {
+				unit: [
+					{
+            required: true,
+            message: 'Masukkan nomor unit terlebih dahulu!',
+          },
+          {
+            max: 10,
+            message: 'Nomor unit maksimal 10 karakter!',
+          },
+				],
+				owner: [
+					{
+            required: true,
+            message: 'Masukkan nama pemilik terlebih dahulu!',
+          },
+          {
+            max: 50,
+            message: 'Nama pemilik maksimal 50 karakter!',
+          },
+				],
+				ownershipStatus: [
+					{
+            required: true,
+            message: 'Pilih status kepemilikan terlebih dahulu!',
+          },
+				],
+				homeCondition: [
+					{
+            required: true,
+            message: 'Masukkan kondisi rumah',
+          },
+				],
+				phoneNumber: [
+					{
+            required: true,
+            message: 'Masukkan nomor telepon pemilik terlebih dahulu!',
+          },
+          {
+            max: 15,
+            message: 'Nomor telepon maksimal 15 karakter!',
+          },
+				]
+			}
+	  },
     report: {
         field: {
             nameReports: [

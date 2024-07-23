@@ -7,6 +7,7 @@ import id.application.feature.model.repositories.LetterRequestRepository;
 import id.application.feature.model.repositories.NewsRepository;
 import id.application.feature.model.repositories.ReportRepository;
 import id.application.feature.service.SummaryService;
+import id.application.util.enums.Gender;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,9 @@ public class SummaryServiceImpl implements SummaryService {
         Integer news = newsRepository.countaAllNews();
         Integer letter = letterRepository.countLetterUnapproved();
         Integer report = reportRepository.countAllReport();
+        Integer male = citizenRepository.clasificationGender(Gender.MALE);
+        Integer female = citizenRepository.clasificationGender(Gender.FEMALE);
+        Integer underAge = citizenRepository.clasificationUnderAge();
 
         return BaseResponse.<SummaryAdmin>builder()
                 .data(SummaryAdmin.builder()
@@ -31,6 +35,9 @@ public class SummaryServiceImpl implements SummaryService {
                         .news(news)
                         .letter(letter)
                         .report(report)
+                        .underAge(underAge)
+                        .female(female)
+                        .male(male)
                         .build())
                 .build();
     }

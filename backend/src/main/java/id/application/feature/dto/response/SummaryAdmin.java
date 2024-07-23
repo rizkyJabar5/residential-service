@@ -7,5 +7,8 @@ public record SummaryAdmin(
         double citizen,
         double report,
         double letter,
-        double news) {
+        double news,
+        double underAge,
+        double female,
+        double male) {
 }

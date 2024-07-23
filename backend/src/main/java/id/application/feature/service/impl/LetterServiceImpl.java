@@ -14,12 +14,10 @@ import id.application.feature.model.entity.LetterRequest;
 import id.application.feature.model.repositories.CitizenRepository;
 import id.application.feature.model.repositories.LetterRequestRepository;
 import id.application.feature.service.LetterService;
-import id.application.util.FilterableUtil;
-import id.application.util.enums.ERole;
+ import id.application.util.enums.ERole;
 import id.application.util.enums.StatusLetter;
 import id.application.util.enums.TypeLetter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -29,7 +27,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static id.application.config.pdf.PdfConfig.writePdfFile;
 import static id.application.security.SecurityUtils.getUserLoggedIn;
@@ -68,7 +68,7 @@ public class LetterServiceImpl implements LetterService {
     @Override
     public Page<LetterRequest> findLetterByStatus(StatusLetter status) {
         getUserLoggedIn();
-        var pageable = FilterableUtil.pageable(null, null, null);
+        var pageable = pageable(null, null, null);
         return repository.findByLetterStatus(status, pageable);
     }
 
@@ -91,8 +91,7 @@ public class LetterServiceImpl implements LetterService {
         var authenticatedUser = getUserLoggedIn();
         var userLoggedIn = authenticatedUser.getName();
 
-        var typeLetter = TypeLetter.valueOf(request.type());
-
+        var typeLetters = new ArrayList<TypeLetter>();
         Citizen citizen = null;
         if (authenticatedUser.getRole() == ERole.CITIZEN) {
             var userInfoCitizen = authenticatedUser.getUserInfo().getCitizenId();
@@ -100,7 +99,11 @@ public class LetterServiceImpl implements LetterService {
                     .orElseThrow(() -> new ResourceNotFoundException("Citizen not found"));
 
             var nik = citizen.getNik();
-            this.duplicateLetterRequest(nik, typeLetter);
+            request.types().forEach(type -> {
+                var typeLetter = TypeLetter.valueOf(type);
+                typeLetters.add(typeLetter);
+            });
+            this.duplicateLetterRequest(nik, typeLetters);
         }
 
         var entity = repository.findLetterRejected(citizen != null ? citizen.getNik() : request.nik())
@@ -133,7 +136,7 @@ public class LetterServiceImpl implements LetterService {
             entity.setAddress(request.address());
         }
 
-        entity.setType(typeLetter);
+        entity.setTypes(typeLetters);
         entity.setStatus(StatusLetter.WAITING);
         persistUtil(entity, userLoggedIn);
 
@@ -159,7 +162,8 @@ public class LetterServiceImpl implements LetterService {
         var existSubmission = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(MSG_LETTER_NOT_FOUND));
 
-        var letterType = getLetterType(existSubmission.getType().getType());
+        var types = existSubmission.getTypes();
+        var letterType = getLetterType(types.get(0).getType());
 
         var dateNow = LocalDate.now() ;
         var templateHtml = templateConfig.ruEnrichProcessor(TemplateRequest.builder()
@@ -173,7 +177,7 @@ public class LetterServiceImpl implements LetterService {
                 .marriageStatus(existSubmission.getMarriageStatus())
                 .jobType(existSubmission.getJobType())
                 .address(existSubmission.getAddress())
-                .typeLetter(letterType)
+                .typeLetters(types.stream().map(TypeLetter::getType).toList())
                 .letterId(existSubmission.getLetterId())
                 .monthPublished(localDateToString(dateNow, MONTH_PUBLISH_FORMAT))
                 .datePublished(localDateToLocale(dateNow, DATE_FORMAT))
@@ -223,8 +227,8 @@ public class LetterServiceImpl implements LetterService {
         }
     }
 
-    private void duplicateLetterRequest(String nik, TypeLetter type) {
-        var existed = repository.existByNikAndType(nik, type);
+    private void duplicateLetterRequest(String nik, List<TypeLetter> letters) {
+        var existed = repository.existByNikAndType(nik, letters);
         if (existed) {
             throw new AppConflictException("Anda sudah mengajukan surat pengajuan. Silahkan ditunggu status pengajuan sebelumnya");
         }

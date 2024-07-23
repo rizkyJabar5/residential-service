@@ -1,10 +1,12 @@
 package id.application.feature.dto.response;
 
 import id.application.feature.model.entity.LetterRequest;
+import id.application.util.enums.TypeLetter;
 import lombok.Builder;
 
 import java.io.Serializable;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Builder
 public record LetterRequestDto(
@@ -21,7 +23,7 @@ public record LetterRequestDto(
         String marriageStatus,
         String jobType,
         String address,
-        String type,
+        List<String> types,
         String status ) implements Serializable {
 
     public static LetterRequestDto letterRequestDto(LetterRequest letterRequest){
@@ -39,7 +41,7 @@ public record LetterRequestDto(
                 .marriageStatus(letterRequest.getMarriageStatus().getStatus())
                 .jobType(letterRequest.getJobType())
                 .address(letterRequest.getAddress())
-                .type(letterRequest.getType().getType())
+                .types(letterRequest.getTypes().stream().map(TypeLetter::getType).toList())
                 .status(letterRequest.getStatus().getStatus())
                 .build();
     }

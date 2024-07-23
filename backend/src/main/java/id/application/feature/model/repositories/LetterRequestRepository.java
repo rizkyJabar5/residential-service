@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface LetterRequestRepository extends JpaRepository<LetterRequest, String> {
@@ -39,10 +40,10 @@ public interface LetterRequestRepository extends JpaRepository<LetterRequest, St
             select (count(l) > 0)
             from LetterRequest l
             where l.nik = ?1
-            and l.type = ?2
+            and l.types = ?2
             and l.status = 1
             """)
-    boolean existByNikAndType(String nik, TypeLetter type);
+    boolean existByNikAndType(String nik, List<TypeLetter> type);
 
     @Query("select (count(l)) from LetterRequest l where l.status = 7")
     Integer countLetterUnapproved();

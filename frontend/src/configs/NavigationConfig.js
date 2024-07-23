@@ -5,8 +5,11 @@ import {
     CustomerIcon,
     DashboardIcon,
     SLAIcon,
-    OrderIcon
+    OrderIcon,
+
 } from "../assets/svg/icon";
+import { HomeOutlined } from '@ant-design/icons';
+
 
 const getNavigationConfig = (role, statusAccount) => {
     if (statusAccount === 'VERIFIED') {
@@ -52,30 +55,6 @@ const getNavigationConfig = (role, statusAccount) => {
                 breadcrumb: false,
                 submenu: []
             },
-            // {
-            //   key: "Report",
-            //   path: strings.navigation.path.customers,
-            //   title: "Laporan Kerusakan",
-            //   icon: CustomerIcon,
-            //   breadcrumb: false,
-            //   submenu: []
-            // },
-            // {
-            //   key: "Information",
-            //   path: strings.navigation.path.suppliers,
-            //   title: "Penyebaran Informasi",
-            //   icon: DeliveryIcon,
-            //   breadcrumb: false,
-            //   submenu: []
-            // },
-            // {
-            //   key: "Categories",
-            //   path: strings.navigation.path.categories,
-            //   title: "Categories",
-            //   icon: OutletIcon,
-            //   breadcrumb: false,
-            //   submenu: []
-            // }
         ]
     }]
 
@@ -93,14 +72,14 @@ const getNavigationConfig = (role, statusAccount) => {
                 breadcrumb: false,
                 submenu: []
             },
-            // {
-            //   key: "Information",
-            //   path: strings.navigation.path.suppliers,
-            //   title: "Penyebaran Informasi",
-            //   icon: DeliveryIcon,
-            //   breadcrumb: false,
-            //   submenu: []
-            // },
+            {
+              key: "HouseCollection",
+              path: strings.navigation.path.houses.list,
+              title: "Hunian Rumah",
+              icon: HomeOutlined,
+              breadcrumb: false,
+              submenu: []
+            },
         ]
     }]
 
@@ -140,49 +119,27 @@ const getNavigationConfig = (role, statusAccount) => {
 
     let navigationConfig;
 
-    if (role === 'ADMIN') {
+    if (role === 'CITIZEN') {
         navigationConfig = [
             ...dashBoardNavTree,
             ...societyTree,
             ...newsTree,
-            ...userManagementTree
-        ];
-    } else if (role === 'RW' || role === 'SECRETARY_RW' || role === 'RT' || role === 'SECRETARY_RT') {
-        navigationConfig = [
-            ...dashBoardNavTree,
-            ...societyTree,
-            {
-                ...newsTree[0],
-                submenu: [
-                    newsTree[0].submenu.find(item => item.key === 'Reports'),
-                    newsTree[0].submenu.find(item => item.key === 'News')
-                ]
-            }
-        ];
-    } else if (role === 'CITIZEN') {
-        navigationConfig = [
-            ...dashBoardNavTree,
-            ...societyTree,
-            ...newsTree
         ];
     } else {
-        navigationConfig = [];
+        navigationConfig = [
+	        ...dashBoardNavTree,
+			    ...societyTree,
+			    ...newsTree,
+			    ...userManagementTree
+        ];
     }
 
     return navigationConfig;
 
 };
 
-// const navigationConfig = [
-//     ...dashBoardNavTree,
-//     ...societyTree,
-//     ...newsTree,
-//     ...userManagementTree
-// ]
-
-
-const role = localStorage.getItem('role');
+const user = JSON.parse(localStorage.getItem('user'));
 const statusAccount = localStorage.getItem('status');
-const navigationConfig = getNavigationConfig(role, statusAccount);
+const navigationConfig = getNavigationConfig(user?.role, statusAccount);
 
 export default navigationConfig;

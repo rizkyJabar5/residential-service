@@ -103,10 +103,10 @@
             width: 100%;
         }
 
-        .flex-column-item{
+        .flex-column-item {
             flex-grow: 1;
             flex-shrink: 0;
-            flex-basis:  40%;
+            flex-basis: 40%;
             text-align: center;
             font-size: 12px;
         }
@@ -127,7 +127,7 @@
         <div class="second-column">
             <div class="title">
                 <h2>RUKUN TETANGGA 011 RW.20</h2>
-                <h2  style="margin-top: -20px">DESA KEDUNG JAYA KECAMATAN BABELAN</h2>
+                <h2 style="margin-top: -20px">DESA KEDUNG JAYA KECAMATAN BABELAN</h2>
                 <div style="margin-top: -20px">
                     <h2 style="font-size: 20px">KABUPATEN BEKASI</h2>
                 </div>
@@ -138,7 +138,8 @@
     <div class="container">
         <div class="header">
             <h2>SURAT PENGANTAR</h2>
-            <p>No : <label th:text="${letterId}"></label>/Ket. RT. 011-20/<label th:text="${monthPublished}"></label></p>
+            <p>No : <label th:text="${letterId}"></label>/Ket. RT. 011-20/<label th:text="${monthPublished}"></label>
+            </p>
         </div>
         <div class="content">
             <p>Yang bertanda tangan di bawah ini Ketua Rukun Tetangga 011 RW 020 Desa Kedung Jaya Kecamatan Babelan
@@ -179,9 +180,11 @@
             </table>
 
             <p>Adalah benar warga kami, telah memohon Surat Pengantar untuk keperluan :</p>
-
-            <b><p th:text="${type}"></p></b>
-
+            <b>
+                <ol style="font-size: 12px; margin-top: -7px; margin-bottom: -10px">
+                    <li th:each="type : ${types}" th:text="${type}"/>
+                </ol>
+            </b>
             <p>Demikian surat pengantar ini dibuat agar dapat dipergunakan sebagaimana mestinya.</p>
         </div>
         <div class="signature-container">

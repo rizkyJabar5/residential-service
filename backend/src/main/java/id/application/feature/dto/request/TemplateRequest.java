@@ -3,7 +3,10 @@ package id.application.feature.dto.request;
 import id.application.util.enums.Gender;
 import id.application.util.enums.MarriageStatus;
 import id.application.util.enums.Religion;
+import id.application.util.enums.TypeLetter;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record TemplateRequest(
@@ -17,7 +20,7 @@ public record TemplateRequest(
         MarriageStatus marriageStatus,
         String jobType,
         String address,
-        String typeLetter,
+        List<String> typeLetters,
         String letterId,
         String monthPublished,
         String datePublished) {

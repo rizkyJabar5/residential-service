@@ -11,8 +11,6 @@ import Citizens from "./citizens"
 import SETTINGS from "./settings"
 import USERS from "./users"
 
-import DETAILPRODUCT from "./detail-product"
-import INVOICE from "./invoice"
 import AddCitizen from "./citizens/add-citizen";
 import EditCitizen from "./citizens/edit-citizen";
 import { AddAccountCitizen, AddAccountStaff } from "./users/add-user";
@@ -25,6 +23,9 @@ import AddFinance from "./finance/add-finance";
 import News from "./news";
 import AddNews from "./news/add-news";
 import EditNews from "./news/edit-news";
+import Houses from "./houses";
+import AddHouses from "./houses/add-house";
+import EditHouse from "./houses/edit-house";
 
 export const AppViews = ({ match }) => {
 
@@ -65,10 +66,10 @@ export const AppViews = ({ match }) => {
 				<PrivateRoute path={ `${ strings.navigation.path.users.edit_staff }/:id` } component={ EditAccountStaff }/>
 				<PrivateRoute path={ `${ strings.navigation.path.users.edit_citizen }/:id` } component={ EditAccountCitizen }/>
 
-				<PrivateRoute path={ `${ strings.navigation.path.detail_products }` } component={ DETAILPRODUCT }/>
-
-				{/* INVOICE */ }
-				<PrivateRoute path={ `${ strings.navigation.path.invoice }` } component={ INVOICE }/>
+				{/* HOUSE DATA COLLECTION */ }
+				<PrivateRoute exact path={ `${ strings.navigation.path.houses.list }` } component={ Houses }/>
+				<PrivateRoute path={ `${ strings.navigation.path.houses.add }` } component={ AddHouses }/>
+				<PrivateRoute path={ `${ strings.navigation.path.houses.list }/:id` } component={ EditHouse }/>
 
 				<Redirect from={ `${ match.url }` } to={ `${ strings.navigation.path.dashboard }` }/>
 			</Switch>
