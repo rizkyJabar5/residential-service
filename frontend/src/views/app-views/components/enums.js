@@ -117,6 +117,11 @@ export const typeLetter = [
 	{ value: 12, label: "Lainnya" },
 ]
 
+export const ownershipStatus = [
+	{ value: 'RENT', label: "Sewa" },
+	{ value: 'PROPERTY_RIGHTS', label: "Hak Milik" },
+]
+
 export function valueOfTypeLetter(label) {
 	const result = typeLetter.find(item => item.label === label);
 	return result?.value;

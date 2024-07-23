@@ -55,30 +55,6 @@ const getNavigationConfig = (role, statusAccount) => {
                 breadcrumb: false,
                 submenu: []
             },
-            // {
-            //   key: "Report",
-            //   path: strings.navigation.path.customers,
-            //   title: "Laporan Kerusakan",
-            //   icon: CustomerIcon,
-            //   breadcrumb: false,
-            //   submenu: []
-            // },
-            // {
-            //   key: "Information",
-            //   path: strings.navigation.path.suppliers,
-            //   title: "Penyebaran Informasi",
-            //   icon: DeliveryIcon,
-            //   breadcrumb: false,
-            //   submenu: []
-            // },
-            // {
-            //   key: "Categories",
-            //   path: strings.navigation.path.categories,
-            //   title: "Categories",
-            //   icon: OutletIcon,
-            //   breadcrumb: false,
-            //   submenu: []
-            // }
         ]
     }]
 

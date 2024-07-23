@@ -14,7 +14,7 @@ const URLS = Object.freeze({
 	FINANCES: `/finances`,
 	NEWS: `/news`,
 	SUMMARIES: `/summaries`,
-	PURCHASE:`/purchase`,
+	HOUSES:`/house-collections`,
 	USER: '/users',
 	EXPENSE: '/expenses',
 	SALES: '/sales'

@@ -89,6 +89,11 @@ export const strings = {
                 delete: "/app/users/delete",
             },
 
+	        houses: {
+						list: "/app/houses",
+		        add: "/app/houses/add",
+	        },
+
             detail_products: "/app/detail-product",
             invoice: "/app/invoice",
             detail_orders: "/app/detail-order",

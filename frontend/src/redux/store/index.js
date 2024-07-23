@@ -8,6 +8,7 @@ import newsReducer from 'redux/features/news'
 import userReducer from 'redux/features/user'
 import financeReducer from 'redux/features/finances'
 import summaryReducer from 'redux/features/summaries'
+import housesReducer from 'redux/features/houses'
 
 const store = configureStore({
     reducer: {
@@ -19,7 +20,8 @@ const store = configureStore({
         citizens: citizensReducer,
         accounts: userReducer,
         finances: financeReducer,
-        summaries: summaryReducer
+        summaries: summaryReducer,
+        houses: housesReducer,
     }
 });
 
