@@ -56,7 +56,7 @@ public class FinanceServiceImpl implements FinanceService {
     }
 
     @Override
-    public Finance persistNewFinance(MultipartFile image) {
+    public Finance persistNewFinance(MultipartFile image, String note) {
         var authenticationUser = getUserLoggedIn();
 
         Citizen citizen = citizenRepository.findById(authenticationUser.getUserInfo().getCitizenId())
@@ -68,6 +68,7 @@ public class FinanceServiceImpl implements FinanceService {
         Finance entity = new Finance();
         entity.setCitizenId(citizen.getId());
         entity.setUserInfoId(userInfo.getId());
+        entity.setNote(note);
 
         if (image != null && !image.isEmpty()) {
             String imageUrl = getUrlAndUploadImage(image);
@@ -105,6 +106,7 @@ public class FinanceServiceImpl implements FinanceService {
                 .appUserDto(appUserDto)
                 .imageUrl(finance.getImageUrl())
                 .tglPembayaran(finance.getCreatedTime())
+                .note(finance.getNote())
                 .build();
     }
 }

@@ -19,4 +19,6 @@ public class Finance extends BaseEntity {
     private String userInfoId;
 
     private String imageUrl;
+
+    private String note;
 }

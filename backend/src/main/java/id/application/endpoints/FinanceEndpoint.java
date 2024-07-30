@@ -29,9 +29,10 @@ public class FinanceEndpoint {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     Finance persistNew(
-            @RequestPart("image") MultipartFile image
+            @RequestPart("image") MultipartFile image,
+            @RequestPart("note") String note
     ) {
-        return financeService.persistNewFinance(image);
+        return financeService.persistNewFinance(image, note);
     }
 
     @GetMapping
