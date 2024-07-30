@@ -12,7 +12,7 @@ import {
     Modal,
     Upload,
     Tag,
-    Menu, DatePicker
+    Menu, DatePicker, Select
 } from 'antd';
 import React, {useEffect, useState, useCallback, useRef} from "react";
 import {useDispatch, useSelector} from 'react-redux';
@@ -24,6 +24,7 @@ import {rules} from "../../../res/rules";
 import EllipsisDropdown from "../../../components/shared-components/EllipsisDropdown";
 import moment from "moment/moment";
 
+const {Option} = Select;
 export const FINANCES = (props) => {
     const history = useHistory()
     const dispatch = useDispatch();
@@ -35,6 +36,7 @@ export const FINANCES = (props) => {
     const [modalType, setModalType] = useState(null);
     const [filteredData, setFilteredData] = useState([]);
     const [listFinances, setListFinances] = useState([]);
+    const [note, setNote] = useState('');
 
     const {
         // listFinances,
@@ -90,6 +92,11 @@ export const FINANCES = (props) => {
             title: 'Tanggal Pembayaran',
             dataIndex: 'tglPembayaran',
             key: 'tglPembayaran',
+        },
+        {
+            title: 'Keterangan',
+            dataIndex: 'note',
+            key: 'note',
         },
         {
             title: 'Nama',
@@ -163,12 +170,14 @@ export const FINANCES = (props) => {
             formData.append('image', imageFile);
         }
 
+        formData.append('note', values.note === 'Other' ? values.otherNote : values.note);
+
         try {
             await dispatch(createFinance(formData)).unwrap();
             message.success("Sukses menambah data");
             setIsModalVisible(false);
             form.resetFields();
-            await dispatch(fetchAllFinances(params)).unwrap();
+            window.location.reload();
         } catch (error) {
             console.error('Error creating finance:', error);
             message.error('Gagal .. Silakan coba lagi.');
@@ -192,6 +201,14 @@ export const FINANCES = (props) => {
             );
 
             setFilteredData(filteredData);
+        }
+    };
+
+    const handleNoteChange = (value) => {
+        setNote(value);
+        form.setFieldsValue({note: value});
+        if (value === 'Pembayaran Iuran Bulanan') {
+            form.setFieldsValue({otherNote: ''});
         }
     };
 
@@ -264,6 +281,7 @@ export const FINANCES = (props) => {
                         <img src={selectedFinance.imageUrl} alt="Gambar" style={{maxWidth: '100%'}}/>
 
                         <p><strong>Tanggal Pembayaran:</strong> {selectedFinance.tglPembayaran}</p>
+                        <p><strong>Keterangan:</strong> {selectedFinance.note}</p>
                         <p><strong>Nama:</strong> {selectedFinance.citizen.fullName}</p>
                         <p><strong>Alamat:</strong> {selectedFinance.citizen.homeAddress}</p>
                         <p><strong>Email:</strong> {selectedFinance.appUserDto.email}</p>
@@ -290,6 +308,28 @@ export const FINANCES = (props) => {
                                 <Button icon={<UploadOutlined/>}>Pilih Gambar</Button>
                             </Upload>
                         </Form.Item>
+                        <Form.Item
+                            name="note"
+                            label="Note"
+                            rules={[{required: true, message: 'Silakan pilih atau masukkan note'}]}
+                        >
+                            <Select onChange={handleNoteChange} placeholder="Pilih Keterangan">
+                                <Option value="Pembayaran Iuran Bulanan">Pembayaran Iuran Bulanan</Option>
+                                <Option value="Other">Other</Option>
+                            </Select>
+                        </Form.Item>
+                        {form.getFieldValue('note') === 'Other' && (
+                            <Form.Item
+                                name="otherNote"
+                                label="Other Note"
+                                rules={[{
+                                    required: form.getFieldValue('note') === 'Other',
+                                    message: 'Silakan masukkan other note'
+                                }]}
+                            >
+                                <Input/>
+                            </Form.Item>
+                        )}
                     </Form>
                 )}
             </Modal>

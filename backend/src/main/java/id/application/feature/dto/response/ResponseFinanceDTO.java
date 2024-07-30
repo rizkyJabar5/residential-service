@@ -15,6 +15,7 @@ public class ResponseFinanceDTO implements Serializable {
     private CitizenDto citizen;
     private AppUserDto appUserDto;
     private String imageUrl;
+    private String note;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date tglPembayaran;
